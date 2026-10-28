@@ -2,19 +2,28 @@
 
 ## Team of 7
 
-Seven members cover the essentials as five small sub-teams: lead (1), design (1), frontend (2), backend (2) and DevOps/QA (1). Each person owns one area and backs up one other, so no part of the project depends on a single person.
+The seven members split into two teams: a technical team of 4 who build the platform, and a business, compliance and governance team of 3 who own the plan, the business case and everything that keeps the project legal, safe and on track. Neither team needs the other's skills, but every sprint ends with a joint review.
+
+**Technical team (4)**
 
 | Member | Role | Owns | Backs up |
 | --- | --- | --- | --- |
-| 1 | Project lead / product owner | Scope, user stories, sprint board, meetings, final report and presentation | QA, documentation |
-| 2 | UX/UI designer | User research, wireframes, Figma prototypes, design system, usability tests | Frontend styling |
-| 3 | Frontend developer (learner) | Catalog, course page, video player page, quizzes, My learning dashboard | Frontend 2 |
-| 4 | Frontend developer (instructor and admin) | Course builder, upload screens, admin course review, responsive layout | Frontend 1 |
-| 5 | Backend developer (core) | Auth and roles, catalog API, enrollment, Stripe test-mode checkout | Backend 2 |
-| 6 | Backend developer (learning) | Video upload and playback, progress tracking, quizzes, certificates | Backend 1 |
-| 7 | DevOps and QA engineer | Repo and CI/CD, hosting, database setup, automated tests, release checks | Backend |
+| 1 | Tech lead and backend developer | Architecture decisions, database, auth and roles, catalog API, enrollment, Stripe test-mode checkout | Member 2 |
+| 2 | Backend developer | Video upload and playback, progress tracking, quizzes, certificates | Member 1 |
+| 3 | Frontend developer (learner app) | Catalog, course page, player, quizzes, My learning dashboard | Member 4 |
+| 4 | Full-stack developer and DevOps | Instructor course builder, admin screens, repo and CI/CD, hosting, automated tests | Member 3 |
 
-**Build.** The architecture above is the design at real-world scale; build a simplified version of it as one modular monolith with the same service boundaries as folders.
+**Business, compliance and governance team (3, no coding)**
+
+| Member | Role | Owns | Backs up |
+| --- | --- | --- | --- |
+| 5 | Project manager and governance lead | Scope and user stories, sprint board, meetings and minutes, RACI chart, risk register, decision log, final report and presentation | Member 7 |
+| 6 | Business analyst and UX designer | Market and competitor research, business model and pricing, personas, Figma wireframes and prototypes, usability testing, go-to-market plan | Member 5 |
+| 7 | Compliance and risk officer | Privacy law requirements, privacy policy and terms, copyright and instructor content licences, accessibility (WCAG) audit, data protection impact assessment, security and data-retention policies | Member 6 |
+
+The business team also runs user acceptance testing: they write test scenarios from the user stories and test each release by hand, which frees the developers to build.
+
+
 
 | Layer | Suggested choice | Replaces at scale |
 | --- | --- | --- |
@@ -28,3 +37,4 @@ Seven members cover the essentials as five small sub-teams: lead (1), design (1)
 | CI/CD | GitHub Actions | Same |
 
 Kafka, live classes, DRM, coding sandboxes and recommendations stay in the design document as future work rather than being built.
+
