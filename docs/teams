@@ -1,0 +1,30 @@
+
+
+## Team of 7
+
+Seven members cover the essentials as five small sub-teams: lead (1), design (1), frontend (2), backend (2) and DevOps/QA (1). Each person owns one area and backs up one other, so no part of the project depends on a single person.
+
+| Member | Role | Owns | Backs up |
+| --- | --- | --- | --- |
+| 1 | Project lead / product owner | Scope, user stories, sprint board, meetings, final report and presentation | QA, documentation |
+| 2 | UX/UI designer | User research, wireframes, Figma prototypes, design system, usability tests | Frontend styling |
+| 3 | Frontend developer (learner) | Catalog, course page, video player page, quizzes, My learning dashboard | Frontend 2 |
+| 4 | Frontend developer (instructor and admin) | Course builder, upload screens, admin course review, responsive layout | Frontend 1 |
+| 5 | Backend developer (core) | Auth and roles, catalog API, enrollment, Stripe test-mode checkout | Backend 2 |
+| 6 | Backend developer (learning) | Video upload and playback, progress tracking, quizzes, certificates | Backend 1 |
+| 7 | DevOps and QA engineer | Repo and CI/CD, hosting, database setup, automated tests, release checks | Backend |
+
+**Build.** The architecture above is the design at real-world scale; build a simplified version of it as one modular monolith with the same service boundaries as folders.
+
+| Layer | Suggested choice | Replaces at scale |
+| --- | --- | --- |
+| Frontend | React or Next.js, responsive web or PWA (no native apps) | Separate web, iOS and Android apps |
+| Backend | Node.js (Express or NestJS) or Django, REST API | Ten separate services behind a gateway |
+| Database | PostgreSQL (one database, including a progress table) | Postgres plus Cassandra, Redis, OpenSearch |
+| Video | Mux or Cloudinary free tier (handles transcoding and HLS) | Own transcoding pipeline, multi-CDN, DRM |
+| Payments | Stripe in test mode | Stripe live with ledger and payouts |
+| Search | Postgres full-text search | OpenSearch |
+| Hosting | Vercel (frontend) and Render or Railway (backend, database) | Kubernetes in two regions |
+| CI/CD | GitHub Actions | Same |
+
+Kafka, live classes, DRM, coding sandboxes and recommendations stay in the design document as future work rather than being built.
