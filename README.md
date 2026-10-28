@@ -1,4 +1,4 @@
-# ASA College eLearning Platform
+# ASA College eLearning Platform:   PERCEPTION LMS
 
 **A proposed Learning Management System (LMS) to support digital learning and academic administration at ASA College.**
 
