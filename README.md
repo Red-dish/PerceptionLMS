@@ -49,12 +49,15 @@ The proposed solution aims to reduce reliance on an external LMS and provide a p
 - Platform configuration and audit records.
 
 ### Future Enhancements
+- Attendance tracking.
 - Notifications and reminders.
 - Calendar and timetable integration.
+- Departments, a Super Admin role and audit logs.
 - Online quizzes and assessments.
 - Reporting and learning analytics.
+- Discussion forums.
+- Single sign-on with college accounts.
 - Video conferencing and third-party integrations.
-- Accessibility improvements and mobile-responsive experiences.
 
 *Features are proposed requirements, not a statement that all functionality has already been implemented.*
 
@@ -82,23 +85,37 @@ Actual benefits depend on implementation quality, adoption, support requirements
 
 ## 7. Project Scope
 
-### Initial Scope
-- Requirements gathering and stakeholder consultation.
-- User roles and permissions.
-- Core student, lecturer, and administrator experiences.
-- Course and learning resource management.
-- Initial assessment and communication workflows.
-- Security, usability, and functional testing.
-- Demonstration and stakeholder feedback.
+### MVP Scope
 
-### Out of Scope for the Initial Prototype
+The MVP covers three roles (student, lecturer, administrator) and the eight user stories in [docs/user-stories-mvp.md](docs/user-stories-mvp.md):
+
+- Sign in with role-based access.
+- Student dashboard with enrolled courses and upcoming deadlines.
+- Course modules and downloadable learning materials.
+- Online assignment submission with confirmation.
+- Grades and lecturer feedback.
+- Lecturer management of course content, assignments, grading and announcements.
+- Administrator management of users, roles and course enrolments.
+
+The project also delivers the business case, privacy and compliance documents, usability and accessibility testing, and a final demonstration.
+
+### Out of Scope for the MVP
+- Everything listed under Future Enhancements.
 - Full migration of historical Canvas data.
 - Production deployment for the entire college.
 - Integration with every existing college system.
-- Advanced analytics and AI capabilities.
 - Payment processing and other unrelated services.
 
-These boundaries should be confirmed during project planning.
+### Timeline
+
+Four one-week sprints, each ending with a joint review:
+
+| Sprint | Dates | Focus |
+|---|---|---|
+| 1 | 2–6 Nov 2026 | Onboarding, scope sign-off, research, architecture and setup |
+| 2 | 9–13 Nov 2026 | Sign in, student dashboard, course materials, policies, test scenarios |
+| 3 | 16–20 Nov 2026 | Assignments, grading, announcements, admin, usability testing |
+| 4 | 23–27 Nov 2026 | User acceptance testing, accessibility check, final report and demo |
 
 ## 8. Business Case Summary
 
@@ -110,4 +127,16 @@ Before committing to full implementation, ASA College should evaluate developmen
 
 Project success will be evaluated against agreed requirements, including:
 
-- Students
+- Students can sign in, see only their enrolled courses, download materials, submit assignments, and view released grades and feedback.
+- Lecturers can manage materials, create and grade assignments, and post announcements for their own courses only.
+- Administrators can manage users, roles and course enrolments.
+- All user acceptance test scenarios pass before the final demonstration.
+- The main screens meet WCAG 2.2 Level AA in an accessibility check.
+- Privacy, copyright, security and data-retention documents are complete.
+
+## 10. Team and Project Management
+
+- **Team and roles:** [docs/teams](docs/teams)
+- **Task list by sprint:** [docs/tasks.md](docs/tasks.md)
+- **Work tracking:** the Perception LMS (KAN) project in [Jira](https://amorachk.atlassian.net/jira/software/projects/KAN). Filter the board by your name label to see your items.
+- **Screen designs:** the MVP screens in [Claude Design](https://claude.ai/artifact/54GwTGoU6hqVKNAhq4jscR), built from the earlier mockup in [docs/UI Design.html](docs/UI%20Design.html).
