@@ -1,39 +1,58 @@
-Tasks
-Thirty-four tasks across the three phases, each with the role that owns it; tick them off as they land.
-Phase 1: MVP
-[ ] Finalise requirements, success metrics and MVP scope (Product manager)
-[ ] User research with 10–15 learners and instructors (UX researcher, Product designer)
-[ ] Design system: colours, type, components, accessibility rules (Product designer)
-[ ] Wireframes and prototypes: catalog, course page, checkout, player, quiz, dashboard (Product designer)
-[ ] Instructor studio designs: course builder, upload, pricing (Product designer)
-[ ] Architecture decisions, repo structure, API conventions (Tech lead)
-[ ] Cloud accounts, Terraform, Kubernetes, CI/CD pipelines, staging and prod (DevOps)
-[ ] Monitoring, logging, alerting and error tracking (DevOps)
-[ ] Identity: sign-up, login, password reset, roles, JWT (Backend)
-[ ] Catalog: courses, sections, lectures, publish workflow, admin review (Backend)
-[ ] Media: S3 multipart upload, managed transcoding, HLS output, signed playback URLs (Video engineer)
-[ ] Payments: Stripe checkout, webhooks, orders, ledger, refunds, instructor payouts (Backend)
-[ ] Enrollment and entitlement checks with Redis cache (Backend)
-[ ] Progress: heartbeats, resume, completion, course percentage (Backend)
-[ ] Assessment: quizzes, auto-grading, certificates with verify links (Backend)
-[ ] Notification: transactional email (receipts, password reset) (Backend)
-[ ] Learner web app: catalog, course page, checkout, player, quizzes, my learning (Frontend)
-[ ] Instructor studio web app (Frontend)
-[ ] Mobile apps: browse, play, resume, quizzes (Mobile)
-[ ] Automated API and end-to-end test suites, device test matrix (QA)
-[ ] Security review, load test to 2× expected peak, launch checklist (Tech lead, DevOps, QA)
-Phase 2: Growth
-[ ] Search with OpenSearch: full text, filters, autocomplete (Backend)
-[ ] Community: Q&A per lecture, reviews and ratings, moderation queue (Backend, Frontend)
-[ ] Offline downloads on mobile with persistent DRM licences (Mobile, Video engineer)
-[ ] Subscriptions, coupons, regional pricing (Backend)
-[ ] Kafka-to-warehouse pipeline and instructor analytics dashboards (Data engineer, Frontend)
-[ ] Recommendations v1: popular and similar courses (ML engineer)
-[ ] Push and in-app notifications, reminders, digests (Backend, Mobile)
-[ ] Auto-captions and caption editor (Video engineer, Frontend)
-Phase 3: Scale and B2B
-[ ] SSO (SAML/OIDC), tenant admin, seat licences, reporting for businesses (Backend, Frontend)
-[ ] Multi-DRM for paid content (Video engineer)
-[ ] Coding exercises in Firecracker sandboxes (Backend, Security engineer)
-[ ] Live classes on a managed SFU with chat and recording (Backend, Frontend, Mobile)
-[ ] Second region, multi-CDN, disaster-recovery drills (DevOps)
+# Tasks
+
+Thirty-six tasks across four one-week sprints, each with the person who owns it; tick them off as they land. Each task matches a work item in the Perception LMS (KAN) Jira project.
+
+## Sprint 1: 2–6 Nov
+- [ ] Invite the team to Jira and GitHub (Amora) · KAN-13
+- [ ] Get started: accept invites, read the docs, find your items (Everyone) · KAN-14 to KAN-19
+- [ ] Run kickoff meeting and agree team rules (Nancy) · KAN-20
+- [ ] Sign off MVP scope (Nancy) · KAN-21
+- [ ] Create RACI chart (Nancy) · KAN-22
+- [ ] Set up risk register and decision log (Nancy) · KAN-23
+- [ ] Write personas: student, lecturer, admin (Apeksha) · KAN-26
+- [ ] Compare Canvas and Moodle (Apeksha) · KAN-27
+- [ ] Review the MVP screen designs (Bishu, Apeksha) · KAN-28
+- [ ] List privacy law requirements (Yoodem) · KAN-32
+- [ ] Architecture decisions and tech stack (Amora) · KAN-38
+- [ ] Database design (Amora) · KAN-39
+- [ ] Repo, CI and hosting (Dipesh, Amora) · KAN-40
+
+## Sprint 2: 9–13 Nov
+- [ ] Sign in and role-based access (Amora, Dipesh) · KAN-41
+- [ ] Student dashboard (Dipesh) · KAN-42
+- [ ] Course materials (Dipesh, Roshan) · KAN-43
+- [ ] Manage course content (Roshan, Amora, Dipesh) · KAN-46
+- [ ] Business case and cost comparison with Canvas (Apeksha) · KAN-29
+- [ ] Draft privacy policy and terms of use (Yoodem) · KAN-33
+- [ ] Copyright rules for lecturer content (Yoodem) · KAN-34
+- [ ] Write test scenarios from the user stories (Nancy, Apeksha, Yoodem) · KAN-50
+
+## Sprint 3: 16–20 Nov
+- [ ] Submit an assignment (Dipesh, Roshan) · KAN-44
+- [ ] View grades and feedback (Dipesh, Roshan) · KAN-45
+- [ ] Create and grade assignments (Roshan, Amora, Dipesh) · KAN-47
+- [ ] Post announcements (Roshan, Dipesh) · KAN-48
+- [ ] Manage users and enrolments (Amora, Dipesh) · KAN-49
+- [ ] Automated tests for key flows (Dipesh) · KAN-52
+- [ ] Usability test with 5 people (Bishu) · KAN-30
+- [ ] Data protection impact assessment (Yoodem) · KAN-35
+- [ ] Security and data-retention policy (Yoodem) · KAN-36
+
+## Sprint 4: 23–27 Nov
+- [ ] Test each release by hand (Nancy, Apeksha, Yoodem) · KAN-51
+- [ ] Accessibility check, WCAG 2.2 AA (Yoodem) · KAN-37
+- [ ] Rollout and adoption plan (Apeksha) · KAN-31
+- [ ] Fix bugs and rehearse the demo (Amora, Roshan, Dipesh, Bishu) · KAN-53
+- [ ] Keep weekly meeting minutes (Nancy) · KAN-24
+- [ ] Final report and presentation (Nancy) · KAN-25
+
+## Later (not in the MVP)
+- Attendance tracking
+- Calendar and timetable
+- Departments, Super Admin role and audit log
+- Notifications and reminders
+- Online quizzes
+- Reporting and learning analytics
+- Discussion forums
+- Single sign-on with college accounts
+- Canvas data migration
