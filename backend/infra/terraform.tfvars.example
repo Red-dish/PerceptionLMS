@@ -1,0 +1,6 @@
+# Copy to terraform.tfvars (git-ignored) and fill in.
+environment      = "dev"
+google_client_id = "your-client-id.apps.googleusercontent.com"
+admin_emails     = ["you@example.com"]
+allowed_origins  = ["http://localhost:5173"]
+# allowed_domain = "your-college-workspace-domain"

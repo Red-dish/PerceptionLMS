@@ -27,15 +27,18 @@ Work is tracked in the Perception LMS (KAN) Jira project. Each item carries the 
 
 ## Tech stack
 
-| Layer | Suggested choice | Replaces at scale |
+| Layer | Choice | Replaces at scale |
 | --- | --- | --- |
 | Frontend | React or Next.js, responsive web (no native apps) | Separate web, iOS and Android apps |
-| Backend | Node.js (Express or NestJS) or Django, REST API | Separate services behind a gateway |
-| Database | PostgreSQL (one database) | Postgres with read replicas and backups across regions |
-| File storage | Free tier of Supabase Storage, Cloudinary or S3 (course materials and submissions) | Object storage with retention rules and a CDN |
-| Search | Postgres full-text search | OpenSearch |
-| Hosting | Vercel (frontend) and Render or Railway (backend, database) | Managed cloud hosting in two regions |
+| Backend | Python 3.14 FastAPI on AWS Lambda, behind API Gateway (HTTP API) | Separate services behind a gateway |
+| Sign-in | Sign in with Google | College single sign-on (SAML/OIDC) |
+| Database | DynamoDB, one table, on-demand billing | Same, with the table split by access pattern |
+| File storage | S3 with signed upload and download links (course materials and submissions) | Same, with retention rules and a CDN |
+| Containers | Podman builds the Lambda image and runs local stand-ins for AWS | Same |
+| Infrastructure | Terraform | Same, with separate dev and prod accounts |
 | CI/CD | GitHub Actions | Same |
+
+The backend code and setup steps are in [backend/README.md](../backend/README.md); the design is in [system-design.md](system-design.md).
 
 Attendance, calendar, notifications, quizzes, analytics, single sign-on and Canvas data migration stay on the Later list in [tasks.md](tasks.md) rather than being built.
 

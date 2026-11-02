@@ -138,5 +138,7 @@ Project success will be evaluated against agreed requirements, including:
 
 - **Team and roles:** [docs/teams](docs/teams)
 - **Task list by sprint:** [docs/tasks.md](docs/tasks.md)
+- **System design:** [docs/system-design.md](docs/system-design.md)
+- **Backend API (FastAPI on AWS Lambda):** [backend/README.md](backend/README.md)
 - **Work tracking:** the Perception LMS (KAN) project in [Jira](https://amorachk.atlassian.net/jira/software/projects/KAN). Filter the board by your name label to see your items.
 - **Screen designs:** the MVP screens in [Claude Design](https://claude.ai/artifact/54GwTGoU6hqVKNAhq4jscR), built from the earlier mockup in [docs/UI Design.html](docs/UI%20Design.html).
