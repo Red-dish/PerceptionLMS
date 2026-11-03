@@ -23,7 +23,7 @@ The seven members split into two teams: a technical team of 4 who build the plat
 
 The business team also runs user acceptance testing: they write test scenarios from the user stories and test each release by hand, which frees the developers to build.
 
-Work is tracked in the Perception LMS (KAN) Jira project. Our lecturer sets a deliverable each week, and each one becomes an epic of tasks in Jira; see [tasks.md](tasks.md) for this week's list.
+Work is tracked in the Perception LMS (KAN) Jira project. Our lecturer sets a deliverable each week, and each one becomes an epic of tasks in Jira; see [tasks.md](../Product%20Build/tasks.md) for this week's list.
 
 ## Tech stack
 
@@ -38,7 +38,7 @@ Work is tracked in the Perception LMS (KAN) Jira project. Our lecturer sets a de
 | Infrastructure | Terraform | Same, with separate dev and prod accounts |
 | CI/CD | GitHub Actions | Same |
 
-The backend code and setup steps are in [backend/README.md](../backend/README.md); the design is in [system-design.md](system-design.md).
+The backend code and setup steps are in [backend/README.md](../../backend/README.md); the design is in [system-design.md](../Product%20Build/system-design.md).
 
-Attendance, calendar, notifications, quizzes, analytics, single sign-on and Canvas data migration stay on the Later list in [tasks.md](tasks.md) rather than being built.
+Attendance, calendar, notifications, quizzes, analytics, single sign-on and Canvas data migration stay on the Later list in [tasks.md](../Product%20Build/tasks.md) rather than being built.
 

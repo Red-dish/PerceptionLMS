@@ -1,6 +1,6 @@
 # Task: backend, sign-in and domain (Amora)
 
-My own checklist for the Week 1 technical work, picking up where my last Claude session left off. The team's full list for the week is in [docs/product build/tasks.md](docs/product%20build/tasks.md) (Jira epic KAN-54, due Fri 6 Nov 2026).
+My own checklist for the Week 1 technical work, picking up where my last Claude session left off. The team's full list for the week is in [Product Build/tasks.md](Product%20Build/tasks.md) (Jira epic KAN-54, due Fri 6 Nov 2026).
 
 ## Done
 
@@ -10,16 +10,24 @@ My own checklist for the Week 1 technical work, picking up where my last Claude 
 
 ## Now: run the backend locally (KAN-41)
 
-Run from `backend/`. **Skip** the `cp .env.example .env` step in the README, because it would overwrite the real `.env`.
+Run from `backend/`. **Skip** the README's first-time `cp .env.example .env` step, because it would overwrite the real `.env`.
 
-- [ ] `uv sync`
-- [ ] `podman run -d --name lms-aws -p 5000:5000 docker.io/motoserver/moto:5.2.5` (if it already exists: `podman start lms-aws`)
-- [ ] `uv run --env-file .env python scripts/local_setup.py`
-- [ ] `uv run --env-file .env uvicorn app.main:app --reload`
-- [ ] Open http://localhost:8000/docs and check it loads
-- [ ] `uv run pytest` passes
+- [x] `uv sync`
+- [x] `podman run -d --name lms-aws -p 5000:5000 docker.io/motoserver/moto:5.2.5` (if it already exists: `podman start lms-aws`)
+- [x] `uv run --env-file .env python scripts/local_setup.py`
+- [x] `uv run --env-file .env uvicorn app.main:app --reload`
+- [x] Open http://localhost:8000/docs and check it loads
+- [x] `uv run pytest` passes
 - [ ] Sign in from the frontend on `localhost:5173` with my Google account and confirm I become admin
 - [ ] Add a test student and lecturer, enrol them in a course, and check each role sees the right things
+
+Two things that needed fixing to get this working, both now done:
+- Podman's machine would not start on WSL 2.4.13 (systemd could not boot, so sshd never
+  started). Fixed by `wsl --update` to 3.0.3 (kernel 6.18). Podman was also reinstalled
+  to clear a stuck machine and an orphaned `win-sshproxy` holding the pipe.
+- `AWS_ENDPOINT_URL` must be `http://127.0.0.1:5000`, **not** `localhost`. On Windows
+  `localhost` can resolve to IPv6 (`::1`), which Podman's forwarding does not serve, and
+  boto3 fails with `ConnectionClosedError`. `.env.example` now says this too.
 
 ## Next: deploy to AWS (KAN-55, with Roshan)
 
@@ -39,5 +47,5 @@ Run from `backend/`. **Skip** the `cp .env.example .env` step in the README, bec
 
 ## Housekeeping
 
-- [ ] The docs moved into `docs/product build/`, `docs/product management/` and `docs/teams and roles/`. Update the links in `README.md`, `backend/README.md` and `docs/teams and roles/teams.md` that still point to the old paths
+- [x] The docs moved into `docs/Product Build/`, `docs/Product Management/` and `docs/Teams and Roles/`. Links in `README.md`, `backend/README.md`, `teams.md` and `system-design.md` now point to the new paths
 - [ ] Commit the doc moves, `docs/project-outline.md`, this file and `CLAUDE.md` on a branch and open a PR

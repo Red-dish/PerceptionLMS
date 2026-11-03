@@ -4,7 +4,7 @@
 
 ASA College is moving away from Canvas. Perception LMS is a proposed replacement: a web-based Learning Management System built around the college's own needs, for three kinds of user: students, lecturers and administrators.
 
-The project is run by a team of seven students: a technical team of four who build the platform, and a business, compliance and governance team of three who own the plan, the business case and the legal and accessibility work. Work runs in one-week cycles from 2 Nov 2026, with a deliverable set by our lecturer each week (see [tasks.md](product%20build/tasks.md)).
+The project is run by a team of seven students: a technical team of four who build the platform, and a business, compliance and governance team of three who own the plan, the business case and the legal and accessibility work. Work runs in one-week cycles from 2 Nov 2026, with a deliverable set by our lecturer each week (see [tasks.md](Product%20Build/tasks.md)).
 
 The MVP lets people:
 
@@ -45,7 +45,7 @@ API Gateway (HTTP API) ──► AWS Lambda: FastAPI app (Python 3.14 container 
 | Infrastructure | Terraform | Every AWS resource written down and repeatable |
 | CI/CD | GitHub Actions (planned) | Automatic tests and deploys |
 
-Full detail, including the table layout and permission rules: [system-design.md](product%20build/system-design.md). How to run and deploy the code: [backend/README.md](../backend/README.md).
+Full detail, including the table layout and permission rules: [system-design.md](Product%20Build/system-design.md). How to run and deploy the code: [backend/README.md](../backend/README.md).
 
 ## 3. High Level Requirements
 
@@ -82,4 +82,4 @@ Full detail, including the table layout and permission rules: [system-design.md]
 | 7 | **Announcements:** As a lecturer, I want to publish course announcements so that students receive important updates. | Enrolled students see my announcements on the course. |
 | 8 | **User management:** As an administrator, I want to manage users and course enrollments so that the correct people have access to the platform. | I can add, deactivate and change users, and enrol them in courses as lecturer or student. |
 
-Source: [user-stories-mvp.md](product%20management/user-stories-mvp.md).
+Source: [user-stories-mvp.md](Product%20Management/user-stories-mvp.md).

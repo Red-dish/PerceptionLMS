@@ -1,5 +1,6 @@
 """Create the DynamoDB table and S3 bucket in the local AWS stand-in started by
-`podman compose up -d` (see compose.yaml). Safe to run more than once.
+`podman run -d --name lms-aws -p 5000:5000 docker.io/motoserver/moto:5.2.5`
+(once it exists, `podman start lms-aws`). Safe to run more than once.
 
     uv run --env-file .env python scripts/local_setup.py
 
