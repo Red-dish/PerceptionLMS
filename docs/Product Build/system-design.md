@@ -1,6 +1,6 @@
 # System Design
 
-How the Perception LMS MVP is built. The code is in [backend/](../backend); how to run and deploy it is in [backend/README.md](../backend/README.md).
+How the Perception LMS MVP is built. The code is in [backend/](../../backend); how to run and deploy it is in [backend/README.md](../../backend/README.md).
 
 ## Architecture
 

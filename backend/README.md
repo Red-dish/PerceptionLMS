@@ -8,7 +8,7 @@ The backend for Perception LMS: a Python 3.14 FastAPI app that runs on AWS Lambd
 - **Containers:** Podman builds the Lambda image and runs local stand-ins for DynamoDB and S3.
 - **Infrastructure:** Terraform creates everything in AWS.
 
-How it fits together, the table layout and who can do what: [docs/system-design.md](../docs/system-design.md).
+How it fits together, the table layout and who can do what: [system-design.md](../docs/Product%20Build/system-design.md).
 
 ## What you need
 
@@ -23,23 +23,31 @@ You also need a **Google OAuth client ID**:
 
 1. In [Google Cloud console](https://console.cloud.google.com/apis/credentials), create a project.
 2. Go to **APIs & Services › Credentials › Create credentials › OAuth client ID**, with type **Web application**.
-3. Under **Authorized JavaScript origins**, add `http://localhost:5173` and your deployed frontend address.
+3. Under **Authorized JavaScript origins**, add `http://localhost:5173`, `https://perceptionlms.com` and `https://www.perceptionlms.com`. Each must be an exact match: `https://` for the real site, no trailing slash and no path. These are frontend addresses, so the API's address doesn't go here.
 4. Copy the client ID. It ends in `.apps.googleusercontent.com`.
 
 ## Run it on your computer
 
 All commands run from the `backend` folder.
 
+**First time only:** create your `.env` from the template, then fill in `GOOGLE_CLIENT_ID`, `JWT_SECRET` and `ADMIN_EMAILS`. Skip this if you already have a `.env`, because copying again replaces your real values with the blank template.
+
+```bash
+cp .env.example .env
+```
+
+Then:
+
 ```bash
 uv sync
-cp .env.example .env          # then fill in GOOGLE_CLIENT_ID, JWT_SECRET and ADMIN_EMAILS
 podman run -d --name lms-aws -p 5000:5000 docker.io/motoserver/moto:5.2.5
 uv run --env-file .env python scripts/local_setup.py
 uv run --env-file .env uvicorn app.main:app --reload
 ```
 
 - Open http://localhost:8000/docs to see every endpoint and try them out.
-- The `lms-aws` container is an in-memory stand-in for DynamoDB and S3. Its data disappears when the container stops. Run `podman start lms-aws` and `scripts/local_setup.py` again to get it back.
+- `.env` is git-ignored, so your secrets stay on your computer. Never put real values in `.env.example`, because that file is committed.
+- The `lms-aws` container is an in-memory stand-in for DynamoDB and S3. Its data disappears when the container stops. Run `podman start lms-aws` and `scripts/local_setup.py` again to get it back. `podman run` only works the first time; after that it fails with "name already in use", so use `podman start lms-aws`.
 - Sign in from the frontend with the Google account listed in `ADMIN_EMAILS`. It becomes the first admin, who can then add everyone else.
 
 ## Run the tests
@@ -52,7 +60,7 @@ The tests use fake AWS services and a fake Google key. They need no internet acc
 
 ## Deploy to AWS
 
-1. Copy `infra/terraform.tfvars.example` to `infra/terraform.tfvars` and fill it in.
+1. Copy `infra/terraform.tfvars.example` to `infra/terraform.tfvars` and fill it in. Set `allowed_origins` to every frontend address: `["http://localhost:5173", "https://perceptionlms.com", "https://www.perceptionlms.com"]`. Like `.env`, `terraform.tfvars` is git-ignored.
 2. Make sure Podman's machine is running and the AWS CLI is signed in.
 3. Run:
 
@@ -65,6 +73,8 @@ The tests use fake AWS services and a fake Google key. They need no internet acc
 Run the same command again to deploy new code. To remove everything from a `dev` environment, run `terraform destroy` in `infra/`. A `prod` environment has delete protection on the table and keeps its files.
 
 **Terraform state** is saved in `infra/` on the computer that deployed, and it contains the token-signing secret. Only one person should deploy until the team moves state to S3. The commented `backend "s3"` block in `infra/versions.tf` shows how.
+
+**Domain:** the site lives at `perceptionlms.com`, with DNS in Cloudflare. Terraform doesn't give the API a custom domain such as `api.perceptionlms.com` yet; for now, use the API URL that `deploy.py` prints. When you add one, set the AWS certificate validation records in Cloudflare to **DNS only** (gray cloud), or validation fails.
 
 ## Signing in from the frontend
 

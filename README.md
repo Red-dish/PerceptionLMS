@@ -87,7 +87,7 @@ Actual benefits depend on implementation quality, adoption, support requirements
 
 ### MVP Scope
 
-The MVP covers three roles (student, lecturer, administrator) and the eight user stories in [docs/user-stories-mvp.md](docs/user-stories-mvp.md):
+The MVP covers three roles (student, lecturer, administrator) and the eight user stories in [user-stories-mvp.md](docs/Product%20Management/user-stories-mvp.md):
 
 - Sign in with role-based access.
 - Student dashboard with enrolled courses and upcoming deadlines.
@@ -133,9 +133,9 @@ Project success will be evaluated against agreed requirements, including:
 
 ## 10. Team and Project Management
 
-- **Team and roles:** [docs/teams](docs/teams)
-- **This week's tasks:** [docs/tasks.md](docs/tasks.md)
-- **System design:** [docs/system-design.md](docs/system-design.md)
+- **Team and roles:** [teams.md](docs/Teams%20and%20Roles/teams.md)
+- **This week's tasks:** [tasks.md](docs/Product%20Build/tasks.md)
+- **System design:** [system-design.md](docs/Product%20Build/system-design.md)
 - **Backend API (FastAPI on AWS Lambda):** [backend/README.md](backend/README.md)
 - **Work tracking:** the Perception LMS (KAN) project in [Jira](https://amorachk.atlassian.net/jira/software/projects/KAN). Each week's tasks sit under that week's epic; filter the board by your name to see your items.
 - **Screen designs:** the MVP screens in [Claude Design](https://claude.ai/artifact/54GwTGoU6hqVKNAhq4jscR), built from the earlier mockup in [UI-UX-Design/UI Design.html](UI-UX-Design/UI%20Design.html).
