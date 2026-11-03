@@ -108,14 +108,11 @@ The project also delivers the business case, privacy and compliance documents, u
 
 ### Timeline
 
-Four one-week sprints, each ending with a joint review:
+Work runs in one-week cycles from 2 Nov 2026. Our lecturer sets a deliverable each week; we plan that week's tasks in Jira and end the week with a joint review.
 
-| Sprint | Dates | Focus |
+| Week | Dates | Deliverable |
 |---|---|---|
-| 1 | 2–6 Nov 2026 | Onboarding, scope sign-off, research, architecture and setup |
-| 2 | 9–13 Nov 2026 | Sign in, student dashboard, course materials, policies, test scenarios |
-| 3 | 16–20 Nov 2026 | Assignments, grading, announcements, admin, usability testing |
-| 4 | 23–27 Nov 2026 | User acceptance testing, accessibility check, final report and demo |
+| 1 | 2–6 Nov 2026 | Sign-in page, access roles (student, staff, admin) and a working dashboard, plus the team presentation |
 
 ## 8. Business Case Summary
 
@@ -137,8 +134,8 @@ Project success will be evaluated against agreed requirements, including:
 ## 10. Team and Project Management
 
 - **Team and roles:** [docs/teams](docs/teams)
-- **Task list by sprint:** [docs/tasks.md](docs/tasks.md)
+- **This week's tasks:** [docs/tasks.md](docs/tasks.md)
 - **System design:** [docs/system-design.md](docs/system-design.md)
 - **Backend API (FastAPI on AWS Lambda):** [backend/README.md](backend/README.md)
-- **Work tracking:** the Perception LMS (KAN) project in [Jira](https://amorachk.atlassian.net/jira/software/projects/KAN). Filter the board by your name label to see your items.
-- **Screen designs:** the MVP screens in [Claude Design](https://claude.ai/artifact/54GwTGoU6hqVKNAhq4jscR), built from the earlier mockup in [docs/UI Design.html](docs/UI%20Design.html).
+- **Work tracking:** the Perception LMS (KAN) project in [Jira](https://amorachk.atlassian.net/jira/software/projects/KAN). Each week's tasks sit under that week's epic; filter the board by your name to see your items.
+- **Screen designs:** the MVP screens in [Claude Design](https://claude.ai/artifact/54GwTGoU6hqVKNAhq4jscR), built from the earlier mockup in [UI-UX-Design/UI Design.html](UI-UX-Design/UI%20Design.html).
