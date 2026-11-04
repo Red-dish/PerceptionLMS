@@ -7,8 +7,7 @@ while using the StudentHub eLearning platform.
 ## 2. Security Requirements
 
 | ID | Requirement | Priority |
-
-
+|----|-------------|----------|
 | SEC-01 | Secure user login | High |
 | SEC-02 | Role-based access control | High |
 | SEC-03 | Protect student personal information | High |
