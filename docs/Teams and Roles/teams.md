@@ -15,7 +15,7 @@ The seven members split into two teams: a technical team of 4 who build the plat
 
 **Business, compliance and governance team (3)**
 
-These three also build v1 modules with AI coding agents; see [v1 modules](#v1-modules-github-epics) below.
+These three also build a few v1 features with AI coding agents; see [v1 modules](#v1-modules-github-epics) below.
 
 | Role | Person | Owns | Backs up |
 | --- | --- | --- | --- |
@@ -33,13 +33,25 @@ To move faster, our lecturer asked us to break a basic Canvas-style v1 into modu
 
 | Epic | Owner | Features |
 | --- | --- | --- |
-| [#27 Identity, Roles & Administration](https://github.com/Red-dish/PerceptionLMS/issues/27) | Yoodem | #28–#32 |
-| [#33 Courses & Content](https://github.com/Red-dish/PerceptionLMS/issues/33) | Nancy | #34–#39 |
-| [#40 Assignments & Submissions](https://github.com/Red-dish/PerceptionLMS/issues/40) | Yoodem | #41–#45 |
-| [#46 Quizzes & Gradebook](https://github.com/Red-dish/PerceptionLMS/issues/46) | Apeksha | #47–#51 |
+| [#27 Identity, Roles & Administration](https://github.com/Red-dish/PerceptionLMS/issues/27) | Amora | #28–#32 |
+| [#33 Courses & Content](https://github.com/Red-dish/PerceptionLMS/issues/33) | Dipesh | #34–#39 |
+| [#40 Assignments & Submissions](https://github.com/Red-dish/PerceptionLMS/issues/40) | Roshan | #41–#45 |
+| [#46 Quizzes & Gradebook](https://github.com/Red-dish/PerceptionLMS/issues/46) | Yoodem | #47–#51 |
 | [#52 Communication & Dashboard](https://github.com/Red-dish/PerceptionLMS/issues/52) | Nancy | #53–#58 |
 
-Apeksha, as business analyst, is also on every epic to track progress. Much of Epics 1 and 3 extends backend code the technical team has already built, so check with that code's owner (see the table above) before changing it.
+Features are assigned by the roles above, so one person's features can sit under several epics:
+
+| Person | Features |
+| --- | --- |
+| Amora | #29 Roles and permissions, #30 Admin user management, #31 Admin course and enrolment management, #34 Course settings, #44 Teacher grading view |
+| Roshan | #37 Files, #41 Assignment creation, #43 Late, missing and resubmission, #49 Teacher gradebook, #54 Announcements |
+| Dipesh | #28 Sign in with Google, #35 Modules, #38 Course home and syllabus, #42 Student submission, #50 Student grades view |
+| Bishu | #32 User profile, #36 Pages, #39 Course navigation, #53 Dashboard |
+| Yoodem | #45 Basic rubrics, #47 Quiz builder, #48 Quiz taking and auto-grading |
+| Nancy | #55 Discussions, #56 Inbox, #58 Notifications |
+| Apeksha | #51 Grade export, #57 Calendar |
+
+Apeksha, as business analyst, is also on every epic to track progress. The business team's features were on the Later list, so they don't block the core build.
 
 ## Tech stack
 
