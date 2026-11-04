@@ -11,37 +11,36 @@ The to-do list for the whole technical team: Amora, Roshan, Dipesh and Bishu. Ti
 | Backend API | Live at `https://p4r5x8qd32.execute-api.ap-southeast-2.amazonaws.com/` |
 | Website S3 bucket | In Terraform on `main`, not created yet |
 | Domain | On Cloudflare, not pointing at the app yet |
-| React app | Not on `main` yet; two drafts are on branches |
-
-## Now: choose the frontend base
-
-- [ ] Pick one starting point and tell the team (Amora)
-  - `frontend-draft-bishu`: React and Vite. Its own server and demo logins would need replacing with our API.
-  - `dashboard-modules-frontend`: plain HTML, CSS and JavaScript, with dashboard and modules only.
+| React app | In `frontend/` on `frontend-draft-bishu`, using our API; not on `main` yet |
 
 ## Week 1: frontend
 
-Build in this order, because the pages depend on the app.
+The app is in [frontend/](../frontend), and its [README](../frontend/README.md) explains how to run it and add pages. It has no server or database of its own: all data and sign-in go through the FastAPI backend. Tested locally against the API, but not yet with a real Google account or the live API.
 
-- [ ] **Set up the React app** (Dipesh) · KAN-64
-  - [ ] App runs on `http://localhost:5173`
-  - [ ] API URL and Google client ID come from environment settings, not hard-coded
-  - [ ] One shared way to call the API with the sign-in token
-  - [ ] `/health` on the live API can be called from the app
-  - [ ] Merged to `main`
-- [ ] **Build the sign-in page** (Dipesh, Bishu) · KAN-57
-  - [ ] "Sign in with Google" button posts to `POST /auth/google`; see "Signing in from the frontend" in [backend/README.md](../backend/README.md)
-  - [ ] Each role goes to its own dashboard, using `GET /me`
-  - [ ] Someone an admin hasn't added sees a clear error
-  - [ ] An expired 8-hour session returns to sign-in
-  - [ ] Signing out returns to sign-in
-- [ ] **Build the dashboard** (Bishu) · KAN-58
-  - [ ] Opens for student, staff and admin
-  - [ ] Sample data is fine this week
+- [ ] **Set up the React app** · KAN-64
+  - [x] App runs on `http://localhost:5173`
+  - [x] API URL and Google client ID come from environment settings, not hard-coded
+  - [x] One shared way to call the API with the sign-in token
+  - [ ] Works against the live API (Amora)
+  - [ ] Merged to `main` (Amora)
+- [ ] **Build the sign-in page** · KAN-57
+  - [ ] Sign in with a real Google account through `POST /auth/google` (Amora)
+  - [ ] Someone an admin hasn't added sees a clear error (Amora)
+  - [x] Each role goes to its own dashboard, using `GET /me`
+  - [x] An invalid or expired session returns to sign-in
+  - [x] Signing out returns to sign-in
+- [x] **Build the dashboard** · KAN-58
+  - [x] Opens for student, staff and admin
+  - [x] Uses live data from `GET /me/dashboard`
 - [ ] **Shared layout and visual design** (Bishu) · KAN-65
-  - [ ] Navigation, colours and type shared by every page
-  - [ ] Works at phone width
-  - [ ] Design feedback from Apeksha applied (KAN-66, due Thu 5 Nov)
+  - [x] Navigation shared by every page
+  - [x] Works at phone width
+  - [ ] Final colours, type and page design (Bishu)
+  - [ ] Design feedback from Apeksha applied (KAN-66, due Thu 5 Nov) (Bishu)
+- [ ] **Frontend features and design** (Bishu)
+  - [ ] Build new screens on `frontend/`, following the rules in its README
+  - [ ] Reuse anything useful from the earlier draft, in git at commit `ee7c2f8`
+  - [ ] Ask Amora or Roshan for an endpoint when a screen needs data the API doesn't offer
 
 ## Week 1: hosting and domain
 
