@@ -145,6 +145,66 @@ resource "aws_s3_bucket_cors_configuration" "files" {
 }
 
 # ---------------------------------------------------------------------------
+# Frontend: the built React app, served through Cloudflare
+# ---------------------------------------------------------------------------
+
+# S3 picks the website bucket from the requested hostname, so its name must be the domain.
+# Keep this separate from the files bucket, which must stay private.
+resource "aws_s3_bucket" "frontend" {
+  bucket        = var.frontend_domain
+  force_destroy = true # Only holds build output, which can be uploaded again.
+}
+
+# All four stay on: a policy limited to Cloudflare's IPv4 ranges doesn't count as public to S3.
+resource "aws_s3_bucket_public_access_block" "frontend" {
+  bucket                  = aws_s3_bucket.frontend.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_ownership_controls" "frontend" {
+  bucket = aws_s3_bucket.frontend.id
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
+# The error page is also index.html, so React pages like /courses/123 survive a refresh.
+resource "aws_s3_bucket_website_configuration" "frontend" {
+  bucket = aws_s3_bucket.frontend.id
+  index_document {
+    suffix = "index.html"
+  }
+  error_document {
+    key = "index.html"
+  }
+}
+
+data "aws_iam_policy_document" "frontend" {
+  statement {
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.frontend.arn}/*"]
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "IpAddress"
+      variable = "aws:SourceIp"
+      values   = var.cloudflare_ipv4_ranges
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "frontend" {
+  bucket     = aws_s3_bucket.frontend.id
+  policy     = data.aws_iam_policy_document.frontend.json
+  depends_on = [aws_s3_bucket_public_access_block.frontend]
+}
+
+# ---------------------------------------------------------------------------
 # API: Lambda (container image) behind an API Gateway HTTP API
 # ---------------------------------------------------------------------------
 
