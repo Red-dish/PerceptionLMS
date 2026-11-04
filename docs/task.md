@@ -1,51 +1,100 @@
-# Task: backend, sign-in and domain (Amora)
+# Technical team to-do
 
-My own checklist for the Week 1 technical work, picking up where my last Claude session left off. The team's full list for the week is in [Product Build/tasks.md](Product%20Build/tasks.md) (Jira epic KAN-54, due Fri 6 Nov 2026).
+The to-do list for the whole technical team: Amora, Roshan, Dipesh and Bishu. Tick items off as they land, in the same PR as the work where you can. The week's deliverables and the business team's tasks are in [Product Build/tasks.md](Product%20Build/tasks.md).
+
+## Current goal
+
+**Week 1, due Fri 6 Nov 2026 (Jira epic KAN-54):** open `https://perceptionlms.com`, sign in with Google, and reach the dashboard for your role: student, staff or admin. The dashboard can use sample data this week; live data comes later (KAN-42).
+
+| Piece | Status (4 Nov 2026) |
+| --- | --- |
+| Backend API | Live at `https://p4r5x8qd32.execute-api.ap-southeast-2.amazonaws.com/` |
+| Website S3 bucket | In Terraform on `main`, not created yet |
+| Domain | On Cloudflare, not pointing at the app yet |
+| React app | Not on `main` yet; two drafts are on branches |
+
+## Now: choose the frontend base
+
+- [ ] Pick one starting point and tell the team (Amora)
+  - `frontend-draft-bishu`: React and Vite. Its own server and demo logins would need replacing with our API.
+  - `dashboard-modules-frontend`: plain HTML, CSS and JavaScript, with dashboard and modules only.
+
+## Week 1: frontend
+
+Build in this order, because the pages depend on the app.
+
+- [ ] **Set up the React app** (Dipesh) · KAN-64
+  - [ ] App runs on `http://localhost:5173`
+  - [ ] API URL and Google client ID come from environment settings, not hard-coded
+  - [ ] One shared way to call the API with the sign-in token
+  - [ ] `/health` on the live API can be called from the app
+  - [ ] Merged to `main`
+- [ ] **Build the sign-in page** (Dipesh, Bishu) · KAN-57
+  - [ ] "Sign in with Google" button posts to `POST /auth/google`; see "Signing in from the frontend" in [backend/README.md](../backend/README.md)
+  - [ ] Each role goes to its own dashboard, using `GET /me`
+  - [ ] Someone an admin hasn't added sees a clear error
+  - [ ] An expired 8-hour session returns to sign-in
+  - [ ] Signing out returns to sign-in
+- [ ] **Build the dashboard** (Bishu) · KAN-58
+  - [ ] Opens for student, staff and admin
+  - [ ] Sample data is fine this week
+- [ ] **Shared layout and visual design** (Bishu) · KAN-65
+  - [ ] Navigation, colours and type shared by every page
+  - [ ] Works at phone width
+  - [ ] Design feedback from Apeksha applied (KAN-66, due Thu 5 Nov)
+
+## Week 1: hosting and domain
+
+Hosting is an S3 website behind Cloudflare, with no CloudFront. Amora runs the AWS and Cloudflare steps.
+
+- [ ] Create the website bucket with `terraform apply` from an up-to-date `main` (Amora)
+- [ ] Upload a test page and check it loads through the domain (Amora)
+- [ ] In Cloudflare, add a Configuration Rule setting SSL to **Flexible** for `perceptionlms.com` only, keeping the default on **Full (strict)** (Amora)
+- [ ] In Cloudflare, replace the two parking A records with a proxied CNAME: `perceptionlms.com` → `perceptionlms.com.s3-website-ap-southeast-2.amazonaws.com` (Amora) · KAN-56
+- [ ] Build the app and upload `dist/` to the bucket (Amora, Dipesh) · KAN-56
+- [ ] `https://perceptionlms.com` opens the sign-in page (Amora, Dipesh) · KAN-56
+
+## Week 1: testing
+
+- [ ] Admin signs in on the live site and adds a test student and lecturer (Amora) · KAN-41
+- [ ] Enrol them in a test course (Amora) · KAN-41
+- [ ] Each role reaches only what it should (Amora, Dipesh, Bishu) · KAN-41
+- [ ] An account nobody has added is refused (Amora) · KAN-41
+- [ ] Confirm the backend saves data to DynamoDB through the live site (Roshan, Amora) · KAN-55
+
+## After Week 1
+
+- [ ] Connect the dashboard to live data with `GET /me/dashboard` · KAN-42
+- [ ] Automatic publishing with GitHub Actions when `main` changes
+- [ ] Move Terraform state to S3 so more than one person can deploy; see `backend/infra/versions.tf`
+- [ ] Give the API a custom domain such as `api.perceptionlms.com`, with an ACM certificate. Its validation CNAMEs must be **DNS only** (grey cloud) in Cloudflare
+- [ ] Decide what `www.perceptionlms.com` does, once Nancy confirms whether its CNAME was deliberate
+- [ ] Turn on `deletion_protection_enabled` before anything is called prod
 
 ## Done
 
-- [x] Domain **perceptionlms.com** (bought by Nancy) added to Cloudflare, and the registrar's nameservers switched to Cloudflare's.
-- [x] Google OAuth client created. Authorized JavaScript origins: `http://localhost:5173`, `https://perceptionlms.com`, `https://www.perceptionlms.com`.
-- [x] `backend/.env` created with the real `GOOGLE_CLIENT_ID`, `JWT_SECRET` and `ADMIN_EMAILS` (my email only). It's git-ignored.
+- [x] Domain `perceptionlms.com` added to Cloudflare, with the nameservers switched
+- [x] Google OAuth client created for `http://localhost:5173`, `https://perceptionlms.com` and `https://www.perceptionlms.com`
+- [x] Backend runs locally, with 27 tests passing · KAN-41
+- [x] Backend deployed to the AWS `dev` environment; `/health` and `/docs` respond, and `/me` returns 401 without a token · KAN-55
+- [x] Hosting decided, and the website bucket added to Terraform (PR #60)
+- [x] Docs organised into `Product Build/`, `Product Management/` and `Teams and Roles/`
+- [x] PR #25 reverted by PR #59. To bring that code back, revert PR #59: merging `frontend-login-dashboard` again won't restore it
 
-## Now: run the backend locally (KAN-41)
+## Rules for everyone
 
-Run from `backend/`. **Skip** the README's first-time `cp .env.example .env` step, because it would overwrite the real `.env`.
+- **Work on a branch and open a PR to `main`.** Start new work from an up-to-date `main`.
+- **Never commit secrets:** `backend/.env`, `backend/infra/terraform.tfvars` or `terraform.tfstate*`. The Google client ID isn't secret, so it's safe to share.
+- **Never make the private files bucket public.** It holds student submissions. Only the separate `perceptionlms.com` bucket serves the website.
+- **Only Amora runs Terraform and deploys for now,** because Terraform state is on one machine. Run it from an up-to-date `main`: on an older branch, it could try to delete resources that branch doesn't know about.
+- **Google origins and `allowed_origins` must match exactly:** `https://`, no trailing slash, and `www` counts separately.
 
-- [x] `uv sync`
-- [x] `podman run -d --name lms-aws -p 5000:5000 docker.io/motoserver/moto:5.2.5` (if it already exists: `podman start lms-aws`)
-- [x] `uv run --env-file .env python scripts/local_setup.py`
-- [x] `uv run --env-file .env uvicorn app.main:app --reload`
-- [x] Open http://localhost:8000/docs and check it loads
-- [x] `uv run pytest` passes
-- [ ] Sign in from the frontend on `localhost:5173` with my Google account and confirm I become admin
-- [ ] Add a test student and lecturer, enrol them in a course, and check each role sees the right things
+## Setup problems we've already solved
 
-Two things that needed fixing to get this working, both now done:
-- Podman's machine would not start on WSL 2.4.13 (systemd could not boot, so sshd never
-  started). Fixed by `wsl --update` to 3.0.3 (kernel 6.18). Podman was also reinstalled
-  to clear a stuck machine and an orphaned `win-sshproxy` holding the pipe.
-- `AWS_ENDPOINT_URL` must be `http://127.0.0.1:5000`, **not** `localhost`. On Windows
-  `localhost` can resolve to IPv6 (`::1`), which Podman's forwarding does not serve, and
-  boto3 fails with `ConnectionClosedError`. `.env.example` now says this too.
+Full setup steps are in [backend/README.md](../backend/README.md).
 
-## Next: deploy to AWS (KAN-55, with Roshan)
-
-- [ ] AWS CLI signed in (`aws sts get-caller-identity`)
-- [ ] Copy `backend/infra/terraform.tfvars.example` to `terraform.tfvars`. Fill in `google_client_id`, `admin_emails`, and `allowed_origins` (`http://localhost:5173`, `https://perceptionlms.com`, `https://www.perceptionlms.com`)
-- [ ] `uv run python scripts/deploy.py` and note the API URL it prints
-- [ ] Only one person deploys until Terraform state moves to S3 (see `infra/versions.tf`)
-
-## Next: point the domain at the app (KAN-56, with Dipesh)
-
-- [ ] Decide where the frontend is hosted (for example S3 + CloudFront, Amplify or Vercel)
-- [ ] In Cloudflare, replace the registrar's two parking A records with records for the frontend host
-- [ ] Ask Nancy whether the `www` CNAME (`perception-lms.od...`) was set up on purpose; replace or delete it
-- [ ] Give the API a custom domain such as `api.perceptionlms.com`. Terraform doesn't do this yet: it needs an ACM certificate and an API Gateway custom domain
-- [ ] Set AWS certificate validation CNAMEs to **DNS only** (gray cloud) in Cloudflare
-- [ ] Set Cloudflare SSL/TLS mode to **Full (strict)**
-
-## Housekeeping
-
-- [x] The docs moved into `docs/Product Build/`, `docs/Product Management/` and `docs/Teams and Roles/`. Links in `README.md`, `backend/README.md`, `teams.md` and `system-design.md` now point to the new paths
-- [ ] Commit the doc moves, `docs/project-outline.md`, this file and `CLAUDE.md` on a branch and open a PR
+- **Podman machine won't start on Windows:** run `wsl --update`. It needs WSL 3.0 or later.
+- **"Expected pipe is not available":** a failed start can leave `win-sshproxy` running. Stop that process and try again.
+- **`ConnectionClosedError` from the local AWS stand-in:** set `AWS_ENDPOINT_URL` to `http://127.0.0.1:5000`, not `localhost`.
+- **Local data has gone:** the `lms-aws` container keeps data in memory. Run `podman start lms-aws`, then `scripts/local_setup.py`.
+- **Don't run `cp .env.example .env`** if you already have a `.env`. It replaces your real values.

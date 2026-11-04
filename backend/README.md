@@ -76,6 +76,14 @@ Run the same command again to deploy new code. To remove everything from a `dev`
 
 **Domain:** the site lives at `perceptionlms.com`, with DNS in Cloudflare. Terraform doesn't give the API a custom domain such as `api.perceptionlms.com` yet; for now, use the API URL that `deploy.py` prints. When you add one, set the AWS certificate validation records in Cloudflare to **DNS only** (gray cloud), or validation fails.
 
+**Frontend:** Terraform creates a separate S3 website bucket named `perceptionlms.com`, which only Cloudflare's IPv4 addresses can read. It stays apart from the private files bucket, which must never be made public. To publish the React app, build it and upload the `dist` folder:
+
+```bash
+aws s3 sync dist s3://perceptionlms.com --delete
+```
+
+In Cloudflare, add a proxied CNAME from `perceptionlms.com` to the `frontend_website_endpoint` that `terraform output` prints. S3 websites only speak HTTP, so also add a Configuration Rule that sets SSL to **Flexible** for that hostname, and keep the zone's default on Full (strict). If Cloudflare changes its addresses, update `cloudflare_ipv4_ranges` in `infra/variables.tf`.
+
 ## Signing in from the frontend
 
 ```html

@@ -15,3 +15,13 @@ output "table_name" {
 output "bucket_name" {
   value = aws_s3_bucket.files.bucket
 }
+
+output "frontend_bucket_name" {
+  description = "Upload the built React app here."
+  value       = aws_s3_bucket.frontend.bucket
+}
+
+output "frontend_website_endpoint" {
+  description = "Where the Cloudflare CNAME for the frontend domain points."
+  value       = aws_s3_bucket_website_configuration.frontend.website_endpoint
+}
