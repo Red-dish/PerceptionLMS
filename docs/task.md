@@ -71,8 +71,8 @@ Still to sort out:
 
 - [x] Decide where the frontend is hosted: **S3 static website behind Cloudflare, no CloudFront** (decided by Amora, 4 Nov 2026; nothing built yet)
 - [x] Add the frontend bucket to Terraform: a **new, separate** bucket named exactly `perceptionlms.com`, with static website hosting (index and error document both `index.html`), readable only from Cloudflare's IPv4 ranges. `terraform plan` shows 5 to add, 0 to change, 0 to destroy. **Never** make the private files bucket public: it holds student submissions
-- [ ] Create the bucket in AWS: run `terraform apply` in `backend/infra/` (not applied yet)
-- [ ] Build the React app and upload `dist/` to that bucket
+- [ ] Create the bucket in AWS: run `terraform apply` in `backend/infra/` (not applied yet; checked 4 Nov 2026: the bucket does not exist and the domain times out)
+- [ ] Build the React app (Dipesh, KAN-64) and upload `dist/` to that bucket
 - [ ] In Cloudflare, replace the registrar's two parking A records with a proxied CNAME: `perceptionlms.com` → `perceptionlms.com.s3-website-ap-southeast-2.amazonaws.com`
 - [ ] Ask Nancy whether the `www` CNAME (`perception-lms.od...`) was set up on purpose; if not, replace it with a redirect from `www` to `perceptionlms.com`
 - [ ] Give the API a custom domain such as `api.perceptionlms.com`. It is currently on the
