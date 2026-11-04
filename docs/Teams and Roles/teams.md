@@ -13,7 +13,9 @@ The seven members split into two teams: a technical team of 4 who build the plat
 | 3. Frontend developer (student portal) | Dipesh (primary), Bishu (secondary) | Login, student dashboard, course page and materials, submitting assignments, grades, announcements | Role 4 |
 | 4. Full-stack developer and DevOps | Amora and Dipesh | Lecturer screens, admin screens, repo and CI/CD, hosting, automated tests | Role 3 |
 
-**Business, compliance and governance team (3, no coding)**
+**Business, compliance and governance team (3)**
+
+These three also build v1 modules with AI coding agents; see [v1 modules](#v1-modules-github-epics) below.
 
 | Role | Person | Owns | Backs up |
 | --- | --- | --- | --- |
@@ -24,6 +26,20 @@ The seven members split into two teams: a technical team of 4 who build the plat
 The business team also runs user acceptance testing: they write test scenarios from the user stories and test each release by hand, which frees the developers to build.
 
 Work is tracked in the Perception LMS (KAN) Jira project. Our lecturer sets a deliverable each week, and each one becomes an epic of tasks in Jira; see [tasks.md](../Product%20Build/tasks.md) for this week's list.
+
+## v1 modules (GitHub epics)
+
+To move faster, our lecturer asked us to break a basic Canvas-style v1 into modules. Each module is a GitHub issue labelled `epic`, with its features linked as sub-issues labelled `feature`. Each feature lists what is already built and its acceptance criteria, so it can be handed to an AI coding agent.
+
+| Epic | Owner | Features |
+| --- | --- | --- |
+| [#27 Identity, Roles & Administration](https://github.com/Red-dish/PerceptionLMS/issues/27) | Yoodem | #28–#32 |
+| [#33 Courses & Content](https://github.com/Red-dish/PerceptionLMS/issues/33) | Nancy | #34–#39 |
+| [#40 Assignments & Submissions](https://github.com/Red-dish/PerceptionLMS/issues/40) | Yoodem | #41–#45 |
+| [#46 Quizzes & Gradebook](https://github.com/Red-dish/PerceptionLMS/issues/46) | Apeksha | #47–#51 |
+| [#52 Communication & Dashboard](https://github.com/Red-dish/PerceptionLMS/issues/52) | Nancy | #53–#58 |
+
+Apeksha, as business analyst, is also on every epic to track progress. Much of Epics 1 and 3 extends backend code the technical team has already built, so check with that code's owner (see the table above) before changing it.
 
 ## Tech stack
 
@@ -40,5 +56,5 @@ Work is tracked in the Perception LMS (KAN) Jira project. Our lecturer sets a de
 
 The backend code and setup steps are in [backend/README.md](../../backend/README.md); the design is in [system-design.md](../Product%20Build/system-design.md).
 
-Attendance, calendar, notifications, quizzes, analytics, single sign-on and Canvas data migration stay on the Later list in [tasks.md](../Product%20Build/tasks.md) rather than being built.
+Quizzes, calendar and notifications now have v1 features under the epics above. Attendance, analytics, single sign-on and Canvas data migration stay on the Later list in [tasks.md](../Product%20Build/tasks.md) rather than being built.
 
