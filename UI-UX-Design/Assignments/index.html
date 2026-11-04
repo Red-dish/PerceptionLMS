@@ -1,0 +1,970 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assignments · Perception LMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #182c31; --muted: #5d7171; --paper: #f5f5ef; --card: #ffffff;
+    --forest: #17483f; --forest-2: #1f5c50; --mint: #d5e9db; --mint-2: #eef6f0;
+    --line: #e0e6dd; --orange: #de794b; --orange-ink: #9a4520; --orange-bg: #fdf0df;
+    --red-ink: #a3302a; --red-bg: #fbe9e7; --blue-ink: #24557a; --blue-bg: #e6eff7;
+    --radius: 14px; --shadow: 0 1px 2px rgba(24,44,49,.06), 0 4px 16px rgba(24,44,49,.05);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: 'DM Sans', system-ui, sans-serif; color: var(--ink); background: var(--paper); font-size: 15px; line-height: 1.5; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: .6; }
+  :focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; border-radius: 6px; }
+  h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 600; margin: 0; letter-spacing: -.01em; }
+  h2[tabindex="-1"]:focus { outline: none; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Top bar */
+  .topbar { background: var(--forest); color: #fff; }
+  .topbar-inner { max-width: 1200px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: Fraunces, serif; font-size: 19px; font-weight: 700; }
+  .brand-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--mint); color: var(--forest); display: grid; place-items: center; font-size: 16px; }
+  .topbar .spacer { flex: 1; }
+  .who { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--mint); color: var(--forest); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+  .brand, .demo-pill, .btn-ghost-light { white-space: nowrap; }
+  .btn-ghost-light { background: transparent; border: 1px solid rgba(255,255,255,.35); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 13px; }
+  .btn-ghost-light:hover { background: rgba(255,255,255,.1); }
+  .demo-pill { background: var(--orange); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 24px 20px 48px; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 10px; padding: 10px 16px; font-weight: 600; font-size: 14px; }
+  .btn-primary { background: var(--forest); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--forest-2); }
+  .btn-secondary { background: var(--card); border-color: var(--line); color: var(--ink); }
+  .btn-secondary:hover:not(:disabled) { background: var(--mint-2); }
+  .btn-link { background: none; border: none; color: var(--forest); font-weight: 600; padding: 4px; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Sign-in */
+  .signin { max-width: 440px; margin: 8vh auto 0; background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 36px 32px; box-shadow: var(--shadow); text-align: center; }
+  .signin h1 { font-size: 28px; margin-bottom: 8px; }
+  .signin p { color: var(--muted); margin: 0 0 24px; }
+  .signin .stack { display: grid; gap: 12px; justify-items: center; }
+  .signin .note { font-size: 13px; color: var(--muted); margin-top: 20px; }
+
+  /* Page header */
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .page-head h1 { font-size: 30px; }
+  .page-head p { margin: 4px 0 0; color: var(--muted); }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; text-align: left; }
+  .stat:hover { border-color: var(--forest); }
+  .stat[aria-pressed="true"] { border-color: var(--forest); box-shadow: inset 0 0 0 1px var(--forest); }
+  .stat-num { font-family: Fraunces, serif; font-size: 28px; font-weight: 700; line-height: 1.1; }
+  .stat-label { color: var(--muted); font-size: 13px; font-weight: 500; }
+  .stat.warn .stat-num { color: var(--red-ink); }
+
+  /* Toolbar */
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+  .tabs { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 4px; flex-wrap: wrap; }
+  .tab { border: none; background: none; padding: 6px 12px; border-radius: 7px; font-size: 14px; font-weight: 500; color: var(--muted); }
+  .tab[aria-selected="true"] { background: var(--forest); color: #fff; }
+  .tab .count { font-size: 12px; opacity: .8; margin-left: 4px; }
+  .field { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; min-height: 40px; }
+  .toolbar .search { flex: 1; min-width: 180px; }
+
+  /* Layout */
+  .layout { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; align-items: start; }
+  .list { display: grid; gap: 10px; }
+  .a-card { width: 100%; text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; box-shadow: var(--shadow); }
+  .a-card:hover { border-color: #b8c8bd; }
+  .a-card[aria-current="true"] { border-color: var(--forest); box-shadow: inset 4px 0 0 var(--forest), var(--shadow); }
+  .a-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+  .course-tag { font-size: 12px; font-weight: 700; color: var(--forest); letter-spacing: .03em; }
+  .a-title { font-weight: 600; font-size: 16px; }
+  .a-meta { font-size: 13px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .b-todo { background: var(--orange-bg); color: var(--orange-ink); }
+  .b-overdue { background: var(--red-bg); color: var(--red-ink); }
+  .b-submitted { background: var(--blue-bg); color: var(--blue-ink); }
+  .b-graded { background: var(--mint); color: var(--forest); }
+  .b-late { background: var(--red-bg); color: var(--red-ink); }
+
+  .empty { background: var(--card); border: 1px dashed var(--line); border-radius: var(--radius); padding: 32px; text-align: center; color: var(--muted); }
+
+  /* Detail */
+  .detail { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 24px; box-shadow: var(--shadow); position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow: auto; }
+  .detail h2 { font-size: 24px; margin: 6px 0 12px; }
+  .back { display: none; margin-bottom: 8px; }
+  .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 16px 0 20px; }
+  .fact { background: var(--paper); border-radius: 10px; padding: 10px 12px; }
+  .fact dt { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .fact dd { margin: 2px 0 0; font-weight: 600; font-size: 14px; }
+  .fact .sub { font-weight: 500; color: var(--muted); font-size: 12px; }
+  .section-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 22px 0 8px; font-family: 'DM Sans', sans-serif; }
+  .instructions { white-space: pre-wrap; margin: 0; }
+  .box { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .box + .box { margin-top: 10px; }
+  .row { display: flex; align-items: center; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
+  .file-chip { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; word-break: break-all; }
+  .file-icon { width: 34px; height: 34px; border-radius: 8px; background: var(--mint-2); color: var(--forest); display: grid; place-items: center; font-size: 11px; font-weight: 700; flex: none; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .answer { white-space: pre-wrap; background: var(--paper); border-radius: 8px; padding: 10px 12px; margin-top: 8px; font-size: 14px; }
+  .grade { display: flex; gap: 16px; align-items: center; background: var(--mint-2); border-radius: 12px; padding: 14px 16px; }
+  .grade-num { font-family: Fraunces, serif; font-size: 30px; font-weight: 700; color: var(--forest); line-height: 1; }
+  .grade-num small { font-size: 16px; color: var(--muted); }
+
+  .notice { border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-bottom: 12px; }
+  .notice-warn { background: var(--orange-bg); color: var(--orange-ink); }
+  .notice-error { background: var(--red-bg); color: var(--red-ink); }
+  .notice-ok { background: var(--mint); color: var(--forest); }
+  .notice-info { background: var(--blue-bg); color: var(--blue-ink); }
+
+  .drop { display: grid; place-items: center; gap: 4px; text-align: center; border: 2px dashed #b8c8bd; border-radius: 12px; padding: 22px 16px; background: var(--paper); cursor: pointer; transition: background .15s, border-color .15s; }
+  .drop:hover, .drop.over { background: var(--mint-2); border-color: var(--forest); }
+  .drop strong { color: var(--forest); }
+  .drop input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .drop:focus-within { outline: 3px solid var(--orange); outline-offset: 2px; }
+  .picked { display: flex; align-items: center; gap: 10px; justify-content: space-between; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+  label.lbl { display: block; font-weight: 600; font-size: 14px; margin: 14px 0 6px; }
+  textarea { width: 100%; min-height: 110px; resize: vertical; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: var(--card); }
+  .actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; align-items: center; }
+  .progress { height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; margin-top: 12px; }
+  .progress > div { height: 100%; background: var(--forest); width: 0; transition: width .2s; }
+
+  /* Dialog */
+  dialog { border: none; border-radius: 16px; padding: 24px; max-width: 460px; width: calc(100% - 32px); box-shadow: 0 20px 60px rgba(0,0,0,.25); color: var(--ink); }
+  dialog::backdrop { background: rgba(24,44,49,.45); }
+  dialog input { width: 100%; }
+  dialog h2 { font-size: 22px; margin-bottom: 6px; }
+
+  .skeleton { height: 86px; border-radius: var(--radius); background: linear-gradient(90deg, #ecefe8 25%, #f6f7f3 50%, #ecefe8 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  /* View switcher (Assignments / Marks) */
+  .views { display: flex; gap: 4px; margin: -4px 0 20px; border-bottom: 1px solid var(--line); }
+  .views a { padding: 10px 14px; color: var(--muted); font-weight: 600; text-decoration: none; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+  .views a:hover { color: var(--ink); }
+  .views a[aria-current="page"] { color: var(--forest); border-bottom-color: var(--forest); }
+
+  /* Marks */
+  .courses { display: grid; gap: 16px; }
+  .course-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden; }
+  .course-head { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 18px 20px; flex-wrap: wrap; }
+  .course-head h2 { font-size: 20px; }
+  .course-avg { text-align: right; }
+  .course-avg .big { font-family: Fraunces, serif; font-size: 30px; font-weight: 700; color: var(--forest); line-height: 1; }
+  .course-avg .big.none { color: var(--muted); font-size: 20px; }
+  .weight-bar { padding: 0 20px 16px; }
+  .wbar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--line); }
+  .wbar .earned { background: var(--forest); }
+  .wbar .lost { background: #b9cbbf; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .mrow { border-top: 1px solid var(--line); padding: 12px 20px; display: grid; grid-template-columns: minmax(0, 1fr) 90px 70px 80px; gap: 12px; align-items: center; }
+  .mrow.head { padding-top: 8px; padding-bottom: 8px; background: var(--paper); font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .mrow .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .mrow .mark { font-weight: 700; }
+  .mrow .t { font-weight: 600; }
+  .mrow .t button { all: unset; cursor: pointer; }
+  .mrow .t button:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .mrow .t button:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; border-radius: 4px; }
+  .mrow details { grid-column: 1 / -1; }
+  .mrow summary { cursor: pointer; color: var(--forest); font-weight: 600; font-size: 13px; width: fit-content; }
+  .mrow details p { white-space: pre-wrap; background: var(--mint-2); border-radius: 10px; padding: 10px 12px; margin: 8px 0 0; font-size: 14px; }
+  .lbl-sm { display: none; font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .layout.has-detail .list-col { display: none; }
+    .layout:not(.has-detail) .detail { display: none; }
+    .detail { position: static; max-height: none; }
+    .back { display: inline-flex; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    main { padding: 16px 16px 40px; }
+    .topbar-inner { padding: 12px 16px; }
+    .who .name, .who .avatar { display: none; }
+    .brand { font-size: 17px; } .topbar-inner { gap: 10px; }
+    .facts { grid-template-columns: 1fr 1fr; }
+    .detail { padding: 18px; }
+    .page-head h1 { font-size: 26px; }
+    .mrow { grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 12px 16px; }
+    .mrow .t { grid-column: 1 / -1; }
+    .mrow.head { display: none; }
+    .mrow .num { text-align: left; }
+    .lbl-sm { display: block; }
+    .course-head, .weight-bar { padding-left: 16px; padding-right: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">P</span> Perception LMS</div>
+    <span id="demoPill" class="demo-pill" hidden>Demo data</span>
+    <div class="spacer"></div>
+    <div id="who" class="who"></div>
+  </div>
+</header>
+
+<main id="app" aria-live="polite"></main>
+
+<dialog id="settings" aria-labelledby="settingsTitle">
+  <form method="dialog" id="settingsForm">
+    <h2 id="settingsTitle">Connection settings</h2>
+    <p class="muted" style="margin:0 0 8px">Leave both empty to use demo data. These are saved in this browser only.</p>
+    <label class="lbl" for="apiUrl">API URL</label>
+    <input class="field" id="apiUrl" name="apiUrl" type="url" placeholder="http://localhost:8000" autocomplete="off">
+    <label class="lbl" for="clientId">Google client ID</label>
+    <input class="field" id="clientId" name="clientId" placeholder="…apps.googleusercontent.com" autocomplete="off">
+    <div class="actions">
+      <button class="btn btn-primary" value="save">Save</button>
+      <button class="btn btn-secondary" value="cancel" formnovalidate>Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+"use strict";
+
+/* ------------------------------------------------------------------ *
+ *  Settings and storage
+ * ------------------------------------------------------------------ */
+const MAX_UPLOAD_MB = 20;               // matches MAX_UPLOAD_MB on the backend
+const CONFIG_KEY = "plms.config";
+const SESSION_KEY = "plms.session";
+
+function readJSON(area, key) {
+  try { return JSON.parse(window[area].getItem(key) || "null"); } catch { return null; }
+}
+function writeJSON(area, key, value) {
+  try {
+    if (value == null) window[area].removeItem(key);
+    else window[area].setItem(key, JSON.stringify(value));
+  } catch { /* storage blocked: keep going without it */ }
+}
+
+function loadConfig() {
+  const saved = readJSON("localStorage", CONFIG_KEY) || {};
+  // ?api=…&client=… in the URL overrides and saves the settings.
+  const params = new URLSearchParams(location.search);
+  if (params.has("api") || params.has("client")) {
+    if (params.has("api")) saved.apiUrl = params.get("api");
+    if (params.has("client")) saved.clientId = params.get("client");
+    writeJSON("localStorage", CONFIG_KEY, saved);
+  }
+  return { apiUrl: (saved.apiUrl || "").replace(/\/+$/, ""), clientId: saved.clientId || "" };
+}
+
+const state = {
+  config: loadConfig(),
+  session: readJSON("sessionStorage", SESSION_KEY),   // { token, user }
+  view: location.hash === "#marks" ? "marks" : "assignments",
+  loading: false,
+  error: null,
+  courses: [],
+  assignments: [],       // each has .course attached
+  filter: "all",
+  courseFilter: "all",
+  query: "",
+  selectedId: null,
+  form: { file: null, text: "", busy: false, progress: 0, message: null },
+};
+const isDemo = () => !state.config.apiUrl;
+
+/* ------------------------------------------------------------------ *
+ *  API client (real backend)
+ * ------------------------------------------------------------------ */
+class ApiError extends Error {
+  constructor(status, message) { super(message); this.status = status; }
+}
+
+async function realRequest(method, path, body) {
+  const headers = { Accept: "application/json" };
+  if (state.session?.token) headers.Authorization = `Bearer ${state.session.token}`;
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+  let response;
+  try {
+    response = await fetch(state.config.apiUrl + path, {
+      method, headers, body: body === undefined ? undefined : JSON.stringify(body),
+    });
+  } catch {
+    throw new ApiError(0, "Can't reach the server. Check your connection and the API URL.");
+  }
+  if (response.status === 204) return null;
+  const data = await response.json().catch(() => null);
+  if (!response.ok) {
+    let message = data?.detail;
+    if (Array.isArray(message)) message = message.map((d) => d.msg?.replace(/^Value error, /, "")).join(" ");
+    throw new ApiError(response.status, message || `Request failed (${response.status})`);
+  }
+  return data;
+}
+
+/** POST the file to S3 with the signed form: every field first, then the file. */
+function realUpload(ticket, file, onProgress) {
+  return new Promise((resolve, reject) => {
+    const form = new FormData();
+    for (const [key, value] of Object.entries(ticket.fields)) form.append(key, value);
+    form.append("file", file);
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", ticket.url);
+    xhr.upload.onprogress = (e) => e.lengthComputable && onProgress(e.loaded / e.total);
+    xhr.onload = () => (xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error(`Upload failed (${xhr.status})`)));
+    xhr.onerror = () => reject(new Error("Upload failed. Check your connection."));
+    xhr.send(form);
+  });
+}
+
+/* ------------------------------------------------------------------ *
+ *  Demo backend: same shapes as the real API, kept in memory
+ * ------------------------------------------------------------------ */
+const demo = (() => {
+  const day = 86400000, now = Date.now();
+  const at = (days, hour = 17) => { const d = new Date(now + days * day); d.setHours(hour, 0, 0, 0); return d.toISOString(); };
+  const me = { id: "u-demo", email: "alex.student@asa.edu", name: "Alex Rivera", role: "student", active: true, created_at: at(-60) };
+  const courses = [
+    { id: "c1", code: "BUS101", title: "Business Analysis Fundamentals", term: "Term 4 2026", my_role: "student", created_at: at(-60) },
+    { id: "c2", code: "ICT202", title: "Web Development", term: "Term 4 2026", my_role: "student", created_at: at(-60) },
+    { id: "c3", code: "UXD150", title: "User Experience Design", term: "Term 4 2026", my_role: "student", created_at: at(-60) },
+  ];
+  const sub = (a, extra) => ({ assignment_id: a, course_id: "", student_id: me.id, student_name: me.name, text: null, file_name: null, late: false, mark: null, feedback: null, released: false, ...extra });
+  const assignments = [
+    { id: "a1", course_id: "c1", title: "Stakeholder analysis report", weight: 25, max_mark: 100, due_at: at(2),
+      instructions: "Identify the key stakeholders for the Perception LMS project and analyse their interests, influence and communication needs.\n\n• 1,500–2,000 words\n• Include a power/interest grid\n• Submit as PDF or Word document\n• Use APA 7 referencing" },
+    { id: "a2", course_id: "c2", title: "Responsive landing page", weight: 20, max_mark: 50, due_at: at(5),
+      instructions: "Build a responsive landing page using semantic HTML and CSS only (no frameworks).\n\nZip your project folder and upload it. Include a README with a link to your hosted version if you have one." },
+    { id: "a3", course_id: "c3", title: "User persona and journey map", weight: 15, max_mark: 40, due_at: at(-1),
+      instructions: "Create two user personas for the LMS and a journey map for one key task (e.g. submitting an assignment).\n\nUpload a single PDF." },
+    { id: "a4", course_id: "c1", title: "Business problem statement", weight: 10, max_mark: 20, due_at: at(-9),
+      instructions: "Write a one-page problem statement for ASA College's move away from Canvas." },
+    { id: "a5", course_id: "c2", title: "Accessibility audit", weight: 15, max_mark: 30, due_at: at(-4),
+      instructions: "Audit a public website against WCAG 2.2 AA. Report at least eight issues with severity, evidence and a suggested fix." },
+    { id: "a6", course_id: "c3", title: "Heuristic evaluation", weight: 20, max_mark: 100, due_at: at(12),
+      instructions: "Evaluate the Perception LMS prototype using Nielsen's 10 heuristics. You may type your answer or upload a document." },
+    { id: "a7", course_id: "c2", title: "HTML and CSS quiz", weight: 10, max_mark: 20, due_at: at(-20),
+      instructions: "Answer the 20 short questions on semantic HTML and the CSS box model. Upload your answers as a PDF." },
+    { id: "a8", course_id: "c3", title: "Design critique", weight: 10, max_mark: 10, due_at: at(-15),
+      instructions: "Critique one app you use every day: three things that work well and three you would change, with screenshots." },
+  ].map((a) => ({ ...a, created_at: at(-30) }));
+  const submissions = {
+    a4: sub("a4", { course_id: "c1", file_name: "Problem-statement_Alex-Rivera.pdf", submitted_at: at(-10, 14), mark: 17, feedback: "Clear and well-scoped. Next time, quantify the cost of the current system to strengthen the case.", released: true }),
+    a5: sub("a5", { course_id: "c2", file_name: "WCAG-audit.docx", submitted_at: at(-3, 9), late: true }),
+    a7: sub("a7", { course_id: "c2", file_name: "Quiz-answers.pdf", submitted_at: at(-21, 11), mark: 15, feedback: "Good understanding of the box model. Review the difference between <section> and <article>.", released: true }),
+    a8: sub("a8", { course_id: "c3", file_name: "Critique_Spotify.pdf", submitted_at: at(-16, 16), mark: 9, feedback: "Excellent observations, clearly evidenced with screenshots.", released: true }),
+    a6: sub("a6", { course_id: "c3", text: "Draft: visibility of system status is good on the dashboard, but upload progress is missing…", submitted_at: at(-1, 20) }),
+  };
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const view = (a) => {
+    const s = submissions[a.id];
+    return { ...a, my_submission: s ? (s.released ? s : { ...s, mark: null, feedback: null }) : null };
+  };
+
+  async function request(method, path, body) {
+    await wait(250);
+    let m;
+    if (method === "GET" && path === "/me") return me;
+    if (method === "GET" && path === "/courses") return courses;
+    if ((m = path.match(/^\/courses\/(\w+)\/assignments$/)) && method === "GET")
+      return assignments.filter((a) => a.course_id === m[1]).sort((x, y) => x.due_at.localeCompare(y.due_at)).map(view);
+    if ((m = path.match(/^\/courses\/(\w+)\/assignments\/(\w+)$/)) && method === "GET")
+      return view(assignments.find((a) => a.id === m[2]));
+    if ((m = path.match(/^\/courses\/(\w+)\/assignments\/(\w+)\/submission$/)) && method === "POST") {
+      const a = assignments.find((x) => x.id === m[2]);
+      if (submissions[a.id]?.released) throw new ApiError(409, "This submission has already been marked");
+      const nowIso = new Date().toISOString();
+      submissions[a.id] = sub(a.id, { course_id: a.course_id, text: body.text, file_name: body.file?.file_name ?? null, submitted_at: nowIso, late: nowIso > a.due_at });
+      return { submission: submissions[a.id], upload: body.file ? { url: "demo://upload", fields: {} } : null };
+    }
+    if ((m = path.match(/\/submissions\/[\w-]+\/download$/)) && method === "GET")
+      throw new ApiError(404, "Downloads aren't available with demo data.");
+    throw new ApiError(404, "Not found");
+  }
+  async function upload(_ticket, file, onProgress) {
+    const steps = 12;
+    for (let i = 1; i <= steps; i++) { await wait(Math.min(120, 40 + file.size / 200000)); onProgress(i / steps); }
+  }
+  return { me, request, upload };
+})();
+
+const api = (method, path, body) => (isDemo() ? demo.request : realRequest)(method, path, body);
+const uploadFile = (ticket, file, onProgress) => (isDemo() ? demo.upload : realUpload)(ticket, file, onProgress);
+
+/* ------------------------------------------------------------------ *
+ *  Sign-in
+ * ------------------------------------------------------------------ */
+function setSession(session) {
+  state.session = session;
+  writeJSON("sessionStorage", SESSION_KEY, session);
+}
+
+function signOut() {
+  setSession(null);
+  Object.assign(state, { courses: [], assignments: [], selectedId: null, error: null });
+  try { window.google?.accounts?.id?.disableAutoSelect(); } catch {}
+  render();
+}
+
+let gisLoading = null;
+function loadGoogle() {
+  if (window.google?.accounts?.id) return Promise.resolve();
+  gisLoading ||= new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = "https://accounts.google.com/gsi/client";
+    s.async = true; s.onload = resolve;
+    s.onerror = () => { gisLoading = null; reject(new Error("Couldn't load Google sign-in.")); };
+    document.head.appendChild(s);
+  });
+  return gisLoading;
+}
+
+async function mountGoogleButton(el) {
+  try {
+    await loadGoogle();
+    google.accounts.id.initialize({ client_id: state.config.clientId, callback: onGoogleCredential });
+    google.accounts.id.renderButton(el, { type: "standard", theme: "outline", size: "large", text: "signin_with", shape: "pill" });
+  } catch (e) {
+    el.innerHTML = `<div class="notice notice-error">${esc(e.message)}</div>`;
+  }
+}
+
+async function onGoogleCredential({ credential }) {
+  state.error = null;
+  try {
+    const { access_token, user } = await realRequest("POST", "/auth/google", { credential });
+    setSession({ token: access_token, user });
+    await loadAssignments();
+  } catch (e) {
+    state.error = e.message;
+    render();
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ *  Data
+ * ------------------------------------------------------------------ */
+async function loadAssignments() {
+  state.loading = true; state.error = null; render();
+  try {
+    if (!state.session.user) setSession({ ...state.session, user: await api("GET", "/me") });
+    const courses = await api("GET", "/courses");
+    const lists = await Promise.all(courses.map((c) => api("GET", `/courses/${c.id}/assignments`)));
+    state.courses = courses;
+    state.assignments = lists.flatMap((list, i) => list.map((a) => ({ ...a, course: courses[i] })));
+  } catch (e) {
+    if (e.status === 401) { signOut(); state.error = "Your session has ended. Please sign in again."; }
+    else state.error = e.message;
+  } finally {
+    state.loading = false; render();
+  }
+}
+
+async function refreshAssignment(a) {
+  const fresh = await api("GET", `/courses/${a.course_id}/assignments/${a.id}`);
+  const i = state.assignments.findIndex((x) => x.id === a.id);
+  state.assignments[i] = { ...fresh, course: a.course };
+}
+
+/* ------------------------------------------------------------------ *
+ *  Helpers
+ * ------------------------------------------------------------------ */
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function statusOf(a) {
+  const s = a.my_submission;
+  if (s?.released) return "graded";
+  if (s) return "submitted";
+  return new Date(a.due_at) < new Date() ? "overdue" : "todo";
+}
+const STATUS_LABEL = { todo: "To do", overdue: "Overdue", submitted: "Submitted", graded: "Graded" };
+const badge = (st) => `<span class="badge b-${st}">${STATUS_LABEL[st]}</span>`;
+
+const fmtDate = (iso) => new Date(iso).toLocaleString(undefined, { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
+function relative(iso) {
+  const diff = new Date(iso) - Date.now(), abs = Math.abs(diff);
+  const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
+  if (abs < 3600000) return rtf.format(Math.round(diff / 60000), "minute");
+  if (abs < 86400000) return rtf.format(Math.round(diff / 3600000), "hour");
+  return rtf.format(Math.round(diff / 86400000), "day");
+}
+function fileSize(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1048576) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / 1048576).toFixed(1)} MB`;
+}
+const ext = (name) => (name.includes(".") ? name.split(".").pop().slice(0, 4).toUpperCase() : "FILE");
+const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0].toUpperCase()).join("");
+
+function visibleAssignments() {
+  const q = state.query.trim().toLowerCase();
+  return state.assignments
+    .filter((a) => state.courseFilter === "all" || a.course_id === state.courseFilter)
+    .filter((a) => state.filter === "all" || statusOf(a) === state.filter)
+    .filter((a) => !q || `${a.title} ${a.course.code} ${a.course.title}`.toLowerCase().includes(q))
+    .sort((x, y) => {
+      // Work still to do first (soonest due), then everything else (most recent first).
+      const open = (a) => (["todo", "overdue"].includes(statusOf(a)) ? 0 : 1);
+      return open(x) - open(y) || (open(x) === 0 ? x.due_at.localeCompare(y.due_at) : y.due_at.localeCompare(x.due_at));
+    });
+}
+
+/* ------------------------------------------------------------------ *
+ *  Rendering
+ * ------------------------------------------------------------------ */
+const app = document.getElementById("app");
+
+function render() {
+  document.getElementById("demoPill").hidden = !isDemo();
+  renderWho();
+  if (!state.session) return renderSignIn();
+  if (state.loading && !state.assignments.length) return renderLoading();
+  document.title = `${state.view === "marks" ? "Marks" : "Assignments"} · Perception LMS`;
+  if (state.view === "marks") renderMarks(); else renderPortal();
+}
+
+const viewsNav = () => `
+  <nav class="views" aria-label="Student portal">
+    <a href="#assignments" ${state.view === "assignments" ? 'aria-current="page"' : ""}>Assignments</a>
+    <a href="#marks" ${state.view === "marks" ? 'aria-current="page"' : ""}>Marks</a>
+  </nav>`;
+
+/* ------------------------------------------------------------------ *
+ *  Marks view: built from the same assignment data. Students only get
+ *  a mark back once the lecturer releases it, so unreleased work shows
+ *  as "Awaiting mark".
+ * ------------------------------------------------------------------ */
+const pct = (n, digits = 0) => `${Number(n).toFixed(digits).replace(/\.0+$/, "")}%`;
+
+function courseSummary(course) {
+  const items = state.assignments.filter((a) => a.course_id === course.id).sort((x, y) => x.due_at.localeCompare(y.due_at));
+  const graded = items.filter((a) => a.my_submission?.released);
+  const gradedWeight = graded.reduce((t, a) => t + a.weight, 0);
+  const earned = graded.reduce((t, a) => t + (a.my_submission.mark / a.max_mark) * a.weight, 0);
+  const totalWeight = items.reduce((t, a) => t + a.weight, 0);
+  // Weighted average of released work; plain average if the lecturer set no weights.
+  const average = graded.length
+    ? gradedWeight ? (earned / gradedWeight) * 100 : graded.reduce((t, a) => t + a.my_submission.mark / a.max_mark, 0) / graded.length * 100
+    : null;
+  return { course, items, graded, gradedWeight, earned, totalWeight, average };
+}
+
+function markRowHTML(a) {
+  const s = a.my_submission;
+  const st = statusOf(a);
+  const label = { todo: "To do", overdue: "Not submitted", submitted: "Awaiting mark" }[st];
+  const cls = { todo: "b-todo", overdue: "b-overdue", submitted: "b-submitted" }[st];
+  const markCell = s?.released
+    ? `<span class="mark">${s.mark}/${a.max_mark}</span>`
+    : `<span class="badge ${cls}">${label}</span>`;
+  return `
+    <div class="mrow">
+      <div class="t"><button data-action="open-assignment" data-id="${esc(a.id)}">${esc(a.title)}</button>
+        <div class="muted">Due ${esc(fmtDate(a.due_at))}${s?.late ? " · submitted late" : ""}</div></div>
+      <div class="num"><span class="lbl-sm">Mark</span>${markCell}</div>
+      <div class="num"><span class="lbl-sm">Score</span>${s?.released ? pct((s.mark / a.max_mark) * 100) : "—"}</div>
+      <div class="num"><span class="lbl-sm">Weight</span>${a.weight}%</div>
+      ${s?.released && s.feedback ? `<details><summary>Lecturer feedback</summary><p>${esc(s.feedback)}</p></details>` : ""}
+    </div>`;
+}
+
+function renderMarks() {
+  const summaries = state.courses.map(courseSummary).filter((c) => c.items.length);
+  const allGraded = summaries.flatMap((c) => c.graded);
+  const awaiting = state.assignments.filter((a) => statusOf(a) === "submitted").length;
+  const withAvg = summaries.filter((c) => c.average != null);
+  const overall = withAvg.length ? withAvg.reduce((t, c) => t + c.average, 0) / withAvg.length : null;
+  const best = withAvg.slice().sort((x, y) => y.average - x.average)[0];
+
+  const stat = (num, label, extra = "") => `<div class="stat ${extra}"><div class="stat-num">${num}</div><div class="stat-label">${label}</div></div>`;
+
+  app.innerHTML = `
+    ${viewsNav()}
+    <div class="page-head">
+      <div>
+        <h1>Marks</h1>
+        <p>Marks appear here once your lecturer releases them.</p>
+      </div>
+      <button class="btn btn-secondary" data-action="reload" ${state.loading ? "disabled" : ""}>${state.loading ? "Refreshing…" : "Refresh"}</button>
+    </div>
+    ${state.error ? `<div class="notice notice-error" role="alert">${esc(state.error)}</div>` : ""}
+    <div class="stats">
+      ${stat(overall == null ? "—" : pct(overall), "Average across courses")}
+      ${stat(allGraded.length, "Marks released")}
+      ${stat(awaiting, "Awaiting marking")}
+      ${stat(best ? esc(best.course.code) : "—", best ? `Strongest course · ${pct(best.average)}` : "Strongest course")}
+    </div>
+    <div class="courses">
+      ${summaries.length ? summaries.map((c) => {
+        const lost = c.gradedWeight - c.earned;
+        const left = Math.max(0, c.totalWeight - c.gradedWeight);
+        return `
+        <section class="course-card" aria-labelledby="ch-${esc(c.course.id)}">
+          <div class="course-head">
+            <div>
+              <span class="course-tag">${esc(c.course.code)} · ${esc(c.course.term)}</span>
+              <h2 id="ch-${esc(c.course.id)}">${esc(c.course.title)}</h2>
+            </div>
+            <div class="course-avg">
+              <div class="big ${c.average == null ? "none" : ""}">${c.average == null ? "No marks yet" : pct(c.average)}</div>
+              <div class="muted">${c.graded.length} of ${c.items.length} marked</div>
+            </div>
+          </div>
+          ${c.totalWeight ? `
+          <div class="weight-bar">
+            <div class="wbar" role="img" aria-label="${pct(c.earned, 1)} of the final grade earned, ${pct(lost, 1)} lost, ${pct(left)} still to come">
+              <div class="earned" style="width:${(c.earned / c.totalWeight) * 100}%"></div>
+              <div class="lost" style="width:${(lost / c.totalWeight) * 100}%"></div>
+            </div>
+            <div class="legend">
+              <span><i style="background:var(--forest)"></i>Earned ${pct(c.earned, 1)} of final grade</span>
+              <span><i style="background:#b9cbbf"></i>Lost ${pct(lost, 1)}</span>
+              <span><i style="background:var(--line)"></i>Still to come ${pct(left)}</span>
+            </div>
+          </div>` : ""}
+          <div class="mrow head" aria-hidden="true"><div>Assignment</div><div class="num">Mark</div><div class="num">Score</div><div class="num">Weight</div></div>
+          ${c.items.map(markRowHTML).join("")}
+        </section>`;
+      }).join("") : `<div class="empty">You have no assignments yet, so there are no marks to show.</div>`}
+    </div>`;
+}
+
+function renderWho() {
+  const who = document.getElementById("who");
+  const user = state.session?.user;
+  who.innerHTML = user
+    ? `<span class="avatar" aria-hidden="true">${esc(initials(user.name))}</span><span class="name">${esc(user.name)}</span>
+       <button class="btn-ghost-light" data-action="signout">Sign out</button>`
+    : `<button class="btn-ghost-light" data-action="settings">Settings</button>`;
+}
+
+function renderSignIn() {
+  const configured = state.config.apiUrl && state.config.clientId;
+  app.innerHTML = `
+    <section class="signin">
+      <h1>Your assignments</h1>
+      <p>Sign in to see what's due and hand in your work.</p>
+      ${state.error ? `<div class="notice notice-error" role="alert">${esc(state.error)}</div>` : ""}
+      <div class="stack">
+        ${isDemo()
+          ? `<button class="btn btn-primary" data-action="demo-signin">Continue with demo data</button>
+             <p class="note">No API is set up yet. Open <button class="btn-link" data-action="settings">Settings</button> to connect to the backend.</p>`
+          : configured
+            ? `<div id="gbtn"></div>
+               <p class="note">Use the Google account your college registered.<br>Connected to ${esc(state.config.apiUrl)} · <button class="btn-link" data-action="settings">Change</button></p>`
+            : `<div class="notice notice-warn">Add the Google client ID in Settings to sign in.</div>
+               <button class="btn btn-secondary" data-action="settings">Open settings</button>`}
+      </div>
+    </section>`;
+  const g = document.getElementById("gbtn");
+  if (g) mountGoogleButton(g);
+}
+
+function renderLoading() {
+  app.innerHTML = `<div class="page-head"><div><h1>Assignments</h1><p>Loading your courses…</p></div></div>
+    <div class="list" style="max-width:520px">${'<div class="skeleton"></div>'.repeat(4)}</div>`;
+}
+
+function renderPortal() {
+  const counts = { all: state.assignments.length, todo: 0, overdue: 0, submitted: 0, graded: 0 };
+  state.assignments.forEach((a) => counts[statusOf(a)]++);
+  const weekAhead = Date.now() + 7 * 86400000;
+  const dueThisWeek = state.assignments.filter((a) => statusOf(a) === "todo" && new Date(a.due_at) <= weekAhead).length;
+  const list = visibleAssignments();
+  const selected = state.assignments.find((a) => a.id === state.selectedId);
+
+  const statCard = (key, num, label, extra = "") =>
+    `<button class="stat ${extra}" data-action="filter" data-filter="${key}" aria-pressed="${state.filter === key}">
+       <div class="stat-num">${num}</div><div class="stat-label">${label}</div></button>`;
+
+  app.innerHTML = `
+    ${viewsNav()}
+    <div class="page-head">
+      <div>
+        <h1>Assignments</h1>
+        <p>${dueThisWeek ? `You have <strong>${dueThisWeek}</strong> due in the next 7 days.` : "Nothing due in the next 7 days."}</p>
+      </div>
+      <button class="btn btn-secondary" data-action="reload" ${state.loading ? "disabled" : ""}>${state.loading ? "Refreshing…" : "Refresh"}</button>
+    </div>
+    ${state.error ? `<div class="notice notice-error" role="alert">${esc(state.error)}</div>` : ""}
+    <div class="stats">
+      ${statCard("todo", counts.todo, "To do")}
+      ${statCard("overdue", counts.overdue, "Overdue", counts.overdue ? "warn" : "")}
+      ${statCard("submitted", counts.submitted, "Submitted, awaiting mark")}
+      ${statCard("graded", counts.graded, "Graded")}
+    </div>
+    <div class="toolbar">
+      <div class="tabs" role="tablist" aria-label="Filter by status">
+        ${["all", "todo", "overdue", "submitted", "graded"].map((k) =>
+          `<button class="tab" role="tab" data-action="filter" data-filter="${k}" aria-selected="${state.filter === k}">
+             ${k === "all" ? "All" : STATUS_LABEL[k]}<span class="count">${counts[k]}</span></button>`).join("")}
+      </div>
+      <label class="sr-only" for="courseSel">Course</label>
+      <select id="courseSel" class="field">
+        <option value="all">All courses</option>
+        ${state.courses.map((c) => `<option value="${esc(c.id)}" ${state.courseFilter === c.id ? "selected" : ""}>${esc(c.code)} · ${esc(c.title)}</option>`).join("")}
+      </select>
+      <label class="sr-only" for="search">Search assignments</label>
+      <input id="search" class="field search" type="search" placeholder="Search assignments" value="${esc(state.query)}">
+    </div>
+    <div class="layout ${selected ? "has-detail" : ""}">
+      <div class="list-col">
+        <div class="list" role="list">
+          ${list.length ? list.map(cardHTML).join("") : `<div class="empty">${state.assignments.length ? "No assignments match these filters." : "You have no assignments yet."}</div>`}
+        </div>
+      </div>
+      <section class="detail" aria-label="Assignment details">${selected ? detailHTML(selected) : `<div class="empty" style="border:none">Choose an assignment to see the instructions and hand in your work.</div>`}</section>
+    </div>`;
+}
+
+function cardHTML(a) {
+  const st = statusOf(a);
+  const s = a.my_submission;
+  const when = st === "graded" ? `Mark: ${s.mark}/${a.max_mark}`
+    : st === "submitted" ? `Submitted ${relative(s.submitted_at)}`
+    : `Due ${relative(a.due_at)}`;
+  return `
+    <button class="a-card" role="listitem" data-action="select" data-id="${esc(a.id)}" aria-current="${a.id === state.selectedId}">
+      <div class="a-top"><span class="course-tag">${esc(a.course.code)}</span>${badge(st)}</div>
+      <div class="a-title">${esc(a.title)}</div>
+      <div class="a-meta"><span>${esc(when)}</span><span>${esc(fmtDate(a.due_at))}</span>${a.weight ? `<span>${a.weight}% of grade</span>` : ""}</div>
+    </button>`;
+}
+
+function detailHTML(a) {
+  const st = statusOf(a);
+  const s = a.my_submission;
+  const isStudent = a.course.my_role === "student";
+  const pastDue = new Date(a.due_at) < new Date();
+  const f = state.form;
+
+  const submissionBox = s ? `
+    <h3 class="section-title">Your submission</h3>
+    <div class="box">
+      <div class="row">
+        <span class="muted">Submitted ${esc(fmtDate(s.submitted_at))}</span>
+        ${s.late ? `<span class="badge b-late">Late</span>` : `<span class="badge b-graded">On time</span>`}
+      </div>
+      ${s.file_name ? `
+        <div class="row" style="margin-top:10px">
+          <span class="file-chip"><span class="file-icon" aria-hidden="true">${esc(ext(s.file_name))}</span>${esc(s.file_name)}</span>
+          <button class="btn btn-secondary" data-action="download" data-id="${esc(a.id)}">Download</button>
+        </div>` : ""}
+      ${s.text ? `<div class="answer">${esc(s.text)}</div>` : ""}
+    </div>
+    ${s.released ? `
+      <h3 class="section-title">Mark and feedback</h3>
+      <div class="grade">
+        <div class="grade-num">${s.mark}<small>/${a.max_mark}</small></div>
+        <div><strong>${Math.round((s.mark / a.max_mark) * 100)}%</strong><div class="muted">Released by your lecturer</div></div>
+      </div>
+      ${s.feedback ? `<div class="box" style="margin-top:10px"><p class="instructions">${esc(s.feedback)}</p></div>` : ""}` : ""}
+  ` : "";
+
+  let formHTML = "";
+  if (isStudent && !s?.released) {
+    formHTML = `
+      <h3 class="section-title">${s ? "Resubmit" : "Hand in your work"}</h3>
+      ${f.message ? `<div class="notice notice-${f.message.kind}" role="${f.message.kind === "error" ? "alert" : "status"}">${esc(f.message.text)}</div>` : ""}
+      ${pastDue ? `<div class="notice notice-warn">The due date has passed. You can still submit, but it will be marked late.</div>` : ""}
+      ${s ? `<div class="notice notice-info">Submitting again replaces your previous submission.</div>` : ""}
+      <form id="submitForm" novalidate>
+        ${f.file ? `
+          <div class="picked">
+            <span class="file-chip"><span class="file-icon" aria-hidden="true">${esc(ext(f.file.name))}</span>
+              <span>${esc(f.file.name)}<br><span class="muted">${fileSize(f.file.size)}</span></span></span>
+            <button type="button" class="btn btn-secondary" data-action="clear-file" ${f.busy ? "disabled" : ""}>Remove</button>
+          </div>` : `
+          <label class="drop" id="drop">
+            <input type="file" id="fileInput" ${f.busy ? "disabled" : ""}>
+            <span aria-hidden="true" style="font-size:24px">⬆</span>
+            <span><strong>Choose a file</strong> or drag it here</span>
+            <span class="muted">Any file type, up to ${MAX_UPLOAD_MB} MB</span>
+          </label>`}
+        <label class="lbl" for="answer">Typed answer or comments <span class="muted">(optional if you add a file)</span></label>
+        <textarea id="answer" maxlength="20000" ${f.busy ? "disabled" : ""} placeholder="Type your answer, or add a note for your lecturer">${esc(f.text)}</textarea>
+        ${f.busy ? `<div class="progress" role="progressbar" aria-label="Upload progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(f.progress * 100)}"><div style="width:${f.progress * 100}%"></div></div>` : ""}
+        <div class="actions">
+          <button class="btn btn-primary" type="submit" ${f.busy ? "disabled" : ""}>${f.busy ? "Submitting…" : s ? "Resubmit" : "Submit assignment"}</button>
+          <span class="muted">Due ${esc(fmtDate(a.due_at))}</span>
+        </div>
+      </form>`;
+  } else if (!isStudent) {
+    formHTML = `<div class="notice notice-info" style="margin-top:20px">You're viewing this course as ${esc(a.course.my_role)}. Only enrolled students can submit.</div>`;
+  } else if (s?.released && f.message) {
+    formHTML = `<div class="notice notice-${f.message.kind}" style="margin-top:16px">${esc(f.message.text)}</div>`;
+  }
+
+  return `
+    <button class="btn-link back" data-action="back">← All assignments</button>
+    <div class="row"><span class="course-tag">${esc(a.course.code)} · ${esc(a.course.title)}</span>${badge(st)}</div>
+    <h2 tabindex="-1">${esc(a.title)}</h2>
+    <dl class="facts">
+      <div class="fact"><dt>Due</dt><dd>${esc(fmtDate(a.due_at))}<div class="sub">${esc(relative(a.due_at))}</div></dd></div>
+      <div class="fact"><dt>Worth</dt><dd>${a.weight}%<div class="sub">of final grade</div></dd></div>
+      <div class="fact"><dt>Marked out of</dt><dd>${a.max_mark}</dd></div>
+    </dl>
+    <h3 class="section-title">Instructions</h3>
+    ${a.instructions ? `<p class="instructions">${esc(a.instructions)}</p>` : `<p class="muted">No instructions were added.</p>`}
+    ${submissionBox}
+    ${formHTML}`;
+}
+
+/* ------------------------------------------------------------------ *
+ *  Actions
+ * ------------------------------------------------------------------ */
+function selectAssignment(id) {
+  if (state.form.busy) return;
+  state.selectedId = id;
+  state.form = { file: null, text: "", busy: false, progress: 0, message: null };
+  render();
+  if (matchMedia("(max-width: 900px)").matches) window.scrollTo({ top: 0 });
+  document.querySelector(".detail h2")?.focus?.();
+}
+
+function pickFile(file) {
+  if (!file) return;
+  if (file.size === 0) { state.form.message = { kind: "error", text: "That file is empty. Choose another file." }; }
+  else if (file.size > MAX_UPLOAD_MB * 1048576) { state.form.message = { kind: "error", text: `That file is ${fileSize(file.size)}. Files can be up to ${MAX_UPLOAD_MB} MB.` }; }
+  else { state.form.file = file; state.form.message = null; }
+  render();
+}
+
+async function submitAssignment() {
+  const a = state.assignments.find((x) => x.id === state.selectedId);
+  const f = state.form;
+  const text = f.text.trim();
+  if (!f.file && !text) { f.message = { kind: "error", text: "Add a file or type an answer before submitting." }; return render(); }
+
+  f.busy = true; f.progress = 0; f.message = null; render();
+  const base = `/courses/${a.course_id}/assignments/${a.id}`;
+  let saved = false;
+  try {
+    const body = { text: text || null, file: f.file ? { file_name: f.file.name, content_type: f.file.type || "application/octet-stream" } : null };
+    const { upload } = await api("POST", `${base}/submission`, body);
+    saved = true;
+    if (upload && f.file) {
+      await uploadFile(upload, f.file, (p) => {
+        f.progress = p;
+        const bar = document.querySelector(".progress > div");
+        if (bar) { bar.style.width = `${p * 100}%`; bar.parentElement.setAttribute("aria-valuenow", Math.round(p * 100)); }
+      });
+    }
+    await refreshAssignment(a);
+    const late = state.assignments.find((x) => x.id === a.id)?.my_submission?.late;
+    state.form = { file: null, text: "", busy: false, progress: 0,
+      message: { kind: "ok", text: `Submitted. Your work was received ${late ? "after the due date and is marked late" : "on time"}.` } };
+  } catch (e) {
+    f.busy = false;
+    if (e.status === 401) { signOut(); state.error = "Your session has ended. Sign in again and resubmit."; return; }
+    f.message = { kind: "error", text: saved
+      ? `Your submission was saved, but the file didn't upload (${e.message}). Please submit again.`
+      : e.message };
+    try { await refreshAssignment(a); } catch {}
+  }
+  render();
+}
+
+async function downloadSubmission(id) {
+  const a = state.assignments.find((x) => x.id === id);
+  try {
+    const { url } = await api("GET", `/courses/${a.course_id}/assignments/${a.id}/submissions/${state.session.user.id}/download`);
+    window.location.assign(url);   // signed link with "attachment", so the browser saves it
+  } catch (e) {
+    state.form.message = { kind: "error", text: e.message };
+    render();
+  }
+}
+
+function openSettings() {
+  const dlg = document.getElementById("settings");
+  dlg.querySelector("#apiUrl").value = state.config.apiUrl;
+  dlg.querySelector("#clientId").value = state.config.clientId;
+  dlg.showModal();
+}
+document.getElementById("settings").addEventListener("close", (e) => {
+  const dlg = e.target;
+  if (dlg.returnValue !== "save") return;
+  const cfg = { apiUrl: dlg.querySelector("#apiUrl").value.trim().replace(/\/+$/, ""), clientId: dlg.querySelector("#clientId").value.trim() };
+  writeJSON("localStorage", CONFIG_KEY, cfg);
+  state.config = cfg;
+  signOut();
+});
+
+/* Event delegation */
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-action]");
+  if (!el) return;
+  const { action } = el.dataset;
+  if (action === "settings") openSettings();
+  else if (action === "signout") signOut();
+  else if (action === "demo-signin") { setSession({ token: "demo", user: demo.me }); loadAssignments(); }
+  else if (action === "reload") loadAssignments();
+  else if (action === "filter") { state.filter = state.filter === el.dataset.filter && el.classList.contains("stat") ? "all" : el.dataset.filter; render(); }
+  else if (action === "select") selectAssignment(el.dataset.id);
+  else if (action === "back") { if (!state.form.busy) { state.selectedId = null; render(); } }
+  else if (action === "clear-file") { state.form.file = null; render(); }
+  else if (action === "download") downloadSubmission(el.dataset.id);
+  else if (action === "open-assignment") {
+    state.filter = "all"; state.courseFilter = "all"; state.query = ""; state.view = "assignments";
+    location.hash = "#assignments";
+    selectAssignment(el.dataset.id);
+  }
+});
+window.addEventListener("hashchange", () => {
+  const view = location.hash === "#marks" ? "marks" : "assignments";
+  if (view === state.view) return;
+  if (state.form.busy) { history.replaceState(null, "", "#assignments"); return; }
+  state.view = view;
+  render();
+  window.scrollTo({ top: 0 });
+});
+document.addEventListener("input", (e) => {
+  if (e.target.id === "search") {
+    state.query = e.target.value;
+    const pos = e.target.selectionStart;
+    render();
+    const s = document.getElementById("search"); s.focus(); s.setSelectionRange(pos, pos);
+  } else if (e.target.id === "answer") state.form.text = e.target.value;
+});
+document.addEventListener("change", (e) => {
+  if (e.target.id === "courseSel") { state.courseFilter = e.target.value; render(); }
+  else if (e.target.id === "fileInput") pickFile(e.target.files[0]);
+});
+document.addEventListener("submit", (e) => {
+  if (e.target.id === "submitForm") { e.preventDefault(); submitAssignment(); }
+});
+for (const type of ["dragenter", "dragover"]) document.addEventListener(type, (e) => {
+  const drop = e.target.closest?.("#drop");
+  if (drop) { e.preventDefault(); drop.classList.add("over"); }
+});
+document.addEventListener("dragleave", (e) => e.target.closest?.("#drop")?.classList.remove("over"));
+document.addEventListener("drop", (e) => {
+  const drop = e.target.closest?.("#drop");
+  if (!drop) return;
+  e.preventDefault();
+  if (!state.form.busy) pickFile(e.dataTransfer.files[0]);
+});
+// Don't let a file dropped outside the box open in the tab and lose the page.
+window.addEventListener("dragover", (e) => e.preventDefault());
+window.addEventListener("drop", (e) => e.preventDefault());
+window.addEventListener("beforeunload", (e) => { if (state.form.busy) e.preventDefault(); });
+
+/* Start */
+render();
+if (state.session) loadAssignments();
+</script>
+</body>
+</html>
