@@ -2,6 +2,8 @@
 
 The website for Perception LMS: a React app built with Vite and Tailwind. It has no server or database of its own. All data and sign-in go through the FastAPI backend in [backend/](../backend), and the built site is hosted as static files on S3 behind Cloudflare.
 
+**New here?** Start with [handover.md](handover.md).
+
 ## Run it
 
 You need Node.js 20 or later. Run these from the `frontend` folder.
