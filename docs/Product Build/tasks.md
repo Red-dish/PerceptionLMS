@@ -21,6 +21,9 @@ Due Fri 6 Nov. A working dashboard, three access roles (student, staff, admin) a
 - [ ] Slides: stakeholder and competitor analysis (Yoodem) · KAN-62
 - [ ] Design review for the three roles, with feedback to Bishu by Thu 5 Nov (Apeksha) · KAN-66
 
+### Everyone
+- [ ] Submit your individual report on Canvas under Session 2 by Sun 8 Nov, then comment "Submitted" on the Jira task (all seven) · KAN-67
+
 ## Later (not in the MVP)
 - Attendance tracking
 - Calendar and timetable

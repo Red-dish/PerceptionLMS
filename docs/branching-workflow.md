@@ -61,7 +61,7 @@ git push -u origin feature/KAN-12-login-page
 
 **3. Open a PR on GitHub.** Set the base branch to `frontend` for frontend work, or `dev` for everything else. GitHub picks `main` by default, so check it. Put the Jira ticket number in the title, for example "KAN-12: Login page".
 
-**4. Get it reviewed.** Frontend PRs need Bishu's approval; backend PRs need Amora's or Roshan's. Fix anything they ask for by pushing more commits to the same branch.
+**4. Get it reviewed.** Frontend PRs need Bishu's approval; backend PRs need Amora's. Anyone on the technical team can test a PR (see [teams.md](Teams%20and%20Roles/teams.md)). Fix anything they ask for by pushing more commits to the same branch.
 
 **5. Merge with "Squash and merge",** so each ticket becomes one commit. Then delete the branch (GitHub offers a button).
 
@@ -82,7 +82,7 @@ Keep `frontend` close to `dev`: merge `dev` into it at least once a week, so the
 You work on your own machine with `npm run dev` (see [frontend/README.md](../frontend/README.md)). The S3 hosting is only for the published site. To use the API:
 
 - **Backend running locally:** set `VITE_API_URL=http://localhost:8000` in `frontend/.env.local`.
-- **Endpoint doesn't exist yet:** check the backend's `/docs` page for the request and response shapes, and ask Amora or Roshan for the endpoint. Don't build a server inside `frontend/`.
+- **Endpoint doesn't exist yet:** check the backend's `/docs` page for the request and response shapes, and ask Amora for the endpoint. Don't build a server inside `frontend/`.
 
 ## Rules
 
