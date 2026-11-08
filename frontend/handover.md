@@ -83,7 +83,7 @@ These GitHub issues are planned for you in [PR #63](https://github.com/Red-dish/
 
 ## Rules
 
-1. **Keep it frontend only.** Don't add a server, database or Node API. If a screen needs data the API doesn't offer, ask Amora or Roshan for an endpoint before building it.
+1. **Keep it frontend only.** Don't add a server, database or Node API. If a screen needs data the API doesn't offer, ask Amora for an endpoint before building it.
 2. **Send every API call through `src/lib/api.js`.** Don't call `fetch` from a page.
 3. **Don't change sign-in without talking to Amora.** That means `src/lib/auth.jsx`, `src/lib/api.js` and `src/components/GoogleButton.jsx`.
 4. **Leave `backend/` alone,** and leave AWS and Cloudflare to Amora.
@@ -119,9 +119,8 @@ These GitHub issues are planned for you in [PR #63](https://github.com/Red-dish/
 
 | Question | Ask |
 | --- | --- |
-| Sign-in, users, courses, hosting, what to build next | Amora |
-| Files, assignments, grades or announcements in the API | Roshan |
+| Anything in the API, sign-in, hosting, architecture | Amora |
 | Design review and feedback | Apeksha |
-| Sign-in page, which you share (KAN-57) | Dipesh |
+| Frontend screens and features, which you lead | Dipesh and Roshan |
 
 Your tasks are also listed in [docs/task.md](../docs/task.md).

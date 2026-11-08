@@ -40,7 +40,7 @@ The app is in [frontend/](../frontend), and its [README](../frontend/README.md) 
 - [ ] **Frontend features and design** (Bishu); start with [frontend/handover.md](../frontend/handover.md)
   - [ ] Build new screens on `frontend/`, following the rules in its README
   - [ ] Reuse anything useful from the earlier draft, in git at commit `ee7c2f8`
-  - [ ] Ask Amora or Roshan for an endpoint when a screen needs data the API doesn't offer
+  - [ ] Ask Amora for an endpoint when a screen needs data the API doesn't offer
 
 ## Week 1: hosting and domain
 

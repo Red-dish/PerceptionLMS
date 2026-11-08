@@ -32,7 +32,7 @@ Open http://localhost:5173. The port must stay 5173, because Google sign-in and 
 
 ## Rules
 
-- **Don't add a server or database here.** If a screen needs data the API doesn't offer, ask Amora or Roshan to add an endpoint.
+- **Don't add a server or database here.** If a screen needs data the API doesn't offer, ask Amora to add an endpoint.
 - **Every API call goes through `src/lib/api.js`.** Don't call `fetch` from a page.
 - **Never put a secret in a `VITE_` variable.** They end up in the public website. The Google client ID and API URL aren't secrets.
 - **Roles are checked by the API.** Hiding a button in the frontend is only for convenience.
