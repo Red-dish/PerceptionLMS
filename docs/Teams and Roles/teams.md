@@ -16,7 +16,9 @@ Amora leads the technical team, with Bishu leading the frontend. Apeksha leads t
 
 **Testing (QA) is shared by the whole technical team.** Whoever is free tests: checking a PR before it's merged, writing automated tests, or testing a release by hand against the user stories. Nobody tests their own PR alone.
 
-**Business, compliance and governance team (3, no coding)**
+**Business, compliance and governance team (3)**
+
+These three also build a few v1 features with AI coding agents; see [v1 modules](#v1-modules-github-epics) below.
 
 | Role | Person | Owns | Backs up |
 | --- | --- | --- | --- |
@@ -25,6 +27,32 @@ Amora leads the technical team, with Bishu leading the frontend. Apeksha leads t
 | 6. Compliance and risk officer | Yoodem | Privacy law requirements, privacy policy and terms, copyright for lecturer content, accessibility (WCAG) audit, data protection impact assessment, security and data-retention policies | Role 4 |
 
 Work is tracked in the Perception LMS (KAN) Jira project. Our lecturer sets a deliverable each week, and each one becomes an epic of tasks in Jira; see [tasks.md](../Product%20Build/tasks.md) for this week's list.
+
+## v1 modules (GitHub epics)
+
+To move faster, our lecturer asked us to break a basic Canvas-style v1 into modules. Each module is a GitHub issue labelled `epic`, with its features linked as sub-issues labelled `feature`. Each feature lists what is already built and its acceptance criteria, so it can be handed to an AI coding agent.
+
+| Epic | Owner | Features |
+| --- | --- | --- |
+| [#27 Identity, Roles & Administration](https://github.com/Red-dish/PerceptionLMS/issues/27) | Amora | #28–#32 |
+| [#33 Courses & Content](https://github.com/Red-dish/PerceptionLMS/issues/33) | Dipesh | #34–#39 |
+| [#40 Assignments & Submissions](https://github.com/Red-dish/PerceptionLMS/issues/40) | Roshan | #41–#45 |
+| [#46 Quizzes & Gradebook](https://github.com/Red-dish/PerceptionLMS/issues/46) | Yoodem | #47–#51 |
+| [#52 Communication & Dashboard](https://github.com/Red-dish/PerceptionLMS/issues/52) | Nancy | #53–#58 |
+
+Features are assigned by the roles above, so one person's features can sit under several epics:
+
+| Person | Features |
+| --- | --- |
+| Amora | #29 Roles and permissions, #30 Admin user management, #31 Admin course and enrolment management, #34 Course settings, #44 Teacher grading view |
+| Roshan | #37 Files, #41 Assignment creation, #43 Late, missing and resubmission, #49 Teacher gradebook, #54 Announcements |
+| Dipesh | #28 Sign in with Google, #35 Modules, #38 Course home and syllabus, #42 Student submission, #50 Student grades view |
+| Bishu | #32 User profile, #36 Pages, #39 Course navigation, #53 Dashboard |
+| Yoodem | #45 Basic rubrics, #47 Quiz builder, #48 Quiz taking and auto-grading |
+| Nancy | #55 Discussions, #56 Inbox, #58 Notifications |
+| Apeksha | #51 Grade export, #57 Calendar |
+
+Apeksha, as business analyst, is also on every epic to track progress. The business team's features were on the Later list, so they don't block the core build.
 
 ## Tech stack
 
@@ -41,5 +69,5 @@ Work is tracked in the Perception LMS (KAN) Jira project. Our lecturer sets a de
 
 The backend code and setup steps are in [backend/README.md](../../backend/README.md); the design is in [system-design.md](../Product%20Build/system-design.md).
 
-Attendance, calendar, notifications, quizzes, analytics, single sign-on and Canvas data migration stay on the Later list in [tasks.md](../Product%20Build/tasks.md) rather than being built.
+Quizzes, calendar and notifications now have v1 features under the epics above. Attendance, analytics, single sign-on and Canvas data migration stay on the Later list in [tasks.md](../Product%20Build/tasks.md) rather than being built.
 
