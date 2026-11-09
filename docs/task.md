@@ -6,26 +6,26 @@ The to-do list for the whole technical team: Amora, Roshan, Dipesh and Bishu. Ti
 
 **Week 1, due Fri 6 Nov 2026 (Jira epic KAN-54):** open `https://perceptionlms.com`, sign in with Google, and reach the dashboard for your role: student, staff or admin. The dashboard can use sample data this week; live data comes later (KAN-42).
 
-| Piece | Status (4 Nov 2026) |
+| Piece | Status (9 Nov 2026) |
 | --- | --- |
 | Backend API | Live at `https://p4r5x8qd32.execute-api.ap-southeast-2.amazonaws.com/` |
-| Website S3 bucket | In Terraform on `main`, not created yet |
-| Domain | On Cloudflare, not pointing at the app yet |
-| React app | In `frontend/` on `frontend-draft-bishu`, using our API; not on `main` yet |
+| Website S3 bucket | Created |
+| Domain | `https://perceptionlms.com` is live with a test page; `www` redirects to it |
+| React app | In `frontend/` on `main`, tested with a real Google account against the live API; not published to the domain yet |
 
 ## Week 1: frontend
 
-The app is in [frontend/](../frontend), and its [README](../frontend/README.md) explains how to run it and add pages. It has no server or database of its own: all data and sign-in go through the FastAPI backend. Tested locally against the API, but not yet with a real Google account or the live API.
+The app is in [frontend/](../frontend), and its [README](../frontend/README.md) explains how to run it and add pages. It has no server or database of its own: all data and sign-in go through the FastAPI backend. Tested with a real Google account against the live API.
 
-- [ ] **Set up the React app** · KAN-64
+- [x] **Set up the React app** · KAN-64
   - [x] App runs on `http://localhost:5173`
   - [x] API URL and Google client ID come from environment settings, not hard-coded
   - [x] One shared way to call the API with the sign-in token
-  - [ ] Works against the live API (Amora)
-  - [ ] Merged to `main` (Amora)
-- [ ] **Build the sign-in page** · KAN-57
-  - [ ] Sign in with a real Google account through `POST /auth/google` (Amora)
-  - [ ] Someone an admin hasn't added sees a clear error (Amora)
+  - [x] Works against the live API (Amora)
+  - [x] Merged to `main` (Amora)
+- [x] **Build the sign-in page** · KAN-57
+  - [x] Sign in with a real Google account through `POST /auth/google` (Amora)
+  - [x] Someone an admin hasn't added sees a clear error (Amora)
   - [x] Each role goes to its own dashboard, using `GET /me`
   - [x] An invalid or expired session returns to sign-in
   - [x] Signing out returns to sign-in
@@ -46,10 +46,10 @@ The app is in [frontend/](../frontend), and its [README](../frontend/README.md) 
 
 Hosting is an S3 website behind Cloudflare, with no CloudFront. Amora runs the AWS and Cloudflare steps.
 
-- [ ] Create the website bucket with `terraform apply` from an up-to-date `main` (Amora)
-- [ ] Upload a test page and check it loads through the domain (Amora)
-- [ ] In Cloudflare, add a Configuration Rule setting SSL to **Flexible** for `perceptionlms.com` only, keeping the default on **Full (strict)** (Amora)
-- [ ] In Cloudflare, replace the two parking A records with a proxied CNAME: `perceptionlms.com` → `perceptionlms.com.s3-website-ap-southeast-2.amazonaws.com` (Amora) · KAN-56
+- [x] Create the website bucket with `terraform apply` from an up-to-date `main` (Amora)
+- [x] Upload a test page and check it loads through the domain (Amora)
+- [x] In Cloudflare, add a Configuration Rule setting SSL to **Flexible** for `perceptionlms.com` only, keeping the default on **Full (strict)** (Amora)
+- [x] In Cloudflare, replace the two parking A records with a proxied CNAME: `perceptionlms.com` → `perceptionlms.com.s3-website-ap-southeast-2.amazonaws.com` (Amora) · KAN-56
 - [ ] Build the app and upload `dist/` to the bucket (Amora, Dipesh) · KAN-56
 - [ ] `https://perceptionlms.com` opens the sign-in page (Amora, Dipesh) · KAN-56
 
@@ -67,7 +67,7 @@ Hosting is an S3 website behind Cloudflare, with no CloudFront. Amora runs the A
 - [ ] Automatic publishing with GitHub Actions when `main` changes
 - [ ] Move Terraform state to S3 so more than one person can deploy; see `backend/infra/versions.tf`
 - [ ] Give the API a custom domain such as `api.perceptionlms.com`, with an ACM certificate. Its validation CNAMEs must be **DNS only** (grey cloud) in Cloudflare
-- [ ] Decide what `www.perceptionlms.com` does, once Nancy confirms whether its CNAME was deliberate
+- [x] `www.perceptionlms.com` redirects to `perceptionlms.com` (301); its old CNAME wasn't deliberate
 - [ ] Turn on `deletion_protection_enabled` before anything is called prod
 
 ## Done
