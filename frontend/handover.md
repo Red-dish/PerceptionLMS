@@ -1,26 +1,16 @@
 # Frontend handover for Bishu
 
-**From:** Amora · **Date:** 4 Nov 2026 · **Week 1 deadline:** Fri 6 Nov 2026
+**From:** Amora · **Updated:** 9 Nov 2026
 
-You now own the frontend's design and features. This page explains what changed, how to get it running and what to do first. For setup details and the folder layout, see [README.md](README.md).
+You lead the frontend: its design, its features, and reviewing Dipesh's and Roshan's frontend work. This page covers what's live, what to design next, and how your changes get onto https://perceptionlms.com. For setup details and the folder layout, see [README.md](README.md).
 
-## What changed, and why
+## Where things stand
 
-Your draft had a great UI, and its look carries over. But it ran on its own Express server and JSON file, while the project uses a FastAPI backend, DynamoDB and S3 hosting. S3 only serves files, so it can't run a Node server.
+- **The app is live at https://perceptionlms.com.** It's the React app in this folder, as it is on `main`.
+- **Sign-in works** with a real Google account against the live API, for people an admin has added.
+- **Every screen is built and working** for all three roles: dashboards, courses, modules and materials, assignments and marking, grades, people and user admin. What's left is mostly design.
 
-So the frontend was rebuilt on the same React, Vite and Tailwind setup, connected to our real API.
-
-| | Your draft | Now |
-| --- | --- | --- |
-| Folder | `UI-UX-Design/Frontend/` | `frontend/` |
-| App location | `client/` and `server/` | The React app only |
-| Data | Express and `data.json` | Our FastAPI backend |
-| Sign-in | Passport, passwords, demo logins | Google only, for people an admin has added |
-| Role name | `teacher` | `lecturer` |
-| Course content | Lessons | Modules and materials |
-| Name | Learnly | Perception LMS |
-
-Your draft is still in git. To look at an old file, run a command like this:
+Your earlier draft is still in git if you want to reuse code or design from it:
 
 ```bash
 git show "ee7c2f8:UI-UX-Design/Frontend/client/src/pages/Dashboard.jsx"
@@ -28,58 +18,81 @@ git show "ee7c2f8:UI-UX-Design/Frontend/client/src/pages/Dashboard.jsx"
 
 ## Get it running
 
-1. **Commit or back up any local changes to your draft first.** The old folder is gone from this branch. Ask Amora if you're unsure.
-2. Get the latest code:
+From the repo folder:
+
+1. Get the latest frontend code:
    ```bash
-   git switch frontend-draft-bishu
+   git switch frontend
    ```
    ```bash
    git pull
    ```
-3. Create your settings file from the `frontend` folder, then add the Google client ID from Amora:
+2. **First time only:** go to the `frontend` folder and create your settings file, then add the Google client ID from Amora:
    ```bash
    cp .env.example .env.local
    ```
-4. Install and start:
+3. Install and start. If you installed packages before 9 Nov, run `npm install` again, because the build tools were updated.
    ```bash
    npm install
    ```
    ```bash
    npm run dev
    ```
-5. Open http://localhost:5173 and sign in. **Amora must add your Google account first.**
+4. Open http://localhost:5173 and sign in. **Amora must add your Google account first.**
 
 **To see each role:** your account has one role at a time. Ask Amora to change it on the Users page, and to enrol you in a test course. The dashboard and course pages look different for each role.
 
-## What to do first
+## What to design
 
-### 1. Design for Friday (KAN-65)
+Work through these in order. Each one is a separate branch and pull request (see the next section).
 
-Everything below already works, so this is mostly styling. Make Friday's demo screens look finished, in this order:
+### 1. Finish the look (KAN-65)
 
+Everything works, so this is styling. The original design to work from is [UI-UX-Design/UI Design.html](../UI-UX-Design/UI%20Design.html).
+
+- [ ] **Colours and type:** `tailwind.config.js` and `src/index.css`. Do these first, since every page uses them.
+- [ ] **Shared pieces:** buttons, cards, loading and error states in `src/components/ui.jsx`
+- [ ] **Navigation:** `src/components/Layout.jsx`, on desktop and phone
 - [ ] **Sign-in page:** `src/pages/Login.jsx`
 - [ ] **Dashboard for each role:** `src/pages/Dashboard.jsx`
-- [ ] **Navigation:** `src/components/Layout.jsx`, on desktop and phone
-- [ ] **Colours and type:** `tailwind.config.js` and `src/index.css`, plus the shared pieces in `src/components/ui.jsx`
 - [ ] **Course cards:** `src/components/CourseCard.jsx`
-- [ ] **Apeksha's design feedback (KAN-66),** due Thu 5 Nov
+- [ ] **Apeksha's design feedback (KAN-66):** ask Apeksha for it, since it isn't done yet
 
-`UI-UX-Design/UI Design.html` is the original design to work from.
+### 2. Your features
 
-### 2. Tell Amora when it's ready, by Thursday night
-
-Amora will publish the site and needs time to test it before Friday.
-
-### 3. After Friday
-
-These GitHub issues are planned for you in [PR #63](https://github.com/Red-dish/PerceptionLMS/pull/63), which isn't merged yet, so confirm them with Amora. Read each issue for what's needed.
+These are GitHub issues from the v1 plan. Read each issue for what's needed.
 
 | Issue | Feature | Backend |
 | --- | --- | --- |
 | [#53](https://github.com/Red-dish/PerceptionLMS/issues/53) | Dashboard | `GET /me/dashboard` is ready; extra numbers may need more API |
 | [#39](https://github.com/Red-dish/PerceptionLMS/issues/39) | Course navigation menu | Started in `pages/course/CourseLayout.jsx` |
 | [#32](https://github.com/Red-dish/PerceptionLMS/issues/32) | User profile and settings | Can read with `GET /me`; people can't edit their own details yet |
-| [#36](https://github.com/Red-dish/PerceptionLMS/issues/36) | Pages | No API for this yet |
+| [#36](https://github.com/Red-dish/PerceptionLMS/issues/36) | Pages | No API for this yet: ask Amora before starting |
+
+Dipesh's and Roshan's features are listed in [docs/Teams and Roles/teams.md](../docs/Teams%20and%20Roles/teams.md). As frontend lead, you review their PRs.
+
+## How your changes go live
+
+The full guide is [docs/branching-workflow.md](../docs/branching-workflow.md). In short:
+
+1. **Make a branch for each task** from `frontend`, for example:
+   ```bash
+   git switch frontend
+   ```
+   ```bash
+   git pull
+   ```
+   ```bash
+   git switch -c feature/KAN-65-colours-and-type
+   ```
+2. **Commit, push, and open a pull request into `frontend`.** GitHub picks `main` by default, so change the base to `frontend`. Someone else must approve it before it can merge, so ask Dipesh, Roshan or Amora.
+3. **When a set of changes is ready to show,** open a pull request from `frontend` into `dev`. Amora reviews it, then moves `dev` into `main`.
+4. **Amora publishes `main` to the site.** Message Amora once your work is on `main`. It's usually live the same day.
+5. **Check it on https://perceptionlms.com.** If you still see the old version, do a hard refresh (Ctrl+Shift+R).
+
+Only Amora can publish for now, because it needs AWS access. Automatic publishing whenever `main` changes is planned.
+
+**You can always see your changes straight away on http://localhost:5173.** The live site is for showing finished work to the team and our lecturer.
 
 ## Rules
 
@@ -88,39 +101,24 @@ These GitHub issues are planned for you in [PR #63](https://github.com/Red-dish/
 3. **Don't change sign-in without talking to Amora.** That means `src/lib/auth.jsx`, `src/lib/api.js` and `src/components/GoogleButton.jsx`.
 4. **Leave `backend/` alone,** and leave AWS and Cloudflare to Amora.
 5. **Never commit `.env.local`,** passwords, tokens or demo logins.
-6. **Don't show made-up numbers as if they were real.** Charts and stats like attendance or progress need real data, which the API doesn't have yet. Recharts was removed for this reason; add it back when there's data for it.
-7. **Agree new features with Amora first,** so we don't end up with separate versions again.
+6. **Don't show made-up numbers as if they were real.** Charts and stats like attendance or progress need real data, which the API doesn't have yet.
+7. **Don't commit straight to `frontend`, `dev` or `main`.** GitHub blocks it anyway; always use a pull request.
 
-## How to work
-
-- **Branch:** work on `frontend-draft-bishu` for now. Run `git pull` before you start each day, and push small commits often.
-- **`main`:** don't merge into it. Amora will open the PR once real sign-in has been tested.
-- **Shared data:** the live API holds data for the whole team, so don't delete things you didn't create. To work with your own data, [run the backend locally](../backend/README.md) and set `VITE_API_URL=http://localhost:8000`.
-
-**Before each push, check:**
+**Before opening a pull request, check:**
 
 - [ ] `npm run build` succeeds
 - [ ] The pages you changed work for each role that can see them
 - [ ] They work at phone width, with no sideways scrolling
 - [ ] Loading, empty and error states still show properly
 
-## What's been tested
-
-**Works** against a local copy of the API, with all three roles:
-
-- Dashboards, courses, enrolments and announcements
-- Modules, plus uploading and downloading files
-- Submitting, marking, releasing marks and grades
-- Phone layout, invalid sessions and signing out
-
-**Not tested yet:** signing in with a real Google account, and using the live API. Amora is checking these. **If sign-in fails for you, tell Amora.** It's probably not your code.
+**Shared data:** the live API holds data for the whole team, so don't delete things you didn't create. To work with your own data, [run the backend locally](../backend/README.md) and set `VITE_API_URL=http://localhost:8000` in `.env.local`.
 
 ## Who to ask
 
 | Question | Ask |
 | --- | --- |
-| Anything in the API, sign-in, hosting, architecture | Amora |
+| Anything in the API, sign-in, hosting, publishing | Amora |
 | Design review and feedback | Apeksha |
-| Frontend screens and features, which you lead | Dipesh and Roshan |
+| Frontend screens and features | Dipesh and Roshan, whose work you review |
 
 Your tasks are also listed in [docs/task.md](../docs/task.md).
