@@ -76,6 +76,8 @@ Until #32 and #36 are ready, keep going with the look (section 1) and reviewing 
 
 As frontend lead, you review these PRs. Owners are in [docs/Teams and Roles/teams.md](../docs/Teams%20and%20Roles/teams.md).
 
+**This week (due Wed 11 Nov):** Dipesh is building #44, the lecturer grading view (KAN-70). Review his PR into `frontend` and merge it when it's ready (KAN-71). Use the checklist under "Before opening a pull request" below.
+
 | Issue | Feature | Owner | When | API |
 | --- | --- | --- | --- | --- |
 | [#37](https://github.com/Red-dish/PerceptionLMS/issues/37) | Files | Roshan | Core | **Ready** (new) |
