@@ -108,7 +108,7 @@ The project also delivers the business case, privacy and compliance documents, u
 
 ### Timeline
 
-Work runs in one-week cycles from 2 Nov 2026. Our lecturer sets a deliverable each week; we plan that week's tasks in Jira and end the week with a joint review.
+Work runs in one-week cycles from 2 Nov 2026. Our lecturer sets a deliverable each week, due every Wednesday; we plan that week's tasks in Jira and end the week with a joint review.
 
 | Week | Dates | Deliverable |
 |---|---|---|
