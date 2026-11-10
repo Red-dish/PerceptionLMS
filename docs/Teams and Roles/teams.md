@@ -18,7 +18,7 @@ Amora leads the technical team, with Bishu leading the frontend. Apeksha leads t
 
 **Business, compliance and governance team (3)**
 
-These three also build a few v1 features with AI coding agents; see [v1 modules](#v1-modules-github-epics) below.
+This team doesn't build features: every v1 feature is owned by the technical team (see [v1 modules](#v1-modules-github-epics) below). Apeksha tracks progress on every epic.
 
 | Role | Person | Owns | Backs up |
 | --- | --- | --- | --- |
@@ -32,27 +32,40 @@ Work is tracked in the Perception LMS (KAN) Jira project. Our lecturer sets a de
 
 To move faster, our lecturer asked us to break a basic Canvas-style v1 into modules. Each module is a GitHub issue labelled `epic`, with its features linked as sub-issues labelled `feature`. Each feature lists what is already built and its acceptance criteria, so it can be handed to an AI coding agent.
 
-| Epic | Owner | Features |
+| Epic | Lead | Open features |
 | --- | --- | --- |
-| [#27 Identity, Roles & Administration](https://github.com/Red-dish/PerceptionLMS/issues/27) | Amora | #28–#32 |
-| [#33 Courses & Content](https://github.com/Red-dish/PerceptionLMS/issues/33) | Dipesh | #34–#39 |
-| [#40 Assignments & Submissions](https://github.com/Red-dish/PerceptionLMS/issues/40) | Roshan | #41–#45 |
-| [#46 Quizzes & Gradebook](https://github.com/Red-dish/PerceptionLMS/issues/46) | Yoodem | #47–#51 |
-| [#52 Communication & Dashboard](https://github.com/Red-dish/PerceptionLMS/issues/52) | Nancy | #53–#58 |
+| [#27 Identity, Roles & Administration](https://github.com/Red-dish/PerceptionLMS/issues/27) | Amora | #32 |
+| [#33 Courses & Content](https://github.com/Red-dish/PerceptionLMS/issues/33) | Bishu | #36, #37 |
+| [#40 Assignments & Submissions](https://github.com/Red-dish/PerceptionLMS/issues/40) | Roshan | #43, #44, #45 |
+| [#46 Quizzes & Gradebook](https://github.com/Red-dish/PerceptionLMS/issues/46) | Dipesh | #47, #48, #49, #51 |
+| [#52 Communication & Dashboard](https://github.com/Red-dish/PerceptionLMS/issues/52) | Bishu | #55, #56, #57, #58 |
 
-Features are assigned by the roles above, so one person's features can sit under several epics:
+The epic lead keeps the epic moving; Apeksha is on every epic to track progress for the business team.
 
-| Person | Features |
-| --- | --- |
-| Amora | #29 Roles and permissions, #30 Admin user management, #31 Admin course and enrolment management, #34 Course settings, #44 Teacher grading view |
-| Roshan | #37 Files, #41 Assignment creation, #43 Late, missing and resubmission, #49 Teacher gradebook, #54 Announcements |
-| Dipesh | #28 Sign in with Google, #35 Modules, #38 Course home and syllabus, #42 Student submission, #50 Student grades view |
-| Bishu | #32 User profile, #36 Pages, #39 Course navigation, #53 Dashboard |
-| Yoodem | #45 Basic rubrics, #47 Quiz builder, #48 Quiz taking and auto-grading |
-| Nancy | #55 Discussions, #56 Inbox, #58 Notifications |
-| Apeksha | #51 Grade export, #57 Calendar |
+### Who builds each open feature
 
-Apeksha, as business analyst, is also on every epic to track progress. The business team's features were on the Later list, so they don't block the core build.
+Every feature has two owners, following the roles above: **Amora builds the API**, and **one frontend developer builds the screens**. Finish the core features before starting any "after core" one. The after-core features were on the Later list, so they must not hold up the core build.
+
+| Feature | Screens | API | When |
+| --- | --- | --- | --- |
+| #32 User profile and settings | Bishu | Amora | Core |
+| #36 Pages | Bishu | Amora | Core |
+| #37 Files | Roshan | Amora | Core |
+| #43 Late, missing and resubmission | Roshan | Amora | Core |
+| #44 Teacher submission review and grading view | Dipesh | Amora | Core |
+| #49 Teacher gradebook | Roshan | Amora | Core |
+| #45 Basic rubrics | Roshan | Amora | After core |
+| #47 Quiz builder | Dipesh | Amora | After core |
+| #48 Quiz taking and auto-grading | Dipesh | Amora | After core |
+| #51 Grade export (CSV) | Roshan | Amora | After core |
+| #55 Discussions | Dipesh | Amora | After core |
+| #56 Inbox (direct messaging) | Dipesh | Amora | After core |
+| #57 Calendar | Bishu | Amora | After core |
+| #58 Notifications | Bishu | Amora | After core |
+
+In total, Bishu has 4 features (fewer, because Bishu also reviews every frontend PR), Dipesh has 5 and Roshan has 5.
+
+**Already done (closed):** #28 Sign in with Google, #29 Roles and permissions, #30 Admin user management, #31 Admin course and enrolment management, #34 Course creation and settings, #35 Modules, #38 Course home and syllabus, #39 Course navigation, #41 Assignment creation, #42 Student submission, #50 Student grades view, #53 Dashboard, #54 Announcements.
 
 ## Tech stack
 
