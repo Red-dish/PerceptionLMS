@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
 from app.config import get_settings
-from app.routers import admin, announcements, assignments, courses, login, me
+from app.routers import admin, announcements, assignments, courses, gradebook, login, me, tracking
 
 app = FastAPI(
     title="Perception LMS API",
@@ -19,7 +19,16 @@ app.add_middleware(
     allow_headers=["Authorization", "Content-Type"],
 )
 
-for router in (login.router, me.router, admin.router, courses.router, assignments.router, announcements.router):
+for router in (
+    login.router,
+    me.router,
+    admin.router,
+    courses.router,
+    assignments.router,
+    gradebook.router,
+    tracking.router,
+    announcements.router,
+):
     app.include_router(router)
 
 

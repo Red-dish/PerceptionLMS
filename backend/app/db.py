@@ -65,6 +65,11 @@ def submission_key(assignment_id: str, student_id: str) -> tuple[str, str]:
     return f"ASSIGNMENT#{assignment_id}", f"SUBMISSION#{student_id}"
 
 
+def grant_key(assignment_id: str, student_id: str) -> tuple[str, str]:
+    """A resubmission or extension a lecturer has given one student."""
+    return f"ASSIGNMENT#{assignment_id}", f"GRANT#{student_id}"
+
+
 def announcement_key(course_id: str, announcement_id: str) -> tuple[str, str]:
     return f"COURSE#{course_id}", f"ANNOUNCEMENT#{announcement_id}"
 
