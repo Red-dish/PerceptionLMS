@@ -8,8 +8,8 @@ You lead the frontend: its design, its features, and reviewing Dipesh's and Rosh
 
 - **The app is live at https://perceptionlms.com.** It's the React app in this folder, as it is on `main`.
 - **Sign-in works** with a real Google account against the live API, for people an admin has added.
-- **Every screen is built and working** for all three roles: dashboards, courses, modules and materials, assignments and marking, grades, people and user admin. What's left is mostly design.
-- **New API for coursework (10 Nov):** files, late and missing work, resubmissions and extensions, the gradebook and CSV export, scheduled announcements, and more assignment settings. No screens use it yet. See [New in the API](#new-in-the-api-10-nov). It's on the `frontend` branch but **not on the live API yet**, so build against a local backend until Amora deploys it.
+- **Every screen is built and working** for all three roles: dashboards, courses, modules and materials, assignments and marking, grades, people and user admin. Amora built them all, along with the API behind them. What's left is mostly design, and the design work (section 1, KAN-65) hasn't started yet.
+- **New API for coursework (10 Nov), built by Roshan in PR #85:** files, late and missing work, resubmissions and extensions, the gradebook and CSV export, scheduled announcements, and more assignment settings. No screens use it yet. See [New in the API](#new-in-the-api-10-nov). It's on the `frontend` branch but **not on the live API yet**, so build against a local backend until Amora deploys it.
 
 Your earlier draft is still in git if you want to reuse code or design from it:
 
