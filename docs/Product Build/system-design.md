@@ -57,6 +57,7 @@ There is one table with keys `PK` and `SK`, plus one index, `GSI1`, with keys `G
 | Material | `COURSE#<courseId>` | `MATERIAL#<moduleId>#<materialId>` | | |
 | Assignment | `COURSE#<courseId>` | `ASSIGNMENT#<assignmentId>` | | |
 | Submission | `ASSIGNMENT#<assignmentId>` | `SUBMISSION#<studentId>` | `USER#<studentId>` | `SUBMISSION#<assignmentId>` |
+| Resubmission or extension | `ASSIGNMENT#<assignmentId>` | `GRANT#<studentId>` | | |
 | Announcement | `COURSE#<courseId>` | `ANNOUNCEMENT#<announcementId>` | | |
 
 | Question the app asks | How |
@@ -68,10 +69,22 @@ There is one table with keys `PK` and `SK`, plus one index, `GSI1`, with keys `G
 | All submissions for an assignment | Query `ASSIGNMENT#<id>` |
 | My grades | Query GSI1 on `USER#<me>`, sort key starts with `SUBMISSION#` |
 
+## Assignments, marking and the gradebook
+
+The shared rules are in `backend/app/coursework.py`.
+
+- **Assignments and quizzes** have points (`max_mark`), a weight, a due date, a submission type (file, text, both or none for work done in class), and can be unpublished or attached to a module.
+- **Availability window:** students can't see an assignment before `available_from` or submit after `available_until`.
+- **Late work** is anything submitted after the due date. `days_late` rounds up, so one minute late counts as one day. An optional `late_penalty_percent` takes that percent off for each day late; `final_mark` is the result and is what the gradebook totals.
+- **Attempts:** students can resubmit until their work is marked, up to `max_attempts` if set. Every earlier attempt is kept in `history`, including its file.
+- **Resubmissions and extensions:** a lecturer can give one student a grant. It lets them submit after marking (it is then used up) or after the window closes. With a date, it is an extension: work up to that date counts as on time.
+- **Missing work** is anything not handed in once the due date (or extension) has passed.
+- **Gradebook:** every enrolled student against every assignment and quiz, with points, percent and a weighted percent. Editing a cell uses the same grade endpoint as marking a submission, and can mark work that was never submitted online, such as a quiz sat in class.
+
 ## S3 file keys
 
 - Materials: `courses/<courseId>/materials/<materialId>/<fileName>`
-- Submissions: `courses/<courseId>/submissions/<assignmentId>/<studentId>/<uploadId>/<fileName>`
+- Submissions: `courses/<courseId>/submissions/<assignmentId>/<studentId>/<uploadId>/<fileName>`. Earlier attempts keep their files.
 
 Downloads are sent as attachments, so a file can't run as a web page on the site.
 
