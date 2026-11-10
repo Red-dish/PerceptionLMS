@@ -10,9 +10,10 @@ Due Wed 11 Nov.
 - [ ] Lecturer grading view screens, GitHub #44 (Dipesh) · KAN-70
 - [ ] Review the grading view PR and merge it into `frontend` (Bishu) · KAN-71
 - [ ] Deploy the coursework API: move PR #85 through `frontend` → `dev` → `main`, then deploy (Amora) · KAN-72
-- [ ] Backend for the next epics, starting with profile (#32) and pages (#36) so Bishu can build those screens (Amora) · KAN-73
-- [ ] Docs: who built what, and the frontend handover for the new API, PRs #88 to #91 (Amora) · KAN-74
-- [ ] Shared layout and visual design, carried over from Week 1 (Bishu) · KAN-65
+- [ ] Backend: profile (#32) and pages (#36) first, then discussions (#55) and inbox (#56) (Amora) · KAN-73
+- [ ] Backend: rubrics (#45), quizzes (#47, #48) and notifications (#58) (Roshan) · KAN-75
+- [ ] Docs: who built what, the frontend handover, and the new roles (Amora) · KAN-74
+- [ ] Visual design: colours, type, layout, and designs for new screens, carried over from Week 1 (Bishu) · KAN-65
 
 ### Business team
 - [ ] Design review for the three roles, carried over from Week 1 (Apeksha) · KAN-66
