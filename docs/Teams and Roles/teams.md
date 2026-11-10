@@ -26,7 +26,7 @@ This team doesn't build features: every v1 feature is owned by the technical tea
 | 5. Project manager and governance lead | Nancy | Scope and user stories, Jira board, meetings and minutes, RACI chart, risk register, decision log, final report and presentation | Role 6 |
 | 6. Compliance and risk officer | Yoodem | Privacy law requirements, privacy policy and terms, copyright for lecturer content, accessibility (WCAG) audit, data protection impact assessment, security and data-retention policies | Role 4 |
 
-Work is tracked in the Perception LMS (KAN) Jira project. Our lecturer sets a deliverable each week, and each one becomes an epic of tasks in Jira; see [tasks.md](../Product%20Build/tasks.md) for this week's list.
+Work is tracked in the Perception LMS (KAN) Jira project. Our lecturer sets a deliverable each week, due every Wednesday, and each one becomes an epic of tasks in Jira; see [tasks.md](../Product%20Build/tasks.md) for this week's list.
 
 ## v1 modules (GitHub epics)
 
@@ -44,20 +44,20 @@ The epic lead keeps the epic moving; Apeksha is on every epic to track progress 
 
 ### Who builds each open feature
 
-Every feature has two owners, following the roles above: **Amora builds the API**, and **one frontend developer builds the screens**. Finish the core features before starting any "after core" one. The after-core features were on the Later list, so they must not hold up the core build.
+Every feature has two owners, following the roles above: **Amora builds the API**, and **one frontend developer builds the screens**. Finish the core features before starting any "after core" one. The after-core features were on the Later list, so they must not hold up the core build. "Done" in the API column means the endpoints exist, so the screens can start.
 
 | Feature | Screens | API | When |
 | --- | --- | --- | --- |
 | #32 User profile and settings | Bishu | Amora | Core |
 | #36 Pages | Bishu | Amora | Core |
-| #37 Files | Roshan | Amora | Core |
-| #43 Late, missing and resubmission | Roshan | Amora | Core |
-| #44 Teacher submission review and grading view | Dipesh | Amora | Core |
-| #49 Teacher gradebook | Roshan | Amora | Core |
+| #37 Files | Roshan | Done (Roshan, PR #85) | Core |
+| #43 Late, missing and resubmission | Roshan | Done (Roshan, PR #85) | Core |
+| #44 Teacher submission review and grading view | Dipesh | Done (Amora; extras from PR #85) | Core |
+| #49 Teacher gradebook | Roshan | Done (Roshan, PR #85) | Core |
 | #45 Basic rubrics | Roshan | Amora | After core |
 | #47 Quiz builder | Dipesh | Amora | After core |
 | #48 Quiz taking and auto-grading | Dipesh | Amora | After core |
-| #51 Grade export (CSV) | Roshan | Amora | After core |
+| #51 Grade export (CSV) | Roshan | Done (Roshan, PR #85) | After core |
 | #55 Discussions | Dipesh | Amora | After core |
 | #56 Inbox (direct messaging) | Dipesh | Amora | After core |
 | #57 Calendar | Bishu | Amora | After core |
@@ -66,6 +66,16 @@ Every feature has two owners, following the roles above: **Amora builds the API*
 In total, Bishu has 4 features (fewer, because Bishu also reviews every frontend PR), Dipesh has 5 and Roshan has 5.
 
 **Already done (closed):** #28 Sign in with Google, #29 Roles and permissions, #30 Admin user management, #31 Admin course and enrolment management, #34 Course creation and settings, #35 Modules, #38 Course home and syllabus, #39 Course navigation, #41 Assignment creation, #42 Student submission, #50 Student grades view, #53 Dashboard, #54 Announcements.
+
+### Who has built what so far (10 Nov)
+
+The roles above are the plan from 8 Nov. The code in the app today was written by:
+
+- **Amora:** the API and the screens for every closed feature listed above, plus sign-in, hosting, the domain and deployment.
+- **Roshan:** the coursework backend in PR #85. That's files, late and missing work, resubmissions and extensions, the gradebook and CSV export, scheduled announcements, and the new assignment settings.
+- **Bishu and Dipesh:** no code in the app yet. Bishu's design work as frontend lead (KAN-65) hasn't started. Earlier frontend drafts (PR #25, reverted in PR #59, and PR #62, not merged) aren't part of the current app.
+
+Some closed GitHub issues and Jira items are assigned to the person they were planned for rather than the person who built them.
 
 ## Tech stack
 

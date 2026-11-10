@@ -4,14 +4,20 @@ The to-do list for the whole technical team: Amora, Roshan, Dipesh and Bishu. Ti
 
 ## Current goal
 
-**Week 1, due Fri 6 Nov 2026 (Jira epic KAN-54):** open `https://perceptionlms.com`, sign in with Google, and reach the dashboard for your role: student, staff or admin. The dashboard can use sample data this week; live data comes later (KAN-42).
+Deliverables are due **every Wednesday**.
 
-| Piece | Status (9 Nov 2026) |
+**Week 2, due Wed 11 Nov 2026 (Jira epic KAN-68):** the coursework API (files, late work, resubmissions, gradebook) deployed, and the lecturer grading view (GitHub #44) built by Dipesh and reviewed by Bishu. Amora starts the backend for the next epics, beginning with profile (#32) and pages (#36). The full list is in [Product Build/tasks.md](Product%20Build/tasks.md).
+
+Week 1 (sign-in, roles and dashboard, KAN-54) is done; its items are below.
+
+| Piece | Status (10 Nov 2026) |
 | --- | --- |
-| Backend API | Live at `https://p4r5x8qd32.execute-api.ap-southeast-2.amazonaws.com/` |
+| Backend API | Live at `https://p4r5x8qd32.execute-api.ap-southeast-2.amazonaws.com/`. Roshan's coursework API (PR #85) isn't deployed yet |
 | Website S3 bucket | Created |
-| Domain | `https://perceptionlms.com` is live with a test page; `www` redirects to it |
-| React app | In `frontend/` on `main`, tested with a real Google account against the live API; not published to the domain yet |
+| Domain | `https://perceptionlms.com` is live; `www` redirects to it |
+| React app | Published to `https://perceptionlms.com` from `main`, and works with a real Google account against the live API |
+
+Amora built everything in the app so far, apart from Roshan's coursework backend (PR #85). See "Who has built what so far" in [teams.md](Teams%20and%20Roles/teams.md).
 
 ## Week 1: frontend
 
@@ -32,12 +38,12 @@ The app is in [frontend/](../frontend), and its [README](../frontend/README.md) 
 - [x] **Build the dashboard** · KAN-58
   - [x] Opens for student, staff and admin
   - [x] Uses live data from `GET /me/dashboard`
-- [ ] **Shared layout and visual design** (Bishu) · KAN-65
-  - [x] Navigation shared by every page
-  - [x] Works at phone width
+- [ ] **Shared layout and visual design** (Bishu) · KAN-65. Not started yet
+  - [x] Navigation shared by every page (Amora)
+  - [x] Works at phone width (Amora)
   - [ ] Final colours, type and page design (Bishu)
   - [ ] Design feedback from Apeksha applied (KAN-66, due Thu 5 Nov) (Bishu)
-- [ ] **Frontend features and design** (Bishu); start with [frontend/handover.md](../frontend/handover.md)
+- [ ] **Frontend features and design** (Bishu); start with [frontend/handover.md](../frontend/handover.md). Not started yet
   - [ ] Build new screens on `frontend/`, following the rules in its README
   - [ ] Reuse anything useful from the earlier draft, in git at commit `ee7c2f8`
   - [ ] Ask Amora for an endpoint when a screen needs data the API doesn't offer
@@ -50,8 +56,8 @@ Hosting is an S3 website behind Cloudflare, with no CloudFront. Amora runs the A
 - [x] Upload a test page and check it loads through the domain (Amora)
 - [x] In Cloudflare, add a Configuration Rule setting SSL to **Flexible** for `perceptionlms.com` only, keeping the default on **Full (strict)** (Amora)
 - [x] In Cloudflare, replace the two parking A records with a proxied CNAME: `perceptionlms.com` → `perceptionlms.com.s3-website-ap-southeast-2.amazonaws.com` (Amora) · KAN-56
-- [ ] Build the app and upload `dist/` to the bucket (Amora, Dipesh) · KAN-56
-- [ ] `https://perceptionlms.com` opens the sign-in page (Amora, Dipesh) · KAN-56
+- [x] Build the app and upload `dist/` to the bucket (Amora) · KAN-56
+- [x] `https://perceptionlms.com` opens the sign-in page (Amora) · KAN-56
 
 ## Week 1: testing
 
@@ -78,11 +84,12 @@ Hosting is an S3 website behind Cloudflare, with no CloudFront. Amora runs the A
 - [x] Backend deployed to the AWS `dev` environment; `/health` and `/docs` respond, and `/me` returns 401 without a token · KAN-55
 - [x] Hosting decided, and the website bucket added to Terraform (PR #60)
 - [x] Docs organised into `Product Build/`, `Product Management/` and `Teams and Roles/`
+- [x] Coursework backend: files, late and missing work, resubmissions and extensions, gradebook and CSV export, scheduled announcements, with 48 tests passing (Roshan, PR #85). Merged into `frontend`; not deployed yet
 - [x] PR #25 reverted by PR #59. To bring that code back, revert PR #59: merging `frontend-login-dashboard` again won't restore it
 
 ## Rules for everyone
 
-- **Work on a branch and open a PR to `main`.** Start new work from an up-to-date `main`.
+- **Work on a branch and open a PR,** following [branching-workflow.md](branching-workflow.md): frontend work into `frontend`, and backend, infrastructure and docs into `dev`. Only `dev` merges into `main`.
 - **Never commit secrets:** `backend/.env`, `backend/infra/terraform.tfvars` or `terraform.tfstate*`. The Google client ID isn't secret, so it's safe to share.
 - **Never make the private files bucket public.** It holds student submissions. Only the separate `perceptionlms.com` bucket serves the website.
 - **Only Amora runs Terraform and deploys for now,** because Terraform state is on one machine. Run it from an up-to-date `main`: on an older branch, it could try to delete resources that branch doesn't know about.
