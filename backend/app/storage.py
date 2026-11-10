@@ -6,6 +6,7 @@ from functools import cache
 
 import boto3
 from botocore.config import Config
+from fastapi import HTTPException, status
 
 from app.config import get_settings
 
@@ -16,6 +17,25 @@ DOWNLOAD_LINK_SECONDS = 5 * 60
 @cache
 def s3():
     return boto3.client("s3", config=Config(signature_version="s3v4"))
+
+
+# Documents, slides, spreadsheets, images, audio/video, archives and code. Programs that
+# run when opened (.exe, .bat, .msi and so on) are refused.
+ALLOWED_EXTENSIONS = frozenset(
+    """pdf doc docx odt rtf txt md ppt pptx odp key xls xlsx ods csv numbers pages
+    png jpg jpeg gif webp heic mp3 m4a wav mp4 mov webm zip 7z tar gz
+    py ipynb java c h cpp cs js ts html css json xml sql r""".split()
+)
+
+
+def check_file_type(name: str) -> None:
+    """Refuse file types that aren't on the allowed list."""
+    extension = name.rsplit(".", 1)[-1].lower() if "." in name else ""
+    if extension not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_CONTENT,
+            f"Files of type .{extension or '(none)'} can't be uploaded. Use a document, image, video, archive or code file.",
+        )
 
 
 def safe_file_name(name: str) -> str:

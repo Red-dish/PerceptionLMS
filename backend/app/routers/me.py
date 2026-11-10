@@ -1,11 +1,11 @@
-from datetime import UTC, datetime
-
 from fastapi import APIRouter
 
+from app import coursework as cw
 from app import db
 from app.access import my_courses
 from app.auth import CurrentUser
 from app.models import Dashboard, Grade, User
+from app.routers.announcements import is_published, shown_at
 
 router = APIRouter(prefix="/me", tags=["me"])
 
@@ -18,18 +18,21 @@ def me(user: CurrentUser):
 @router.get("/dashboard", response_model=Dashboard)
 def dashboard(user: CurrentUser):
     courses = my_courses(user)
-    now = datetime.now(UTC)
+    now = cw.now()
     upcoming, announcements = [], []
     for course in courses:
         partition = f"COURSE#{course['id']}"
-        upcoming += [
-            assignment
-            for assignment in db.query(partition, "ASSIGNMENT#")
-            if datetime.fromisoformat(assignment["due_at"]) >= now
-        ]
-        announcements += db.query(partition, "ANNOUNCEMENT#", newest_first=True)[:5]
+        for assignment in db.query(partition, "ASSIGNMENT#"):
+            if cw.parse(assignment["due_at"]) < now:
+                continue
+            # Students don't see work that is unpublished or not open yet.
+            if course["my_role"] == "student" and not cw.is_visible_to_students(assignment, now):
+                continue
+            upcoming.append(assignment)
+        # Only announcements that have gone out; scheduled ones wait.
+        announcements += [a for a in db.query(partition, "ANNOUNCEMENT#") if is_published(a)]
     upcoming.sort(key=lambda assignment: assignment["due_at"])
-    announcements.sort(key=lambda announcement: announcement["created_at"], reverse=True)
+    announcements.sort(key=shown_at, reverse=True)
     return {"courses": courses, "upcoming": upcoming[:10], "announcements": announcements[:5]}
 
 
@@ -52,6 +55,7 @@ def my_grades(user: CurrentUser):
                 "weight": assignment["weight"],
                 "max_mark": assignment["max_mark"],
                 "mark": submission["mark"],
+                "final_mark": cw.final_mark(assignment, submission),
                 "feedback": submission.get("feedback") or "",
             }
         )

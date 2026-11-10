@@ -104,7 +104,7 @@ In Cloudflare, add a proxied CNAME from `perceptionlms.com` to the `frontend_web
 </script>
 ```
 
-**Uploading a file** happens in two steps. First call the API, for example `POST /courses/{id}/modules/{id}/materials`. It returns `upload.url` and `upload.fields`. Then POST the file straight to S3 as `multipart/form-data`: add every entry in `fields` first, then the file as `file`. Files can be up to 20 MB.
+**Uploading a file** happens in two steps. First call the API, for example `POST /courses/{id}/modules/{id}/materials`. It returns `upload.url` and `upload.fields`. Then POST the file straight to S3 as `multipart/form-data`: add every entry in `fields` first, then the file as `file`. Files can be up to 20 MB, and must be a document, image, audio or video, archive or code file (`storage.ALLOWED_EXTENSIONS`); programs such as `.exe` are refused.
 
 ## Endpoints
 
@@ -114,10 +114,13 @@ In Cloudflare, add a proxied CNAME from `perceptionlms.com` to the `frontend_web
 | Me | `GET /me`, `GET /me/dashboard`, `GET /me/grades` | Signed in |
 | Users | `GET/POST /admin/users`, `PATCH /admin/users/{id}` | Admin |
 | Courses and enrolments | `GET/POST /admin/courses`, `GET /admin/courses/{id}/members`, `PUT/DELETE /admin/courses/{id}/members/{userId}` | Admin |
-| Course content | `GET /courses`, `GET /courses/{id}`, `POST/PATCH/DELETE …/modules`, `POST/DELETE …/materials`, `GET …/materials/{id}/download` | Enrolled (changes: lecturer) |
-| Assignments | `GET/POST /courses/{id}/assignments`, `GET/PATCH …/{assignmentId}` | Enrolled (changes: lecturer) |
-| Submissions | `POST …/{assignmentId}/submission` (student), `GET …/submissions`, `PUT …/submissions/{studentId}/grade` (lecturer), `GET …/submissions/{studentId}/download` | As shown |
-| Announcements | `GET/POST /courses/{id}/announcements`, `DELETE …/{announcementId}` | Enrolled (changes: lecturer) |
+| Course content and files | `GET /courses`, `GET /courses/{id}`, `GET /courses/{id}/files?folder=`, `POST/PATCH/DELETE …/modules`, `PUT …/modules/order`, `POST/PATCH/DELETE …/materials`, `POST …/materials/{id}/file` (replace), `GET …/materials/{id}/download` | Enrolled (changes: lecturer) |
+| Assignments and quizzes | `GET/POST /courses/{id}/assignments`, `GET/PATCH/DELETE …/{assignmentId}`, `POST …/{assignmentId}/release` | Enrolled (changes: lecturer) |
+| Submissions | `POST …/{assignmentId}/submission` (student), `GET …/submissions`, `PUT/DELETE …/submissions/{studentId}/grade` (lecturer), `GET …/submissions/{studentId}/download`, `GET …/submissions/{studentId}/attempts/{n}/download` | As shown |
+| Resubmissions and extensions | `GET …/{assignmentId}/resubmissions`, `PUT/DELETE …/submissions/{studentId}/resubmission` | Lecturer |
+| Gradebook | `GET /courses/{id}/gradebook`, `GET /courses/{id}/gradebook.csv` | Lecturer |
+| Late and missing work | `GET /courses/{id}/late-missing?status=` (lecturer), `GET /admin/late-missing?status=` (admin, every course) | As shown |
+| Announcements | `GET/POST /courses/{id}/announcements`, `PATCH/DELETE …/{announcementId}` | Enrolled (changes: lecturer) |
 
 ## Folder layout
 
