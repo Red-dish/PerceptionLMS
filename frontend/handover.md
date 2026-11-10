@@ -1,6 +1,6 @@
 # Frontend handover for Bishu
 
-**From:** Amora · **Updated:** 9 Nov 2026
+**From:** Amora · **Updated:** 10 Nov 2026
 
 You lead the frontend: its design, its features, and reviewing Dipesh's and Roshan's frontend work. This page covers what's live, what to design next, and how your changes get onto https://perceptionlms.com. For setup details and the folder layout, see [README.md](README.md).
 
@@ -8,7 +8,8 @@ You lead the frontend: its design, its features, and reviewing Dipesh's and Rosh
 
 - **The app is live at https://perceptionlms.com.** It's the React app in this folder, as it is on `main`.
 - **Sign-in works** with a real Google account against the live API, for people an admin has added.
-- **Every screen is built and working** for all three roles: dashboards, courses, modules and materials, assignments and marking, grades, people and user admin. What's left is mostly design.
+- **Every screen is built and working** for all three roles: dashboards, courses, modules and materials, assignments and marking, grades, people and user admin. Amora built them all, along with the API behind them. What's left is mostly design, and the design work (section 1, KAN-65) hasn't started yet.
+- **New API for coursework (10 Nov), built by Roshan in PR #85:** files, late and missing work, resubmissions and extensions, the gradebook and CSV export, scheduled announcements, and more assignment settings. No screens use it yet. See [New in the API](#new-in-the-api-10-nov). It's on the `frontend` branch but **not on the live API yet**, so build against a local backend until Amora deploys it.
 
 Your earlier draft is still in git if you want to reuse code or design from it:
 
@@ -60,16 +61,87 @@ Everything works, so this is styling. The original design to work from is [UI-UX
 
 ### 2. Your features
 
-These are GitHub issues from the v1 plan. Read each issue for what's needed.
+These are GitHub issues from the v1 plan. Read each issue for what's needed. Amora builds the API for every feature; "Waiting" means don't start the screens until Amora says the endpoint is ready.
 
-| Issue | Feature | Backend |
+| Issue | Feature | When | API |
+| --- | --- | --- | --- |
+| [#32](https://github.com/Red-dish/PerceptionLMS/issues/32) | User profile and settings | Core | **Waiting.** `GET /me` reads the profile, but nobody can edit their own details yet |
+| [#36](https://github.com/Red-dish/PerceptionLMS/issues/36) | Pages | Core | **Waiting.** No API for pages yet |
+| [#57](https://github.com/Red-dish/PerceptionLMS/issues/57) | Calendar | After core | **Ready enough.** `GET /courses`, then `GET /courses/{id}/assignments` for each course, gives every due date |
+| [#58](https://github.com/Red-dish/PerceptionLMS/issues/58) | Notifications | After core | **Waiting.** No API yet |
+
+Until #32 and #36 are ready, keep going with the look (section 1) and reviewing your team's PRs.
+
+### 3. Your team's features
+
+As frontend lead, you review these PRs. Owners are in [docs/Teams and Roles/teams.md](../docs/Teams%20and%20Roles/teams.md).
+
+**This week (due Wed 11 Nov):** Dipesh is building #44, the lecturer grading view (KAN-70). Review his PR into `frontend` and merge it when it's ready (KAN-71). Use the checklist under "Before opening a pull request" below.
+
+| Issue | Feature | Owner | When | API |
+| --- | --- | --- | --- | --- |
+| [#37](https://github.com/Red-dish/PerceptionLMS/issues/37) | Files | Roshan | Core | **Ready** (new) |
+| [#43](https://github.com/Red-dish/PerceptionLMS/issues/43) | Late, missing and resubmission | Roshan | Core | **Ready** (new) |
+| [#44](https://github.com/Red-dish/PerceptionLMS/issues/44) | Lecturer submission review and grading | Dipesh | Core | **Ready**, with new extras |
+| [#49](https://github.com/Red-dish/PerceptionLMS/issues/49) | Lecturer gradebook | Roshan | Core | **Ready** (new) |
+| [#51](https://github.com/Red-dish/PerceptionLMS/issues/51) | Grade export (CSV) | Roshan | After core | **Ready** (new) |
+| [#45](https://github.com/Red-dish/PerceptionLMS/issues/45) | Basic rubrics | Roshan | After core | Waiting |
+| [#47](https://github.com/Red-dish/PerceptionLMS/issues/47), [#48](https://github.com/Red-dish/PerceptionLMS/issues/48) | Quiz builder, quiz taking | Dipesh | After core | Waiting. A quiz can be created and marked by hand, but there are no questions or auto-marking yet |
+| [#55](https://github.com/Red-dish/PerceptionLMS/issues/55), [#56](https://github.com/Red-dish/PerceptionLMS/issues/56) | Discussions, inbox | Dipesh | After core | Waiting |
+
+## New in the API (10 Nov)
+
+Added in PR #85. Every request and response is listed with examples at `/docs` on the backend (http://localhost:8000/docs when it runs locally). "Lecturer" means a lecturer enrolled in that course; admins can do the same.
+
+| For | Endpoint | What it does |
 | --- | --- | --- |
-| [#53](https://github.com/Red-dish/PerceptionLMS/issues/53) | Dashboard | `GET /me/dashboard` is ready; extra numbers may need more API |
-| [#39](https://github.com/Red-dish/PerceptionLMS/issues/39) | Course navigation menu | Started in `pages/course/CourseLayout.jsx` |
-| [#32](https://github.com/Red-dish/PerceptionLMS/issues/32) | User profile and settings | Can read with `GET /me`; people can't edit their own details yet |
-| [#36](https://github.com/Red-dish/PerceptionLMS/issues/36) | Pages | No API for this yet: ask Amora before starting |
+| #37 Files | `GET /courses/{id}/files?folder=` | Every file in the course across all modules, with its module's title. Filter by folder |
+| #37 Files | `PATCH …/modules/{id}/materials/{id}` | Rename a file, change its description or folder, reorder it, or move it to another module (`module_id`) |
+| #37 Files | `POST …/materials/{id}/file` | Replace a file's contents. Returns an upload form, used like any other upload |
+| Modules | `PUT /courses/{id}/modules/order` | Reorder modules: send every module ID in the new order (`module_ids`) |
+| #43 Late work | `GET /courses/{id}/late-missing?status=` | Lecturer: every late or missing piece of work in a course, with counts. `status` is `late` or `missing` |
+| #43 Late work | `GET /admin/late-missing?status=` | Admin: the same, for every course |
+| #43 Resubmission | `GET …/assignments/{id}/resubmissions` | Lecturer: students given a resubmission or extension |
+| #43 Resubmission | `PUT` and `DELETE …/submissions/{studentId}/resubmission` | Lecturer: give or remove one. Send `until` (a date) for an extension, or leave it empty to allow one more attempt |
+| #44 Grading | `DELETE …/submissions/{studentId}/grade` | Lecturer: clear a mark |
+| #44 Grading | `POST …/assignments/{id}/release` | Lecturer: release every mark at once |
+| #44 Grading | `GET …/submissions/{studentId}/attempts/{n}/download` | Lecturer: download an earlier attempt |
+| #49 Gradebook | `GET /courses/{id}/gradebook` | Lecturer: every student against every assignment and quiz, with totals, percent, weighted percent, and missing and late counts |
+| #49 Gradebook | Editing a cell | Use the same `PUT …/submissions/{studentId}/grade` as marking. It works even if the student never submitted online |
+| #51 Export | `GET /courses/{id}/gradebook.csv` | Lecturer: the gradebook as a CSV file |
+| Assignments | `DELETE /courses/{id}/assignments/{id}` | Lecturer: delete an assignment |
+| Announcements | `PATCH /courses/{id}/announcements/{id}` | Lecturer: edit an announcement or change when it goes out |
 
-Dipesh's and Roshan's features are listed in [docs/Teams and Roles/teams.md](../docs/Teams%20and%20Roles/teams.md). As frontend lead, you review their PRs.
+**New fields on existing endpoints.** All are optional, so today's screens still work unchanged:
+
+- **Creating or editing an assignment** (`POST`/`PATCH …/assignments`):
+  - `kind`: `assignment` or `quiz`.
+  - `submission_type`: `file`, `text`, `both`, or `none` for work done in class.
+  - `published`: defaults to true.
+  - `module_id`: attaches the assignment to a module.
+  - `available_from` and `available_until`: students can't see the assignment before the first date, or submit after the second.
+  - `late_penalty_percent`: percent taken off for each day late.
+  - `max_attempts`.
+- **Announcements:** `publish_at` schedules one for later. Students don't see it until then.
+- **Grades and submissions:** `final_mark` is the mark after any late penalty, and it's what the gradebook totals. `days_late` rounds up, so one minute late counts as one day. Earlier attempts are kept in `history`.
+- **Students don't see** unpublished assignments, assignments before `available_from`, or announcements before `publish_at`.
+
+The rules behind all of this are in [system-design.md](../docs/Product%20Build/system-design.md), under "Assignments, marking and the gradebook".
+
+### Using the new API before it's live
+
+The live API doesn't have these endpoints yet, so calling them from http://localhost:5173 with the live API set will fail. Until Amora deploys:
+
+1. Run the backend on your computer ([backend/README.md](../backend/README.md), "Run it on your computer"). You need `uv` and Podman installed. In your `backend/.env`:
+   - Put your own email in `ADMIN_EMAILS`, so you're the admin locally.
+   - Use the same `GOOGLE_CLIENT_ID` as the frontend.
+   - Set `JWT_SECRET` to any long random text, which is fine for local use.
+
+   Running the backend is fine; just don't change its code (rule 4).
+2. In `.env.local`, set `VITE_API_URL=http://localhost:8000`, and restart `npm run dev`.
+3. Sign in. The local database starts empty, so create a test course, users and assignments yourself. They disappear when the backend's container stops.
+
+Set `VITE_API_URL` back to the live API when you're done. Amora will tell the team when the new endpoints are live.
 
 ## How your changes go live
 
