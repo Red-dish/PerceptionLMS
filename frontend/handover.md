@@ -2,7 +2,7 @@
 
 **From:** Amora · **Updated:** 10 Nov 2026
 
-You lead the frontend: its design, its features, and reviewing Dipesh's and Roshan's frontend work. This page covers what's live, what to design next, and how your changes get onto https://perceptionlms.com. For setup details and the folder layout, see [README.md](README.md).
+You lead the frontend's design and reviews. Amora and Roshan build the APIs, Dipesh builds the screens, and you design those screens and review and merge Dipesh's PRs. This page covers what's live, what to design next, and how changes get onto https://perceptionlms.com. For setup details and the folder layout, see [README.md](README.md).
 
 ## Where things stand
 
@@ -59,35 +59,30 @@ Everything works, so this is styling. The original design to work from is [UI-UX
 - [ ] **Course cards:** `src/components/CourseCard.jsx`
 - [ ] **Apeksha's design feedback (KAN-66):** ask Apeksha for it, since it isn't done yet
 
-### 2. Your features
+### 2. Design the new screens, and review Dipesh's PRs
 
-These are GitHub issues from the v1 plan. Read each issue for what's needed. Amora builds the API for every feature; "Waiting" means don't start the screens until Amora says the endpoint is ready.
-
-| Issue | Feature | When | API |
-| --- | --- | --- | --- |
-| [#32](https://github.com/Red-dish/PerceptionLMS/issues/32) | User profile and settings | Core | **Waiting.** `GET /me` reads the profile, but nobody can edit their own details yet |
-| [#36](https://github.com/Red-dish/PerceptionLMS/issues/36) | Pages | Core | **Waiting.** No API for pages yet |
-| [#57](https://github.com/Red-dish/PerceptionLMS/issues/57) | Calendar | After core | **Ready enough.** `GET /courses`, then `GET /courses/{id}/assignments` for each course, gives every due date |
-| [#58](https://github.com/Red-dish/PerceptionLMS/issues/58) | Notifications | After core | **Waiting.** No API yet |
-
-Until #32 and #36 are ready, keep going with the look (section 1) and reviewing your team's PRs.
-
-### 3. Your team's features
-
-As frontend lead, you review these PRs. Owners are in [docs/Teams and Roles/teams.md](../docs/Teams%20and%20Roles/teams.md).
+Dipesh builds the screens for every open feature below. Your part is to **design each screen before Dipesh builds it**, then **review and merge his PR** into `frontend`. Read each GitHub issue for what's needed. The full plan is in [docs/Teams and Roles/teams.md](../docs/Teams%20and%20Roles/teams.md).
 
 **This week (due Wed 11 Nov):** Dipesh is building #44, the lecturer grading view (KAN-70). Review his PR into `frontend` and merge it when it's ready (KAN-71). Use the checklist under "Before opening a pull request" below.
 
-| Issue | Feature | Owner | When | API |
-| --- | --- | --- | --- | --- |
-| [#37](https://github.com/Red-dish/PerceptionLMS/issues/37) | Files | Roshan | Core | **Ready** (new) |
-| [#43](https://github.com/Red-dish/PerceptionLMS/issues/43) | Late, missing and resubmission | Roshan | Core | **Ready** (new) |
-| [#44](https://github.com/Red-dish/PerceptionLMS/issues/44) | Lecturer submission review and grading | Dipesh | Core | **Ready**, with new extras |
-| [#49](https://github.com/Red-dish/PerceptionLMS/issues/49) | Lecturer gradebook | Roshan | Core | **Ready** (new) |
-| [#51](https://github.com/Red-dish/PerceptionLMS/issues/51) | Grade export (CSV) | Roshan | After core | **Ready** (new) |
-| [#45](https://github.com/Red-dish/PerceptionLMS/issues/45) | Basic rubrics | Roshan | After core | Waiting |
-| [#47](https://github.com/Red-dish/PerceptionLMS/issues/47), [#48](https://github.com/Red-dish/PerceptionLMS/issues/48) | Quiz builder, quiz taking | Dipesh | After core | Waiting. A quiz can be created and marked by hand, but there are no questions or auto-marking yet |
-| [#55](https://github.com/Red-dish/PerceptionLMS/issues/55), [#56](https://github.com/Red-dish/PerceptionLMS/issues/56) | Discussions, inbox | Dipesh | After core | Waiting |
+Work in this order. The first ones have their API ready, so Dipesh can build them now and needs your designs first.
+
+| Issue | Feature | When | API (who builds it) |
+| --- | --- | --- | --- |
+| [#44](https://github.com/Red-dish/PerceptionLMS/issues/44) | Lecturer submission review and grading | Core | **Ready**, with new extras |
+| [#37](https://github.com/Red-dish/PerceptionLMS/issues/37) | Files | Core | **Ready** (Roshan, new) |
+| [#43](https://github.com/Red-dish/PerceptionLMS/issues/43) | Late, missing and resubmission | Core | **Ready** (Roshan, new) |
+| [#49](https://github.com/Red-dish/PerceptionLMS/issues/49) | Lecturer gradebook | Core | **Ready** (Roshan, new) |
+| [#32](https://github.com/Red-dish/PerceptionLMS/issues/32) | User profile and settings | Core | Waiting (Amora). `GET /me` reads the profile, but nobody can edit their own details yet |
+| [#36](https://github.com/Red-dish/PerceptionLMS/issues/36) | Pages | Core | Waiting (Amora) |
+| [#51](https://github.com/Red-dish/PerceptionLMS/issues/51) | Grade export (CSV) | After core | **Ready** (Roshan, new) |
+| [#57](https://github.com/Red-dish/PerceptionLMS/issues/57) | Calendar | After core | **Ready enough.** `GET /courses`, then `GET /courses/{id}/assignments` for each course, gives every due date |
+| [#45](https://github.com/Red-dish/PerceptionLMS/issues/45) | Basic rubrics | After core | Waiting (Roshan) |
+| [#47](https://github.com/Red-dish/PerceptionLMS/issues/47), [#48](https://github.com/Red-dish/PerceptionLMS/issues/48) | Quiz builder, quiz taking | After core | Waiting (Roshan). A quiz can be created and marked by hand, but there are no questions or auto-marking yet |
+| [#58](https://github.com/Red-dish/PerceptionLMS/issues/58) | Notifications | After core | Waiting (Roshan) |
+| [#55](https://github.com/Red-dish/PerceptionLMS/issues/55), [#56](https://github.com/Red-dish/PerceptionLMS/issues/56) | Discussions, inbox | After core | Waiting (Amora) |
+
+You can design screens whose API is still "Waiting": ask Amora or Roshan what data each one will return.
 
 ## New in the API (10 Nov)
 
@@ -157,7 +152,7 @@ The full guide is [docs/branching-workflow.md](../docs/branching-workflow.md). I
    ```bash
    git switch -c feature/KAN-65-colours-and-type
    ```
-2. **Commit, push, and open a pull request into `frontend`.** GitHub picks `main` by default, so change the base to `frontend`. Someone else must approve it before it can merge, so ask Dipesh, Roshan or Amora.
+2. **Commit, push, and open a pull request into `frontend`.** GitHub picks `main` by default, so change the base to `frontend`. Someone else must approve your own design PRs before they can merge, so ask Amora or Dipesh.
 3. **When a set of changes is ready to show,** open a pull request from `frontend` into `dev`. Amora reviews it, then moves `dev` into `main`.
 4. **Amora publishes `main` to the site.** Message Amora once your work is on `main`. It's usually live the same day.
 5. **Check it on https://perceptionlms.com.** If you still see the old version, do a hard refresh (Ctrl+Shift+R).
@@ -168,7 +163,7 @@ Only Amora can publish for now, because it needs AWS access. Automatic publishin
 
 ## Rules
 
-1. **Keep it frontend only.** Don't add a server, database or Node API. If a screen needs data the API doesn't offer, ask Amora for an endpoint before building it.
+1. **Keep it frontend only.** Don't add a server, database or Node API. If a screen needs data the API doesn't offer, ask Amora or Roshan for an endpoint before building it.
 2. **Send every API call through `src/lib/api.js`.** Don't call `fetch` from a page.
 3. **Don't change sign-in without talking to Amora.** That means `src/lib/auth.jsx`, `src/lib/api.js` and `src/components/GoogleButton.jsx`.
 4. **Leave `backend/` alone,** and leave AWS and Cloudflare to Amora.
@@ -189,8 +184,10 @@ Only Amora can publish for now, because it needs AWS access. Automatic publishin
 
 | Question | Ask |
 | --- | --- |
-| Anything in the API, sign-in, hosting, publishing | Amora |
+| The project overall, sign-in, hosting, publishing | Amora |
+| An API: profile, pages, discussions, inbox | Amora |
+| An API: files, late work, gradebook, rubrics, quizzes, notifications | Roshan |
+| Building a screen | Dipesh, whose PRs you review |
 | Design review and feedback | Apeksha |
-| Frontend screens and features | Dipesh and Roshan, whose work you review |
 
 Your tasks are also listed in [docs/task.md](../docs/task.md).
