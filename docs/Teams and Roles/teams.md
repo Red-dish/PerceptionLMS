@@ -26,7 +26,7 @@ This team doesn't build features: every v1 feature is owned by the technical tea
 | 5. Project manager and governance lead | Nancy | Scope and user stories, Jira board, meetings and minutes, RACI chart, risk register, decision log, final report and presentation | Role 6 |
 | 6. Compliance and risk officer | Yoodem | Privacy law requirements, privacy policy and terms, copyright for lecturer content, accessibility (WCAG) audit, data protection impact assessment, security and data-retention policies | Role 4 |
 
-Work is tracked in the Perception LMS (KAN) Jira project. Our lecturer sets a deliverable each week, and each one becomes an epic of tasks in Jira; see [tasks.md](../Product%20Build/tasks.md) for this week's list.
+Work is tracked in the Perception LMS (KAN) Jira project. Our lecturer sets a deliverable each week, due every Wednesday, and each one becomes an epic of tasks in Jira; see [tasks.md](../Product%20Build/tasks.md) for this week's list.
 
 ## v1 modules (GitHub epics)
 

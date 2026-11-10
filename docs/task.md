@@ -4,7 +4,11 @@ The to-do list for the whole technical team: Amora, Roshan, Dipesh and Bishu. Ti
 
 ## Current goal
 
-**Week 1, due Fri 6 Nov 2026 (Jira epic KAN-54):** open `https://perceptionlms.com`, sign in with Google, and reach the dashboard for your role: student, staff or admin. The dashboard can use sample data this week; live data comes later (KAN-42).
+Deliverables are due **every Wednesday**.
+
+**Week 2, due Wed 11 Nov 2026 (Jira epic KAN-68):** the coursework API (files, late work, resubmissions, gradebook) deployed, and the lecturer grading view (GitHub #44) built by Dipesh and reviewed by Bishu. Amora starts the backend for the next epics, beginning with profile (#32) and pages (#36). The full list is in [Product Build/tasks.md](Product%20Build/tasks.md).
+
+Week 1 (sign-in, roles and dashboard, KAN-54) is done; its items are below.
 
 | Piece | Status (10 Nov 2026) |
 | --- | --- |

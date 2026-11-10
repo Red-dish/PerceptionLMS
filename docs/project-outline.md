@@ -4,7 +4,7 @@
 
 ASA College is moving away from Canvas. Perception LMS is a proposed replacement: a web-based Learning Management System built around the college's own needs, for three kinds of user: students, lecturers and administrators.
 
-The project is run by a team of seven students: a technical team of four who build the platform, and a business, compliance and governance team of three who own the plan, the business case and the legal and accessibility work. Work runs in one-week cycles from 2 Nov 2026, with a deliverable set by our lecturer each week (see [tasks.md](Product%20Build/tasks.md)).
+The project is run by a team of seven students: a technical team of four who build the platform, and a business, compliance and governance team of three who own the plan, the business case and the legal and accessibility work. Work runs in one-week cycles from 2 Nov 2026, with a deliverable set by our lecturer each week and due every Wednesday (see [tasks.md](Product%20Build/tasks.md)).
 
 The MVP lets people:
 
