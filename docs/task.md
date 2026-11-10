@@ -6,7 +6,9 @@ The to-do list for the whole technical team: Amora, Roshan, Dipesh and Bishu. Ti
 
 Deliverables are due **every Wednesday**.
 
-**Week 2, due Wed 11 Nov 2026 (Jira epic KAN-68):** the coursework API (files, late work, resubmissions, gradebook) deployed, and the lecturer grading view (GitHub #44) built by Dipesh and reviewed by Bishu. Amora starts the backend for the next epics, beginning with profile (#32) and pages (#36). The full list is in [Product Build/tasks.md](Product%20Build/tasks.md).
+**Week 2, due Wed 11 Nov 2026 (Jira epic KAN-68):** the coursework API (files, late work, resubmissions, gradebook) deployed, and the lecturer grading view (GitHub #44) built by Dipesh and reviewed by Bishu. Amora and Roshan start the backend for the next epics: Amora takes profile (#32), pages (#36), discussions and inbox; Roshan takes rubrics, quizzes and notifications.
+
+**How work flows now:** Amora and Roshan build the APIs, Dipesh builds the screens, and Bishu designs them and reviews Dipesh's PRs. Amora oversees the project. See [teams.md](Teams%20and%20Roles/teams.md). The full list is in [Product Build/tasks.md](Product%20Build/tasks.md).
 
 Week 1 (sign-in, roles and dashboard, KAN-54) is done; its items are below.
 
@@ -43,10 +45,10 @@ The app is in [frontend/](../frontend), and its [README](../frontend/README.md) 
   - [x] Works at phone width (Amora)
   - [ ] Final colours, type and page design (Bishu)
   - [ ] Design feedback from Apeksha applied (KAN-66, due Thu 5 Nov) (Bishu)
-- [ ] **Frontend features and design** (Bishu); start with [frontend/handover.md](../frontend/handover.md). Not started yet
+- [ ] **New screens** (Dipesh builds, Bishu designs and reviews); start with [frontend/handover.md](../frontend/handover.md). First up: #44 grading view
   - [ ] Build new screens on `frontend/`, following the rules in its README
   - [ ] Reuse anything useful from the earlier draft, in git at commit `ee7c2f8`
-  - [ ] Ask Amora for an endpoint when a screen needs data the API doesn't offer
+  - [ ] Ask Amora or Roshan for an endpoint when a screen needs data the API doesn't offer
 
 ## Week 1: hosting and domain
 
