@@ -6,13 +6,15 @@ Our lecturer sets a deliverable each week. This file lists the current week's ta
 Due Fri 6 Nov. A working dashboard, three access roles (student, staff, admin) and a sign-in page, plus the team presentation.
 
 ### Technical team
-- [ ] Deploy the backend to AWS Lambda and DynamoDB (Roshan, Amora) · KAN-55
-- [ ] Sign in with Google and user roles: student, staff, admin (Amora) · KAN-41
-- [ ] Set up the React app, which the two pages below are built on (Dipesh) · KAN-64
-- [ ] Build the sign-in page, which sends each role to its dashboard (Dipesh, Bishu) · KAN-57
-- [ ] Point our domain name at the app (Dipesh, Amora) · KAN-56
-- [ ] Dashboard, frontend, for each role; sample data is fine for now (Bishu) · KAN-58
-- [ ] Shared layout and visual design (Bishu) · KAN-65
+The name in brackets is who did the work. Where that's different from who it was assigned to, the assignee follows.
+
+- [x] Deploy the backend to AWS Lambda and DynamoDB (Amora; assigned to Roshan and Amora) · KAN-55
+- [x] Sign in with Google and user roles: student, staff, admin (Amora) · KAN-41
+- [x] Set up the React app, which the two pages below are built on (Amora; assigned to Dipesh) · KAN-64
+- [x] Build the sign-in page, which sends each role to its dashboard (Amora; assigned to Dipesh and Bishu) · KAN-57
+- [x] Point our domain name at the app (Amora; assigned to Dipesh and Amora) · KAN-56
+- [x] Dashboard, frontend, for each role, with live data (Amora; assigned to Bishu) · KAN-58
+- [ ] Shared layout and visual design (Bishu) · KAN-65. Amora built the shared navigation and phone layout; the final design hasn't started
 
 ### Business team
 - [ ] Set up the shared presentation deck, with empty "Technical description" slides (Nancy) · KAN-59
