@@ -86,6 +86,8 @@ You work on your own machine with `npm run dev` (see [frontend/README.md](../fro
 
 ## Rules
 
+The full checklist for opening a PR, including which folder each kind of file goes in, is [pull-request-rules.md](pull-request-rules.md).
+
 - **No direct commits to `main`, `dev` or `frontend`.** Everything goes through a PR, including the leads' work.
 - **One ticket per branch and per PR.** Small PRs get reviewed faster.
 - **Don't put backend changes on a frontend branch,** or the other way round. If a ticket needs both, make two branches and two PRs, backend first.

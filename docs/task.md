@@ -91,7 +91,7 @@ Hosting is an S3 website behind Cloudflare, with no CloudFront. Amora runs the A
 
 ## Rules for everyone
 
-- **Work on a branch and open a PR,** following [branching-workflow.md](branching-workflow.md): frontend work into `frontend`, and backend, infrastructure and docs into `dev`. Only `dev` merges into `main`.
+- **Work on a branch and open a PR,** following [branching-workflow.md](branching-workflow.md): frontend work into `frontend`, and backend, infrastructure and docs into `dev`. Only `dev` merges into `main`. Check [pull-request-rules.md](pull-request-rules.md) before opening a PR, including which folder your files go in.
 - **Never commit secrets:** `backend/.env`, `backend/infra/terraform.tfvars` or `terraform.tfstate*`. The Google client ID isn't secret, so it's safe to share.
 - **Never make the private files bucket public.** It holds student submissions. Only the separate `perceptionlms.com` bucket serves the website.
 - **Only Amora runs Terraform and deploys for now,** because Terraform state is on one machine. Run it from an up-to-date `main`: on an older branch, it could try to delete resources that branch doesn't know about.
