@@ -45,6 +45,8 @@ Work is tracked in the Perception LMS (KAN) Jira project, which mirrors the GitH
 
 To move faster, our lecturer asked us to break a basic Canvas-style v1 into modules. Each module is a GitHub issue labelled `epic`, with its features linked as sub-issues labelled `feature`. Each feature lists what is already built and its acceptance criteria, so it can be handed to an AI coding agent.
 
+**Every feature has two checklists: Backend and Frontend.** Each heading names its owner and status, for example "Backend: Roshan · Done" and "Frontend: Dipesh and Bishu · Not started". That way a feature whose API is merged but has no screens yet shows exactly what's left. When your PR lands, tick your boxes and update your heading's status in the same PR. Close the issue only when both sections are done, or note in the issue what's left for later.
+
 | Epic | Jira | Open features |
 | --- | --- | --- |
 | [#27 Identity, Roles & Administration](https://github.com/Red-dish/PerceptionLMS/issues/27) | KAN-76 | #32 |
