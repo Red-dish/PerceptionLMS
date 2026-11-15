@@ -4,11 +4,19 @@ The to-do list for the whole technical team: Amora, Roshan, Dipesh and Bishu. Ti
 
 ## Current goal
 
-Deliverables are due **every Wednesday**.
+Deliverables are due **every Wednesday**. Progress reports are due from everyone every other Thursday: **19 Nov**, 3 Dec, 17 Dec.
 
-**Week 2, due Wed 11 Nov 2026 (Jira epic KAN-68):** the coursework API (files, late work, resubmissions, gradebook) deployed, and the lecturer grading view (GitHub #44) built by Dipesh and reviewed by Bishu. Amora and Roshan start the backend for the next epics: Amora takes profile (#32), pages (#36), discussions and inbox; Roshan takes rubrics, quizzes and notifications.
+**Week 3, due Wed 18 Nov 2026 (GitHub milestone "Deliverable 18 Nov"):**
 
-**How work flows now:** Amora and Roshan build the APIs, Dipesh builds the screens, and Bishu designs them and reviews Dipesh's PRs. Amora oversees the project. See [teams.md](Teams%20and%20Roles/teams.md). The full list is in [Product Build/tasks.md](Product%20Build/tasks.md).
+- [ ] AI Task 1: explore `students_demo.csv` (Amora) · #119 · KAN-82
+- [ ] AI Task 2: at-risk prediction model, API and lecturer view (Amora) · #120 · KAN-83
+- [ ] Quiz builder backend, then hand over to Dipesh and Bishu (Roshan) · #47 · KAN-92
+- [ ] Quiz taking and auto-grading backend, then hand over (Roshan) · #48 · KAN-93
+- [ ] Deploy the coursework API from PR #85 (gradebook, CSV, files, late work: merged, 48 tests pass, not live yet) (Amora) · KAN-72
+
+**Week 4, due Wed 25 Nov:** everything else open on the epics. Dipesh and Bishu build the screens for the gradebook (#49), CSV (#51), files (#37) and quizzes; Roshan builds the remaining backend (pages, rubrics, discussions, inbox, calendar, notifications); Amora builds profile (#32). Chatbot (#123) and recommendations (#124) have no owner yet.
+
+**How work flows now (from 15 Nov):** Roshan builds the APIs and hands each one to Dipesh and Bishu, who design and build the screens together and review each other's PRs. Bishu is no longer frontend lead. Amora builds the AI features and profile, and oversees the project. See [teams.md](Teams%20and%20Roles/teams.md). Jira now mirrors the GitHub epics (KAN-76 to KAN-81). The full list is in [Product Build/tasks.md](Product%20Build/tasks.md).
 
 Week 1 (sign-in, roles and dashboard, KAN-54) is done; its items are below.
 
@@ -45,7 +53,7 @@ The app is in [frontend/](../frontend), and its [README](../frontend/README.md) 
   - [x] Works at phone width (Amora)
   - [ ] Final colours, type and page design (Bishu)
   - [ ] Design feedback from Apeksha applied (KAN-66, due Thu 5 Nov) (Bishu)
-- [ ] **New screens** (Dipesh builds, Bishu designs and reviews); start with [frontend/handover.md](../frontend/handover.md). First up: #44 grading view
+- [ ] **New screens** (Dipesh and Bishu design and build together); start with [frontend/handover.md](../frontend/handover.md). #44 grading view is done (PR #97); next up: gradebook #49 and CSV #51
   - [ ] Build new screens on `frontend/`, following the rules in its README
   - [ ] Reuse anything useful from the earlier draft, in git at commit `ee7c2f8`
   - [ ] Ask Amora or Roshan for an endpoint when a screen needs data the API doesn't offer
