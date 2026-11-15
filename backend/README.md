@@ -118,9 +118,12 @@ In Cloudflare, add a proxied CNAME from `perceptionlms.com` to the `frontend_web
 | Assignments and quizzes | `GET/POST /courses/{id}/assignments`, `GET/PATCH/DELETE …/{assignmentId}`, `POST …/{assignmentId}/release` | Enrolled (changes: lecturer) |
 | Submissions | `POST …/{assignmentId}/submission` (student), `GET …/submissions`, `PUT/DELETE …/submissions/{studentId}/grade` (lecturer), `GET …/submissions/{studentId}/download`, `GET …/submissions/{studentId}/attempts/{n}/download` | As shown |
 | Resubmissions and extensions | `GET …/{assignmentId}/resubmissions`, `PUT/DELETE …/submissions/{studentId}/resubmission` | Lecturer |
+| Quiz builder | `GET /courses/{id}/quizzes/{quizId}`, `GET/POST …/questions`, `PATCH/DELETE …/questions/{questionId}`, `PUT …/questions/order` | Enrolled (questions: lecturer) |
 | Gradebook | `GET /courses/{id}/gradebook`, `GET /courses/{id}/gradebook.csv` | Lecturer |
 | Late and missing work | `GET /courses/{id}/late-missing?status=` (lecturer), `GET /admin/late-missing?status=` (admin, every course) | As shown |
 | Announcements | `GET/POST /courses/{id}/announcements`, `PATCH/DELETE …/{announcementId}` | Enrolled (changes: lecturer) |
+
+**Quizzes** are assignments with `kind: "quiz"`. Create one with `POST /courses/{id}/assignments`, which also takes the quiz settings: `time_limit_minutes`, `max_attempts`, `due_at`, `shuffle_answers`, `show_score` and `show_correct_answers`. Then add questions: `multiple_choice` (2 to 10 `options`, each with `correct`), `true_false` (`answer`) or `short_answer` (optional `accepted_answers`). A quiz's `max_mark` is always the total of its questions' points. Once a student has started the quiz, only a question's wording can change.
 
 ## Folder layout
 

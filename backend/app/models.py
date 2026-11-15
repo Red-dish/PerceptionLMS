@@ -208,6 +208,11 @@ class Assignment(BaseModel):
     max_mark: int = Field(description="Points possible")
     late_penalty_percent: int = Field(default=0, description="Percent of the mark taken off for each day late")
     max_attempts: int | None = Field(default=None, description="Empty means unlimited until marked")
+    # Quiz settings. Only used when kind is "quiz" and the quiz has questions.
+    time_limit_minutes: int | None = Field(default=None, description="Empty means no time limit")
+    shuffle_answers: bool = False
+    show_score: bool = Field(default=True, description="Students see their score as soon as they submit")
+    show_correct_answers: bool = Field(default=False, description="Students see the right answers after submitting")
     created_at: datetime
     updated_at: datetime | None = None
 
@@ -226,6 +231,10 @@ class AssignmentCreate(BaseModel):
     max_mark: int = Field(default=100, ge=1, le=1000, description="Points possible")
     late_penalty_percent: int = Field(default=0, ge=0, le=100)
     max_attempts: int | None = Field(default=None, ge=1, le=50)
+    time_limit_minutes: int | None = Field(default=None, ge=1, le=600)
+    shuffle_answers: bool = False
+    show_score: bool = True
+    show_correct_answers: bool = False
 
     @model_validator(mode="after")
     def window_makes_sense(self) -> Self:
@@ -235,7 +244,7 @@ class AssignmentCreate(BaseModel):
 
 class AssignmentUpdate(BaseModel):
     """Only the fields you send are changed. Send null for available_from, available_until,
-    module_id or max_attempts to clear it."""
+    module_id, max_attempts or time_limit_minutes to clear it."""
 
     kind: AssignmentKind | None = None
     title: str | None = Field(default=None, min_length=1, max_length=200)
@@ -250,6 +259,10 @@ class AssignmentUpdate(BaseModel):
     max_mark: int | None = Field(default=None, ge=1, le=1000)
     late_penalty_percent: int | None = Field(default=None, ge=0, le=100)
     max_attempts: int | None = Field(default=None, ge=1, le=50)
+    time_limit_minutes: int | None = Field(default=None, ge=1, le=600)
+    shuffle_answers: bool | None = None
+    show_score: bool | None = None
+    show_correct_answers: bool | None = None
 
 
 class Attempt(BaseModel):
@@ -350,6 +363,92 @@ class Grade(BaseModel):
     mark: int
     final_mark: int | None = Field(default=None, description="The mark after any late penalty")
     feedback: str
+
+
+# Quizzes. A quiz is an assignment with kind "quiz", so it shows in the gradebook
+# like any other assignment. Its points are the total of its questions' points.
+QuestionType = Literal["multiple_choice", "true_false", "short_answer"]
+AcceptedAnswer = Annotated[str, Field(min_length=1, max_length=500)]
+
+
+class OptionCreate(BaseModel):
+    text: str = Field(min_length=1, max_length=1_000)
+    correct: bool = False
+
+
+class Option(BaseModel):
+    id: str
+    text: str
+    correct: bool | None = Field(default=None, description="Only shown to lecturers, or after submitting if allowed")
+
+
+def check_question(kind: str, options: list | None, answer: bool | None, accepted_answers: list | None) -> None:
+    """Each type has its own answer field, and only that one."""
+    if kind != "multiple_choice" and options is not None:
+        raise ValueError("Only multiple-choice questions have options")
+    if kind != "true_false" and answer is not None:
+        raise ValueError("Only true/false questions have answer")
+    if kind != "short_answer" and accepted_answers is not None:
+        raise ValueError("Only short-answer questions have accepted_answers")
+    if kind == "multiple_choice":
+        if not options or not 2 <= len(options) <= 10:
+            raise ValueError("A multiple-choice question needs 2 to 10 options")
+        if not any(option["correct"] if isinstance(option, dict) else option.correct for option in options):
+            raise ValueError("Mark at least one option as correct")
+    elif kind == "true_false" and answer is None:
+        raise ValueError("Set answer to true or false")
+
+
+class QuestionCreate(BaseModel):
+    type: QuestionType
+    text: str = Field(min_length=1, max_length=5_000, description="The question, as Markdown")
+    points: int = Field(default=1, ge=0, le=100)
+    options: list[OptionCreate] | None = Field(
+        default=None, description="Multiple choice only: 2 to 10 options, at least one correct"
+    )
+    answer: bool | None = Field(default=None, description="True/false only: the right answer")
+    accepted_answers: list[AcceptedAnswer] | None = Field(
+        default=None,
+        description="Short answer only: answers marked right automatically (case and spacing ignored). "
+        "Anything else is left for the lecturer to mark",
+    )
+
+    @model_validator(mode="after")
+    def fits_type(self) -> Self:
+        check_question(self.type, self.options, self.answer, self.accepted_answers)
+        return self
+
+
+class QuestionUpdate(BaseModel):
+    """Only the fields you send are changed. Once students have started the quiz, only text can change."""
+
+    text: str | None = Field(default=None, min_length=1, max_length=5_000)
+    points: int | None = Field(default=None, ge=0, le=100)
+    options: list[OptionCreate] | None = None
+    answer: bool | None = None
+    accepted_answers: list[AcceptedAnswer] | None = None
+
+
+class Question(BaseModel):
+    id: str
+    quiz_id: str
+    type: QuestionType
+    text: str
+    points: int
+    position: int
+    options: list[Option] | None = None
+    answer: bool | None = Field(default=None, description="True/false: only shown to lecturers")
+    accepted_answers: list[str] | None = Field(default=None, description="Short answer: only shown to lecturers")
+
+
+class QuestionOrder(BaseModel):
+    question_ids: list[str] = Field(description="Every question ID in the quiz, in the order to show them")
+
+
+class QuizView(Assignment):
+    question_count: int
+    # Lecturers only.
+    questions: list[Question] | None = None
 
 
 # Gradebook

@@ -70,6 +70,11 @@ def grant_key(assignment_id: str, student_id: str) -> tuple[str, str]:
     return f"ASSIGNMENT#{assignment_id}", f"GRANT#{student_id}"
 
 
+def question_key(quiz_id: str, question_id: str) -> tuple[str, str]:
+    """A quiz question. A quiz is an assignment, so it lives in the assignment's partition."""
+    return f"ASSIGNMENT#{quiz_id}", f"QUESTION#{question_id}"
+
+
 def announcement_key(course_id: str, announcement_id: str) -> tuple[str, str]:
     return f"COURSE#{course_id}", f"ANNOUNCEMENT#{announcement_id}"
 
