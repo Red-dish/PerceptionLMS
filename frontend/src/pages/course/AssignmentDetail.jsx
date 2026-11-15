@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link, useOutletContext, useParams } from 'react-router-dom';
-import { Download, Pencil } from 'lucide-react';
+import { Download, EyeOff, Pencil, Send } from 'lucide-react';
 import { Empty, ErrorNote, Loading, PageHeader } from '../../components/ui';
 import { api, fileProblem, MAX_UPLOAD_MB, openDownload, uploadFile } from '../../lib/api';
 import { useAuth } from '../../lib/auth';
 import { formatDateTime } from '../../lib/format';
 import { useLoad } from '../../lib/useLoad';
 import AssignmentForm from './AssignmentForm';
+import { gradingStatus, LateBadge, markText, StatusBadge } from './grading';
 
 function StudentSubmission({ assignment, path, onSubmitted }) {
   const { user } = useAuth();
@@ -100,95 +101,106 @@ function StudentSubmission({ assignment, path, onSubmitted }) {
   );
 }
 
-function GradeRow({ submission, assignment, path, onGraded }) {
-  const [mark, setMark] = useState(submission.mark ?? '');
-  const [feedback, setFeedback] = useState(submission.feedback ?? '');
-  const [release, setRelease] = useState(submission.released);
+function ReleaseAll({ submissions, path, onDone }) {
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
-  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState(null);
+  const held = submissions.filter((submission) => gradingStatus(submission) === 'held').length;
+  const released = submissions.filter((submission) => gradingStatus(submission) === 'released').length;
 
-  const save = async (event) => {
-    event.preventDefault();
+  const run = async (release) => {
+    const count = release ? held : released;
+    const question = release
+      ? `Release ${count} mark${count === 1 ? '' : 's'}? Students will see their mark and feedback.`
+      : `Hide ${count} released mark${count === 1 ? '' : 's'} from students again?`;
+    if (!window.confirm(question)) return;
     setError(null);
-    setSaving(true);
+    setMessage(null);
+    setBusy(true);
     try {
-      await api.put(`${path}/submissions/${submission.student_id}/grade`, { mark: Number(mark), feedback, release });
-      onGraded();
+      const { updated } = await api.post(`${path}/release`, { release });
+      setMessage(`${release ? 'Released' : 'Hid'} ${updated} mark${updated === 1 ? '' : 's'}.`);
+      onDone();
     } catch (problem) {
       setError(problem);
     } finally {
-      setSaving(false);
+      setBusy(false);
     }
   };
 
-  const download = async () => {
-    setError(null);
-    try {
-      await openDownload(`${path}/submissions/${submission.student_id}/download`);
-    } catch (problem) {
-      setError(problem);
-    }
-  };
-
-  const id = submission.student_id;
+  if (!held && !released) return null;
   return (
-    <li className="p-4 space-y-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="font-medium">{submission.student_name}</span>
-        {submission.late && <span className="badge bg-amber-100 text-amber-700">Late</span>}
-        {submission.released && <span className="badge bg-emerald-100 text-emerald-700">Released</span>}
-        <span className="text-xs text-slate-500">{formatDateTime(submission.submitted_at)}</span>
+    <div className="space-y-2">
+      <div className="flex flex-wrap gap-2">
+        {held > 0 && (
+          <button type="button" className="btn-primary" disabled={busy} onClick={() => run(true)}>
+            <Send size={14} aria-hidden="true" />
+            Release {held} mark{held === 1 ? '' : 's'}
+          </button>
+        )}
+        {released > 0 && (
+          <button type="button" className="btn-ghost" disabled={busy} onClick={() => run(false)}>
+            <EyeOff size={14} aria-hidden="true" />
+            Hide released marks
+          </button>
+        )}
       </div>
-      {submission.text && <p className="text-sm whitespace-pre-wrap">{submission.text}</p>}
-      {submission.file_name && (
-        <button type="button" className="text-sm link inline-flex items-center gap-1" onClick={download}>
-          <Download size={14} aria-hidden="true" />
-          {submission.file_name}
-        </button>
-      )}
-      <form className="grid sm:grid-cols-[120px_1fr] gap-3" onSubmit={save}>
-        <div>
-          <label className="label" htmlFor={`mark-${id}`}>Mark / {assignment.max_mark}</label>
-          <input id={`mark-${id}`} type="number" min={0} max={assignment.max_mark} required className="input" value={mark} onChange={(event) => setMark(event.target.value)} />
-        </div>
-        <div>
-          <label className="label" htmlFor={`feedback-${id}`}>Feedback</label>
-          <textarea id={`feedback-${id}`} rows={2} maxLength={5000} className="input" value={feedback} onChange={(event) => setFeedback(event.target.value)} />
-        </div>
-        <div className="sm:col-span-2 flex flex-wrap items-center gap-4">
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={release} onChange={(event) => setRelease(event.target.checked)} />
-            Release to the student
-          </label>
-          <button className="btn-primary" disabled={saving}>{saving ? 'Saving…' : 'Save mark'}</button>
-        </div>
-      </form>
+      {message && <p role="status" className="text-sm text-emerald-700">{message}</p>}
       <ErrorNote error={error} />
-    </li>
+    </div>
   );
 }
 
 function Submissions({ assignment, path }) {
   const { data: submissions, error, loading, reload } = useLoad(() => api.get(`${path}/submissions`), [path]);
+  const counts = { todo: 0, held: 0, released: 0 };
+  submissions?.forEach((submission) => {
+    counts[gradingStatus(submission)] += 1;
+  });
+  const firstToMark = submissions?.find((submission) => gradingStatus(submission) === 'todo');
 
   return (
-    <section>
-      <h2 className="text-lg font-semibold mb-3">Submissions</h2>
+    <section className="space-y-3">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold">Submissions</h2>
+          {submissions?.length > 0 && (
+            <p className="text-sm text-slate-500">
+              {counts.todo} to mark · {counts.held} marked, not released · {counts.released} released
+            </p>
+          )}
+        </div>
+        {firstToMark && (
+          <Link to={`${path}/submissions/${firstToMark.student_id}`} className="btn-primary">
+            Start marking
+          </Link>
+        )}
+      </div>
       {loading && !submissions && <Loading />}
       <ErrorNote error={error} onRetry={reload} />
       {submissions?.length === 0 && <Empty>No submissions yet.</Empty>}
       {submissions?.length > 0 && (
-        <ul className="card divide-y divide-slate-100">
-          {submissions.map((submission) => (
-            <GradeRow
-              key={`${submission.student_id}-${submission.submitted_at}`}
-              submission={submission}
-              assignment={assignment}
-              path={path}
-              onGraded={reload}
-            />
-          ))}
-        </ul>
+        <>
+          <ReleaseAll submissions={submissions} path={path} onDone={reload} />
+          <ul className="card divide-y divide-slate-100">
+            {submissions.map((submission) => (
+              <li key={submission.student_id}>
+                <Link
+                  to={`${path}/submissions/${submission.student_id}`}
+                  className="flex flex-wrap items-center gap-x-3 gap-y-1 p-4 hover:bg-slate-50"
+                >
+                  <span className="font-medium text-blue-700 min-w-0 break-words">{submission.student_name}</span>
+                  <StatusBadge submission={submission} />
+                  <LateBadge submission={submission} />
+                  <span className="text-xs text-slate-500">
+                    {submission.submitted_at ? formatDateTime(submission.submitted_at) : 'Marked by hand'}
+                  </span>
+                  <span className="ml-auto font-semibold text-slate-900">{markText(submission, assignment.max_mark)}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </section>
   );
