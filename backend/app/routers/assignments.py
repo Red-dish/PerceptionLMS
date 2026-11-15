@@ -164,6 +164,8 @@ def submit(course_id: str, assignment_id: str, body: SubmissionCreate, user: Cur
     """Submit or resubmit. If a file is included, upload it with the returned signed form."""
     require_student(course_id, user)
     assignment = _assignment_or_404(course_id, assignment_id, "student")
+    if assignment.get("kind") == "quiz" and quizzes.questions(assignment_id):
+        raise HTTPException(status.HTTP_409_CONFLICT, "Take this quiz with POST …/quizzes/{quizId}/attempts")
     moment = cw.now()
     grant = _grant(assignment_id, user["id"])
     has_grant = cw.grant_is_active(grant, moment)

@@ -11,7 +11,7 @@ import io
 from fastapi import APIRouter, Response
 
 from app import coursework as cw
-from app import db
+from app import db, quizzes
 from app.access import require_teacher
 from app.auth import CurrentUser
 from app.models import Gradebook
@@ -27,6 +27,9 @@ def build_gradebook(course_id: str) -> dict:
     course = db.strip_keys(db.get(db.course_key(course_id)))
     assignments = cw.course_assignments(course_id)
     students = cw.course_students(course_id)
+    for assignment in assignments:
+        if assignment.get("kind") == "quiz":
+            quizzes.settle(assignment)  # submit attempts whose time ran out
     records = {assignment["id"]: cw.assignment_records(assignment["id"]) for assignment in assignments}
     moment = cw.now()
 

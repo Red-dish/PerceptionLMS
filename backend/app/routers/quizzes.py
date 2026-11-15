@@ -55,13 +55,30 @@ def _save(question: dict) -> dict:
 
 @router.get("", response_model=QuizView)
 def get_quiz(course_id: str, quiz_id: str, user: CurrentUser):
-    """The quiz and its settings. Lecturers also get every question with its answers."""
+    """The quiz and its settings. Lecturers also get every question with its answers;
+    students get their attempts and whether they can start another."""
     role = course_role(course_id, user)
     quiz = quiz_or_404(course_id, quiz_id, role)
     quiz_questions = qz.questions(quiz_id)
     view = {**quiz, "question_count": len(quiz_questions)}
     if role != "student":
         view["questions"] = [qz.full_question(question) for question in quiz_questions]
+        return view
+    qz.settle(quiz, user["id"])
+    mine = qz.attempts(quiz_id, user["id"])
+    grant = db.get(db.grant_key(quiz_id, user["id"]))
+    grant = grant and db.strip_keys(grant)
+    if not cw.grant_is_active(grant, cw.now()):
+        grant = None
+    max_attempts = quiz.get("max_attempts")
+    left = max(0, int(max_attempts) - len(mine)) if max_attempts else None
+    in_progress = any(attempt["status"] == "in_progress" for attempt in mine)
+    view.update(
+        my_attempts=[qz.attempt_view(quiz, attempt, as_lecturer=False, with_questions=False) for attempt in mine],
+        attempts_left=left,
+        can_start=bool(quiz_questions)
+        and (in_progress or (cw.accepting_submissions(quiz, grant, cw.now()) and (left != 0 or grant is not None))),
+    )
     return view
 
 

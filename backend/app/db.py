@@ -75,6 +75,10 @@ def question_key(quiz_id: str, question_id: str) -> tuple[str, str]:
     return f"ASSIGNMENT#{quiz_id}", f"QUESTION#{question_id}"
 
 
+def quiz_attempt_key(quiz_id: str, attempt_id: str) -> tuple[str, str]:
+    return f"ASSIGNMENT#{quiz_id}", f"ATTEMPT#{attempt_id}"
+
+
 def announcement_key(course_id: str, announcement_id: str) -> tuple[str, str]:
     return f"COURSE#{course_id}", f"ANNOUNCEMENT#{announcement_id}"
 
