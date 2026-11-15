@@ -1,7 +1,7 @@
 # Perception LMS — Data Protection Impact Assessment (DPIA)
 
 **Owner:** Yoodem, Compliance and Risk Officer · **Status:** Draft · **Issue:** #100
-**Related:** [security-requirements.md](security-requirements.md) (SEC-01 to SEC-10), [data-retention-policy.md](data-retention-policy.md), [system-design.md](../docs/Product%20Build/system-design.md)
+**Related:** [security-requirements.md](security-requirements.md) (SEC-01 to SEC-10), [data-retention-policy.md](data-retention-policy.md), [system-design.md](../Product%20Build/system-design.md)
 
 ## 1. Purpose and scope
 
