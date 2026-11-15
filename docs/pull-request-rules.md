@@ -35,7 +35,7 @@ File names are lowercase with dashes, for example `docs/Compliance/privacy-polic
 
 | PR | Reviewer | Merged by |
 | --- | --- | --- |
-| Frontend, into `frontend` | Bishu | Bishu |
+| Frontend, into `frontend` | The other frontend developer (Dipesh or Bishu) | The reviewer |
 | Backend or infrastructure, into `dev` | The other backend developer (Amora or Roshan) | Amora |
 | Docs, into `dev` | Amora | Amora |
 | `frontend` → `dev`, `dev` → `main` | Amora | Amora |

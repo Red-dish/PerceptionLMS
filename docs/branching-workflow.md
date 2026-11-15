@@ -8,7 +8,7 @@ How code gets from your laptop to the live site. Short version: **never commit s
 | --- | --- | --- |
 | `main` | What's live. Only updated from `dev`, once per weekly deliverable | Amora |
 | `dev` | Frontend and backend together, tested before going live. Backend PRs from Amora and Roshan land here | Amora |
-| `frontend` | All frontend work, before it goes to `dev`. Dipesh's PRs land here | Bishu (design and review lead) |
+| `frontend` | All frontend work, before it goes to `dev`. Dipesh's and Bishu's PRs land here | Dipesh and Bishu |
 | `feature/…`, `fix/…`, `docs/…` | One ticket each. Short-lived: deleted once merged | Nobody: you open a PR from it |
 
 ```
@@ -61,7 +61,7 @@ git push -u origin feature/KAN-12-login-page
 
 **3. Open a PR on GitHub.** Set the base branch to `frontend` for frontend work, or `dev` for everything else. GitHub picks `main` by default, so check it. Put the Jira ticket number in the title, for example "KAN-12: Login page".
 
-**4. Get it reviewed.** Frontend PRs need Bishu's approval. Backend PRs are reviewed by the other backend developer: Amora reviews Roshan's, and Roshan reviews Amora's. Anyone on the technical team can test a PR (see [teams.md](Teams%20and%20Roles/teams.md)). Fix anything they ask for by pushing more commits to the same branch.
+**4. Get it reviewed.** Frontend PRs need the other frontend developer's approval (Dipesh reviews Bishu's, and Bishu reviews Dipesh's). Backend PRs are reviewed by the other backend developer: Amora reviews Roshan's, and Roshan reviews Amora's. Anyone on the technical team can test a PR (see [teams.md](Teams%20and%20Roles/teams.md)). Fix anything they ask for by pushing more commits to the same branch.
 
 **5. Merge with "Squash and merge",** so each ticket becomes one commit. Then delete the branch (GitHub offers a button).
 
@@ -69,8 +69,8 @@ git push -u origin feature/KAN-12-login-page
 
 | From → to | When | Who opens the PR | Merge style |
 | --- | --- | --- | --- |
-| `frontend` → `dev` | A set of screens works end to end | Bishu | "Create a merge commit" |
-| `dev` → `frontend` | Backend changes the frontend needs have landed on `dev` | Bishu or Amora | "Create a merge commit" |
+| `frontend` → `dev` | A set of screens works end to end | Dipesh or Bishu | "Create a merge commit" |
+| `dev` → `frontend` | Backend changes the frontend needs have landed on `dev` | Dipesh, Bishu or Amora | "Create a merge commit" |
 | `dev` → `main` | Once per weekly deliverable, after testing | Amora | "Create a merge commit" |
 
 Use merge commits rather than squashing between `main`, `dev` and `frontend`. Squashing there makes git think the branches have different histories, and the next PR shows old changes again.
