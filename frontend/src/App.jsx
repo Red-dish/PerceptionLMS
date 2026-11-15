@@ -6,6 +6,7 @@ import Assignments from './pages/course/Assignments';
 import AssignmentDetail from './pages/course/AssignmentDetail';
 import CourseHome from './pages/course/CourseHome';
 import CourseLayout from './pages/course/CourseLayout';
+import GradeSubmission from './pages/course/GradeSubmission';
 import Modules from './pages/course/Modules';
 import People from './pages/course/People';
 import Courses from './pages/Courses';
@@ -40,6 +41,7 @@ export default function App() {
             <Route path="modules" element={<Modules />} />
             <Route path="assignments" element={<Assignments />} />
             <Route path="assignments/:assignmentId" element={<AssignmentDetail />} />
+            <Route path="assignments/:assignmentId/submissions/:studentId" element={<GradeSubmission />} />
             <Route element={<RequireRole role="admin" />}>
               <Route path="people" element={<People />} />
             </Route>
