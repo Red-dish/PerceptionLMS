@@ -1,17 +1,22 @@
-# Frontend handover for Bishu
+# Frontend handover for Dipesh and Bishu
 
-**From:** Amora · **Updated:** 10 Nov 2026
+**From:** Amora · **Updated:** 17 Nov 2026
 
-You lead the frontend's design and reviews. Amora and Roshan build the APIs, Dipesh builds the screens, and you design those screens and review and merge Dipesh's PRs. This page covers what's live, what to design next, and how changes get onto https://perceptionlms.com. For setup details and the folder layout, see [README.md](README.md).
+You two design and build the screens together, and review each other's PRs into `frontend`. There's no frontend lead. Roshan builds the APIs and hands each one to you; Amora builds the AI features and profile, and publishes the site. This page covers what's ready to build, how to use the new APIs, and how changes reach https://perceptionlms.com. For setup details and the folder layout, see [README.md](README.md).
 
-## Where things stand
+## Where things stand (17 Nov)
 
 - **The app is live at https://perceptionlms.com.** It's the React app in this folder, as it is on `main`.
 - **Sign-in works** with a real Google account against the live API, for people an admin has added.
-- **Every screen is built and working** for all three roles: dashboards, courses, modules and materials, assignments and marking, grades, people and user admin. Amora built them all, along with the API behind them. What's left is mostly design, and the design work (section 1, KAN-65) hasn't started yet.
-- **New API for coursework (10 Nov), built by Roshan in PR #85:** files, late and missing work, resubmissions and extensions, the gradebook and CSV export, scheduled announcements, and more assignment settings. No screens use it yet. See [New in the API](#new-in-the-api-10-nov). It's on the `frontend` branch but **not on the live API yet**, so build against a local backend until Amora deploys it.
+- **Built so far:** dashboards, courses, modules and materials, assignments and marking, grades, people and user admin (Amora), and the lecturer grading view #44 (Dipesh, PR #97).
+- **Quiz API ready (16 Nov), built by Roshan in PRs #129 and #130:** the quiz builder (#47) and quiz taking with auto-marking (#48). See [New in the API: quizzes](#new-in-the-api-quizzes-16-nov). Roshan also made a **clickable mock-up** of the quiz builder, quiz taking, short-answer marking and the gradebook: open [UI-UX-Design/Quizzes-Gradebook/index.html](../UI-UX-Design/Quizzes-Gradebook/index.html) in your browser.
+- **Coursework API ready (10 Nov), built by Roshan in PR #85:** files, late and missing work, resubmissions and extensions, the gradebook and CSV export. See [New in the API (10 Nov)](#new-in-the-api-10-nov).
+- **Neither is on the live API yet.** Build against a local backend until Amora deploys them (KAN-72). See [Using the new API before it's live](#using-the-new-api-before-its-live).
+- **Accessibility audit:** Yogesh's WCAG 2.2 audit is in [docs/Compliance/accessibility-audit.md](../docs/Compliance/accessibility-audit.md). Fix what it lists on any page you touch.
 
-Your earlier draft is still in git if you want to reuse code or design from it:
+The quiz code reaches the `frontend` branch when Amora merges `dev` into it. Until then, `git pull` on `frontend` won't have the quiz endpoints or the mock-up.
+
+Bishu's earlier draft is still in git if you want to reuse code or design from it:
 
 ```bash
 git show "ee7c2f8:UI-UX-Design/Frontend/client/src/pages/Dashboard.jsx"
@@ -43,46 +48,69 @@ From the repo folder:
 
 **To see each role:** your account has one role at a time. Ask Amora to change it on the Users page, and to enrol you in a test course. The dashboard and course pages look different for each role.
 
-## What to design
+## What to build next
 
-Work through these in order. Each one is a separate branch and pull request (see the next section).
+Everything below is due **Wed 25 Nov** (GitHub milestone "Deliverable 25 Nov"). Split the screens between you, one branch and pull request each, and review each other's PRs. Each GitHub issue has a **Frontend** checklist: tick your boxes and change its heading to "Done" in the same PR.
 
-### 1. Finish the look (KAN-65)
+Work in this order. The first ones have their API ready, so you can build them now.
 
-Everything works, so this is styling. The original design to work from is [UI-UX-Design/UI Design.html](../UI-UX-Design/UI%20Design.html).
+| Issue | Feature | API (who builds it) |
+| --- | --- | --- |
+| [#49](https://github.com/Red-dish/PerceptionLMS/issues/49) | Lecturer gradebook | **Ready** (Roshan, PR #85) |
+| [#51](https://github.com/Red-dish/PerceptionLMS/issues/51) | Grade export (CSV) | **Ready** (Roshan, PR #85) |
+| [#47](https://github.com/Red-dish/PerceptionLMS/issues/47) | Quiz builder and quiz settings | **Ready** (Roshan, PR #129) |
+| [#48](https://github.com/Red-dish/PerceptionLMS/issues/48) | Quiz taking, timer, score, lecturer marks short answers | **Ready** (Roshan, PR #130) |
+| [#37](https://github.com/Red-dish/PerceptionLMS/issues/37) | Files | **Mostly ready** (Roshan, PR #85): folders and linking left |
+| [#57](https://github.com/Red-dish/PerceptionLMS/issues/57) | Calendar | **Ready enough.** `GET /courses`, then `GET /courses/{id}/assignments` for each course, gives every due date |
+| [#32](https://github.com/Red-dish/PerceptionLMS/issues/32) | User profile and settings | Waiting (Amora) |
+| [#36](https://github.com/Red-dish/PerceptionLMS/issues/36) | Pages | Waiting (Roshan) |
+| [#45](https://github.com/Red-dish/PerceptionLMS/issues/45) | Basic rubrics | Waiting (Roshan) |
+| [#55](https://github.com/Red-dish/PerceptionLMS/issues/55), [#56](https://github.com/Red-dish/PerceptionLMS/issues/56) | Discussions, inbox | Waiting (Roshan) |
+| [#58](https://github.com/Red-dish/PerceptionLMS/issues/58) | Notifications | Waiting (Roshan) |
 
-- [ ] **Colours and type:** `tailwind.config.js` and `src/index.css`. Do these first, since every page uses them.
-- [ ] **Shared pieces:** buttons, cards, loading and error states in `src/components/ui.jsx`
-- [ ] **Navigation:** `src/components/Layout.jsx`, on desktop and phone
-- [ ] **Sign-in page:** `src/pages/Login.jsx`
-- [ ] **Dashboard for each role:** `src/pages/Dashboard.jsx`
-- [ ] **Course cards:** `src/components/CourseCard.jsx`
-- [ ] **Apeksha's design feedback (KAN-66):** ask Apeksha for it, since it isn't done yet
+You can design screens whose API is still "Waiting": ask Roshan (or Amora for profile) what data each one will return.
 
-### 2. Design the new screens, and review Dipesh's PRs
+**Still open from Week 1:** the final look (KAN-65): colours and type in `tailwind.config.js` and `src/index.css`, shared pieces in `src/components/ui.jsx`, navigation in `src/components/Layout.jsx`, the sign-in page and dashboards. The original design is [UI-UX-Design/UI Design.html](../UI-UX-Design/UI%20Design.html).
 
-Dipesh builds the screens for every open feature below. Your part is to **design each screen before Dipesh builds it**, then **review and merge his PR** into `frontend`. Read each GitHub issue for what's needed. The full plan is in [docs/Teams and Roles/teams.md](../docs/Teams%20and%20Roles/teams.md).
+## New in the API: quizzes (16 Nov)
 
-**This week (due Wed 11 Nov):** Dipesh is building #44, the lecturer grading view (KAN-70). Review his PR into `frontend` and merge it when it's ready (KAN-71). Use the checklist under "Before opening a pull request" below.
+Added in PRs #129 and #130. Every request and response, with examples, is at `/docs` on the backend (http://localhost:8000/docs when it runs locally), under **quizzes**. The rules are in [backend/README.md](../backend/README.md) under "Quizzes" and "Taking a quiz". "Lecturer" means a lecturer enrolled in the course; admins can do the same.
 
-Work in this order. The first ones have their API ready, so Dipesh can build them now and needs your designs first.
+**A quiz is an assignment with `kind: "quiz"`.** So it already appears in the assignment list, the gradebook, the CSV, the late and missing report and the student's grades. You don't need a separate list of quizzes.
 
-| Issue | Feature | When | API (who builds it) |
-| --- | --- | --- | --- |
-| [#44](https://github.com/Red-dish/PerceptionLMS/issues/44) | Lecturer submission review and grading | Core | **Ready**, with new extras |
-| [#37](https://github.com/Red-dish/PerceptionLMS/issues/37) | Files | Core | **Ready** (Roshan, new) |
-| [#43](https://github.com/Red-dish/PerceptionLMS/issues/43) | Late, missing and resubmission | Core | **Ready** (Roshan, new) |
-| [#49](https://github.com/Red-dish/PerceptionLMS/issues/49) | Lecturer gradebook | Core | **Ready** (Roshan, new) |
-| [#32](https://github.com/Red-dish/PerceptionLMS/issues/32) | User profile and settings | Core | Waiting (Amora). `GET /me` reads the profile, but nobody can edit their own details yet |
-| [#36](https://github.com/Red-dish/PerceptionLMS/issues/36) | Pages | Core | Waiting (Amora) |
-| [#51](https://github.com/Red-dish/PerceptionLMS/issues/51) | Grade export (CSV) | After core | **Ready** (Roshan, new) |
-| [#57](https://github.com/Red-dish/PerceptionLMS/issues/57) | Calendar | After core | **Ready enough.** `GET /courses`, then `GET /courses/{id}/assignments` for each course, gives every due date |
-| [#45](https://github.com/Red-dish/PerceptionLMS/issues/45) | Basic rubrics | After core | Waiting (Roshan) |
-| [#47](https://github.com/Red-dish/PerceptionLMS/issues/47), [#48](https://github.com/Red-dish/PerceptionLMS/issues/48) | Quiz builder, quiz taking | After core | Waiting (Roshan). A quiz can be created and marked by hand, but there are no questions or auto-marking yet |
-| [#58](https://github.com/Red-dish/PerceptionLMS/issues/58) | Notifications | After core | Waiting (Roshan) |
-| [#55](https://github.com/Red-dish/PerceptionLMS/issues/55), [#56](https://github.com/Red-dish/PerceptionLMS/issues/56) | Discussions, inbox | After core | Waiting (Amora) |
+### Quiz builder (#47, lecturer)
 
-You can design screens whose API is still "Waiting": ask Amora or Roshan what data each one will return.
+1. **Create the quiz** with the existing `POST /courses/{id}/assignments`, sending `kind: "quiz"` plus the settings. Edit them later with `PATCH`:
+   - `time_limit_minutes` (1 to 600; empty means no limit)
+   - `max_attempts`, `due_at`, `available_from`, `available_until`
+   - `shuffle_answers`: shuffle the options for each student
+   - `show_score` (default true): students see their score as soon as they submit
+   - `show_correct_answers` (default false): students see the right answers after submitting
+2. **Load it:** `GET /courses/{id}/quizzes/{quizId}` returns the settings, `question_count` and, for lecturers, every `questions` entry with its answers.
+3. **Add questions:** `POST …/quizzes/{quizId}/questions` with `type`, `text` (Markdown), `points`, and the answer field for that type only:
+   - `multiple_choice`: `options`, 2 to 10, each `{ text, correct }`. Several can be correct.
+   - `true_false`: `answer`, `true` or `false`.
+   - `short_answer`: optional `accepted_answers`, a list of answers marked right automatically (case and spacing ignored). Anything else waits for the lecturer.
+4. **Edit** with `PATCH …/questions/{questionId}` (sending `options` replaces them all), **delete** with `DELETE`, and **reorder** with `PUT …/questions/order` and `{ "question_ids": [...] }`, listing every question once.
+5. **The quiz's `max_mark` is always the total of its questions' points.** Re-read the quiz after changing questions rather than working it out yourself.
+6. **Once any student has started, the quiz is locked:** adding, deleting, reordering and changing points or answers return **409**. Only a question's `text` can change. Show the 409 message, and consider disabling those buttons when the lecturer's attempt list isn't empty.
+
+### Taking a quiz (#48, student)
+
+1. `GET /courses/{id}/quizzes/{quizId}` gives the student `question_count`, `my_attempts`, `attempts_left` (empty means unlimited) and **`can_start`**. Show the Start button only when `can_start` is true. Students never get the answers here.
+2. **Start:** `POST …/quizzes/{quizId}/attempts`. It returns the attempt with its `questions` in this student's order, a `deadline` and `seconds_left`. If an attempt is already in progress, you get that one back (status 200 instead of 201), so this also handles a refresh: **the clock doesn't stop when the page closes.**
+3. **Timer:** count down from `seconds_left`. Don't trust the browser clock for anything else; the server enforces the limit.
+4. **Save as they go:** `PUT …/attempts/{attemptId}/answers` with `{ "answers": { questionId: answer } }`. Answers are merged with earlier saves, so send only what changed. Answer shapes: multiple choice is a **list** of option IDs (even for one), true/false is `true`/`false`, short answer is text (up to 5,000 characters).
+5. **Submit:** `POST …/attempts/{attemptId}/submit` with the same body. When the timer hits 0, call submit yourself; the server also allows 30 seconds' grace, then submits the saved answers on its own (`auto_submitted: true`).
+6. **After submitting:** the response has `status` (`submitted` while short answers wait for marking, `graded` when done), `score`, `max_score` and per-question `results`. Students only see `score` and `results` if the quiz's `show_score` is on or the lecturer released marks, and the right answers only if `show_correct_answers` is on. When they're hidden they come back empty, so show "Your score will appear once your lecturer releases it".
+7. Errors to handle: **409** "used all attempts" or "already submitted" or "Time is up", **403** "This quiz has closed", **422** for a badly shaped answer.
+
+### Marking short answers (#48, lecturer)
+
+- `GET …/quizzes/{quizId}/attempts?needs_marking=true` lists attempts with short answers waiting. Add `student_id=` for one student. Lecturers get the questions, answers and results.
+- `PUT …/attempts/{attemptId}/marks` with `{ "marks": { questionId: points } }`. When nothing is left to mark, the attempt gets its score and the student's gradebook mark updates.
+- The student's **best fully marked attempt** is what the gradebook shows.
+- Students can't use the normal submission endpoint for a quiz with questions (it returns 409), so send them to the quiz-taking screen instead.
 
 ## New in the API (10 Nov)
 
@@ -135,6 +163,7 @@ The live API doesn't have these endpoints yet, so calling them from http://local
    Running the backend is fine; just don't change its code (rule 4).
 2. In `.env.local`, set `VITE_API_URL=http://localhost:8000`, and restart `npm run dev`.
 3. Sign in. The local database starts empty, so create a test course, users and assignments yourself. They disappear when the backend's container stops.
+4. **To test a quiz as both roles:** you can only be one role at a time per Google account, so either change your role on the Users page between steps, or have one of you sign in as the lecturer and the other as a student on the same local backend.
 
 Set `VITE_API_URL` back to the live API when you're done. Amora will tell the team when the new endpoints are live.
 
@@ -150,9 +179,9 @@ The full guide is [docs/branching-workflow.md](../docs/branching-workflow.md). I
    git pull
    ```
    ```bash
-   git switch -c feature/KAN-65-colours-and-type
+   git switch -c feature/KAN-92-quiz-builder-screens
    ```
-2. **Commit, push, and open a pull request into `frontend`.** GitHub picks `main` by default, so change the base to `frontend`. Someone else must approve your own design PRs before they can merge, so ask Amora or Dipesh.
+2. **Commit, push, and open a pull request into `frontend`.** GitHub picks `main` by default, so change the base to `frontend`. The other one of you (Dipesh or Bishu) reviews and approves it. Check [docs/pull-request-rules.md](../docs/pull-request-rules.md) first.
 3. **When a set of changes is ready to show,** open a pull request from `frontend` into `dev`. Amora reviews it, then moves `dev` into `main`.
 4. **Amora publishes `main` to the site.** Message Amora once your work is on `main`. It's usually live the same day.
 5. **Check it on https://perceptionlms.com.** If you still see the old version, do a hard refresh (Ctrl+Shift+R).
@@ -185,9 +214,10 @@ Only Amora can publish for now, because it needs AWS access. Automatic publishin
 | Question | Ask |
 | --- | --- |
 | The project overall, sign-in, hosting, publishing | Amora |
-| An API: profile, pages, discussions, inbox | Amora |
-| An API: files, late work, gradebook, rubrics, quizzes, notifications | Roshan |
-| Building a screen | Dipesh, whose PRs you review |
+| An API: profile, AI at-risk view | Amora |
+| An API: files, late work, gradebook, quizzes, pages, rubrics, discussions, inbox, notifications | Roshan |
+| Reviewing your PR | The other frontend developer (Dipesh or Bishu) |
+| Accessibility findings | Yogesh |
 | Design review and feedback | Apeksha |
 
 Your tasks are also listed in [docs/task.md](../docs/task.md).

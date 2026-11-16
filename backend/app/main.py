@@ -5,7 +5,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
 from app.config import get_settings
-from app.routers import admin, announcements, assignments, courses, gradebook, login, me, tracking
+from app.routers import (
+    admin,
+    announcements,
+    assignments,
+    courses,
+    gradebook,
+    login,
+    me,
+    quiz_attempts,
+    quizzes,
+    tracking,
+)
 
 app = FastAPI(
     title="Perception LMS API",
@@ -25,6 +36,8 @@ for router in (
     admin.router,
     courses.router,
     assignments.router,
+    quizzes.router,
+    quiz_attempts.router,
     gradebook.router,
     tracking.router,
     announcements.router,

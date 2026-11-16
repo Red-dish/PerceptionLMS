@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Response, status
 
 from app import coursework as cw
-from app import db, storage
+from app import db, quizzes, storage
 from app.access import course_role, require_student, require_teacher
 from app.auth import CurrentUser
 from app.models import (
@@ -123,7 +123,7 @@ def update_assignment(course_id: str, assignment_id: str, body: AssignmentUpdate
     require_teacher(course_id, user)
     assignment = _assignment_or_404(course_id, assignment_id)
     changes = body.model_dump(exclude_unset=True)
-    nullable = {"available_from", "available_until", "module_id", "max_attempts"}
+    nullable = {"available_from", "available_until", "module_id", "max_attempts", "time_limit_minutes"}
     _module_must_exist(course_id, changes.get("module_id"))
     # null only means "remove" for the window; for other fields it means "leave as it is".
     changes = {name: value for name, value in changes.items() if value is not None or name in nullable}
@@ -140,7 +140,9 @@ def update_assignment(course_id: str, assignment_id: str, body: AssignmentUpdate
     except ValueError as exc:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, str(exc)) from None
     assignment["updated_at"] = db.now_iso()
-    return db.put(db.assignment_key(course_id, assignment_id), assignment)
+    assignment = db.put(db.assignment_key(course_id, assignment_id), assignment)
+    # A quiz with questions is worth the total of its questions' points.
+    return quizzes.sync_points(assignment) if assignment.get("kind") == "quiz" else assignment
 
 
 @router.delete("/{assignment_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -162,6 +164,8 @@ def submit(course_id: str, assignment_id: str, body: SubmissionCreate, user: Cur
     """Submit or resubmit. If a file is included, upload it with the returned signed form."""
     require_student(course_id, user)
     assignment = _assignment_or_404(course_id, assignment_id, "student")
+    if assignment.get("kind") == "quiz" and quizzes.questions(assignment_id):
+        raise HTTPException(status.HTTP_409_CONFLICT, "Take this quiz with POST …/quizzes/{quizId}/attempts")
     moment = cw.now()
     grant = _grant(assignment_id, user["id"])
     has_grant = cw.grant_is_active(grant, moment)

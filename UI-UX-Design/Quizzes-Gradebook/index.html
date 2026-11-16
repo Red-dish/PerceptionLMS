@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quizzes and Gradebook · Perception LMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #182c31; --muted: #5d7171; --paper: #f5f5ef; --card: #ffffff;
+    --forest: #17483f; --forest-2: #1f5c50; --mint: #d5e9db; --mint-2: #eef6f0;
+    --line: #e0e6dd; --orange: #de794b; --orange-ink: #9a4520; --orange-bg: #fdf0df;
+    --red-ink: #a3302a; --red-bg: #fbe9e7; --blue-ink: #24557a; --blue-bg: #e6eff7;
+    --green-ink: #1f6b3a; --green-bg: #e3f3e8;
+    --radius: 14px; --shadow: 0 1px 2px rgba(24,44,49,.06), 0 4px 16px rgba(24,44,49,.05);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: 'DM Sans', system-ui, sans-serif; color: var(--ink); background: var(--paper); font-size: 15px; line-height: 1.5; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: .55; }
+  :focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; border-radius: 6px; }
+  h1, h2, h3 { font-family: Fraunces, Georgia, serif; font-weight: 600; margin: 0; letter-spacing: -.01em; }
+  .muted { color: var(--muted); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .topbar { background: var(--forest); color: #fff; }
+  .topbar-inner { max-width: 1240px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: Fraunces, serif; font-size: 19px; font-weight: 700; white-space: nowrap; }
+  .brand-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--mint); color: var(--forest); display: grid; place-items: center; font-size: 16px; }
+  .spacer { flex: 1; }
+  .demo-pill { background: var(--orange); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; }
+  .role-switch { display: flex; gap: 4px; background: rgba(255,255,255,.1); border-radius: 10px; padding: 4px; }
+  .role-switch button { border: none; background: none; color: #fff; padding: 5px 12px; border-radius: 7px; font-size: 13px; font-weight: 600; opacity: .8; }
+  .role-switch button[aria-pressed="true"] { background: #fff; color: var(--forest); opacity: 1; }
+
+  main { max-width: 1240px; margin: 0 auto; padding: 24px 20px 56px; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+  .page-head h1 { font-size: 30px; }
+  .page-head p { margin: 4px 0 0; color: var(--muted); }
+
+  .tabs { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 4px; flex-wrap: wrap; margin-bottom: 20px; width: fit-content; max-width: 100%; }
+  .tab { border: none; background: none; padding: 7px 14px; border-radius: 7px; font-size: 14px; font-weight: 600; color: var(--muted); }
+  .tab[aria-selected="true"] { background: var(--forest); color: #fff; }
+  .tab .count { display: inline-block; min-width: 20px; padding: 0 6px; border-radius: 999px; background: var(--orange); color: #fff; font-size: 11px; margin-left: 6px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 10px; padding: 9px 15px; font-weight: 600; font-size: 14px; }
+  .btn-primary { background: var(--forest); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--forest-2); }
+  .btn-secondary { background: var(--card); border-color: var(--line); }
+  .btn-secondary:hover:not(:disabled) { background: var(--mint-2); }
+  .btn-danger { background: var(--card); border-color: #efc9c4; color: var(--red-ink); }
+  .btn-sm { padding: 5px 10px; font-size: 13px; border-radius: 8px; }
+  .icon-btn { border: 1px solid var(--line); background: var(--card); border-radius: 8px; width: 32px; height: 32px; display: inline-grid; place-items: center; font-size: 14px; }
+  .icon-btn:hover:not(:disabled) { background: var(--mint-2); }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .card-pad { padding: 18px 20px; }
+  .grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+  .stack { display: grid; gap: 14px; }
+
+  label.lbl { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .field { width: 100%; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; min-height: 40px; }
+  textarea.field { min-height: 76px; resize: vertical; }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .check { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .check input { width: 17px; height: 17px; accent-color: var(--forest); }
+
+  .chip { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+  .chip-mc { background: var(--blue-bg); color: var(--blue-ink); }
+  .chip-tf { background: var(--mint); color: var(--forest); }
+  .chip-sa { background: var(--orange-bg); color: var(--orange-ink); }
+  .chip-late { background: var(--orange-bg); color: var(--orange-ink); }
+  .chip-missing { background: var(--red-bg); color: var(--red-ink); }
+  .chip-ok { background: var(--green-bg); color: var(--green-ink); }
+  .chip-wait { background: var(--blue-bg); color: var(--blue-ink); }
+
+  /* Builder */
+  .q-card { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: var(--card); }
+  .q-head { display: flex; gap: 10px; align-items: flex-start; }
+  .q-num { font-family: Fraunces, serif; font-weight: 700; color: var(--muted); min-width: 26px; }
+  .q-text { flex: 1; font-weight: 600; }
+  .q-tools { display: flex; gap: 4px; }
+  .q-answers { margin: 10px 0 0 36px; padding: 0; list-style: none; display: grid; gap: 4px; font-size: 14px; }
+  .q-answers li.right { color: var(--green-ink); font-weight: 600; }
+  .q-answers li.right::before { content: "✓ "; }
+  .q-answers li.wrong::before { content: "○ "; color: var(--muted); }
+  .opt-row { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; margin-bottom: 6px; }
+  .settings-list { display: grid; gap: 12px; }
+  .total { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 0 0; border-top: 1px solid var(--line); margin-top: 4px; }
+  .total strong { font-family: Fraunces, serif; font-size: 24px; }
+  .empty { text-align: center; padding: 30px 16px; color: var(--muted); border: 1px dashed var(--line); border-radius: 12px; }
+
+  /* Taking */
+  .quiz-intro { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }
+  .fact { background: var(--mint-2); border-radius: 10px; padding: 10px 12px; }
+  .fact b { display: block; font-family: Fraunces, serif; font-size: 20px; }
+  .fact span { font-size: 13px; color: var(--muted); }
+  .timer-bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 14px; background: var(--forest); color: #fff; padding: 10px 16px; border-radius: 12px; margin-bottom: 16px; }
+  .timer { font-family: Fraunces, serif; font-size: 24px; font-variant-numeric: tabular-nums; }
+  .timer-bar.low { background: var(--red-ink); }
+  .progress { flex: 1; height: 6px; background: rgba(255,255,255,.25); border-radius: 99px; overflow: hidden; }
+  .progress > div { height: 100%; background: var(--mint); }
+  .take-q { padding: 16px 18px; }
+  .take-q legend { font-weight: 600; padding: 0; margin-bottom: 10px; display: flex; gap: 10px; width: 100%; }
+  .take-q legend .pts { margin-left: auto; color: var(--muted); font-weight: 500; font-size: 13px; white-space: nowrap; }
+  fieldset { border: none; margin: 0; padding: 0; min-width: 0; }
+  .choice { display: flex; gap: 10px; align-items: center; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 6px; cursor: pointer; }
+  .choice:hover { background: var(--mint-2); }
+  .choice input { accent-color: var(--forest); width: 17px; height: 17px; }
+  .choice.is-right { border-color: #9fd1b0; background: var(--green-bg); }
+  .choice.is-wrong { border-color: #efc9c4; background: var(--red-bg); }
+  .score-hero { text-align: center; padding: 26px 20px; }
+  .score-hero .big { font-family: Fraunces, serif; font-size: 52px; font-weight: 700; line-height: 1; }
+  .result-line { display: flex; gap: 10px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); font-size: 14px; }
+  .result-line .grow { flex: 1; }
+
+  /* Gradebook */
+  .gb-tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+  .gb-tools .search { flex: 1; min-width: 180px; max-width: 320px; }
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow); }
+  table.gb { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 14px; }
+  .gb th, .gb td { border-bottom: 1px solid var(--line); padding: 0; text-align: center; white-space: nowrap; }
+  .gb thead th { background: var(--mint-2); font-weight: 600; padding: 10px 12px; vertical-align: bottom; font-size: 13px; }
+  .gb thead th .sub { display: block; font-weight: 500; color: var(--muted); font-size: 12px; }
+  .gb th.name, .gb td.name { position: sticky; left: 0; background: var(--card); text-align: left; padding: 10px 14px; z-index: 1; border-right: 1px solid var(--line); min-width: 170px; }
+  .gb thead th.name { background: var(--mint-2); z-index: 2; }
+  .gb td.name small { display: block; color: var(--muted); font-size: 12px; }
+  .gb td.total { padding: 10px 12px; font-weight: 600; background: #fafbf7; }
+  .gb tfoot td { background: var(--mint-2); padding: 9px 12px; font-size: 13px; color: var(--muted); font-weight: 600; }
+  .gb tfoot td.name { background: var(--mint-2); }
+  .cell-btn { width: 100%; min-width: 86px; min-height: 46px; border: none; background: none; padding: 6px 10px; display: grid; place-items: center; gap: 2px; }
+  .cell-btn:hover { background: var(--mint-2); }
+  .cell-btn .mark { font-weight: 600; }
+  .cell-btn .dash { color: #a7b3ae; }
+  .cell-btn.missing { background: var(--red-bg); }
+  .cell-btn.saved { animation: flash 1s ease; }
+  @keyframes flash { from { background: var(--mint); } to { background: transparent; } }
+  .cell-edit { width: 72px; text-align: center; border: 2px solid var(--forest); border-radius: 8px; padding: 6px; margin: 6px; }
+  .cell-edit.bad { border-color: var(--red-ink); background: var(--red-bg); }
+  .pct { font-variant-numeric: tabular-nums; }
+
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 14px; box-shadow: var(--shadow); z-index: 50; }
+  dialog { border: none; border-radius: 16px; padding: 0; max-width: 620px; width: calc(100% - 32px); box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+  dialog::backdrop { background: rgba(24,44,49,.45); }
+  .dlg-head { padding: 18px 20px 6px; }
+  .dlg-body { padding: 10px 20px; display: grid; gap: 12px; max-height: 65vh; overflow: auto; }
+  .dlg-foot { padding: 14px 20px 18px; display: flex; justify-content: flex-end; gap: 8px; }
+  .err { color: var(--red-ink); font-size: 13px; }
+
+  @media (max-width: 900px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .quiz-intro { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    main { padding: 16px 16px 40px; }
+    .page-head h1 { font-size: 24px; }
+    .q-answers { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">P</span> Perception LMS</div>
+    <span class="demo-pill">Demo data</span>
+    <span class="spacer"></span>
+    <div class="role-switch" role="group" aria-label="View as">
+      <button type="button" data-role="lecturer" aria-pressed="true">Lecturer · Dr. Maya Chen</button>
+      <button type="button" data-role="student" aria-pressed="false">Student · Jordan Lee</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <div>
+      <h1>ICT102 · Quizzes and gradebook</h1>
+      <p id="subtitle">Build quizzes, mark short answers, and keep every grade in one place.</p>
+    </div>
+  </div>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <section id="view" aria-live="polite"></section>
+</main>
+
+<dialog id="qDialog" aria-labelledby="qDialogTitle">
+  <form method="dialog" id="qForm">
+    <div class="dlg-head"><h2 id="qDialogTitle">Add a question</h2></div>
+    <div class="dlg-body">
+      <div class="row">
+        <div style="flex:1;min-width:180px">
+          <label class="lbl" for="qType">Question type</label>
+          <select class="field" id="qType">
+            <option value="multiple_choice">Multiple choice</option>
+            <option value="true_false">True / false</option>
+            <option value="short_answer">Short answer</option>
+          </select>
+        </div>
+        <div style="width:110px">
+          <label class="lbl" for="qPoints">Points</label>
+          <input class="field" id="qPoints" type="number" min="0" max="100" value="1">
+        </div>
+      </div>
+      <div>
+        <label class="lbl" for="qText">Question</label>
+        <textarea class="field" id="qText" required></textarea>
+      </div>
+      <div id="qAnswerArea"></div>
+      <p class="err" id="qError" role="alert"></p>
+    </div>
+    <div class="dlg-foot">
+      <button type="button" class="btn btn-secondary" id="qCancel">Cancel</button>
+      <button type="submit" class="btn btn-primary" id="qSave">Save question</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+"use strict";
+
+/* ---------- Demo data (same shapes as the API) ---------- */
+const days = n => new Date(Date.now() + n * 864e5).toISOString();
+const uid = () => Math.random().toString(36).slice(2, 10);
+
+const students = [
+  { id: "s1", name: "Jordan Lee", email: "jordan.lee@example.edu" },
+  { id: "s2", name: "Aisha Rahman", email: "aisha.rahman@example.edu" },
+  { id: "s3", name: "Ben Carter", email: "ben.carter@example.edu" },
+  { id: "s4", name: "Chloe Nguyen", email: "chloe.nguyen@example.edu" },
+  { id: "s5", name: "Diego Alvarez", email: "diego.alvarez@example.edu" },
+  { id: "s6", name: "Priya Sharma", email: "priya.sharma@example.edu" },
+].sort((a, b) => a.name.localeCompare(b.name));
+const ME = "s1";
+
+const quiz = {
+  id: "quiz4", kind: "quiz", title: "Week 4 quiz: loops and conditions",
+  instructions: "Answer every question. Your score is saved automatically.",
+  due_at: days(3), weight: 15, time_limit_minutes: 10, max_attempts: 2,
+  shuffle_answers: true, show_score: true, show_correct_answers: true, published: true,
+};
+let questions = [
+  { id: uid(), type: "multiple_choice", text: "How many times does `for i in range(2, 8, 2)` run?", points: 2,
+    options: [{ id: uid(), text: "3", correct: true }, { id: uid(), text: "4", correct: false }, { id: uid(), text: "6", correct: false }, { id: uid(), text: "8", correct: false }] },
+  { id: uid(), type: "true_false", text: "A `while` loop always runs at least once.", points: 1, answer: false },
+  { id: uid(), type: "multiple_choice", text: "Which of these are comparison operators? Choose all that apply.", points: 2,
+    options: [{ id: uid(), text: "==", correct: true }, { id: uid(), text: "=", correct: false }, { id: uid(), text: "<=", correct: true }, { id: uid(), text: "+=", correct: false }] },
+  { id: uid(), type: "true_false", text: "`break` leaves the innermost loop only.", points: 1, answer: true },
+  { id: uid(), type: "short_answer", text: "Which keyword skips to the next iteration of a loop?", points: 2, accepted_answers: ["continue"] },
+  { id: uid(), type: "short_answer", text: "In one sentence, when would you choose a `while` loop over a `for` loop?", points: 2, accepted_answers: [] },
+];
+
+const columns = [
+  { id: "a1", kind: "assignment", title: "Lab 1: variables", due_at: days(-20), weight: 10, max_mark: 20 },
+  { id: "q1", kind: "quiz", title: "Week 2 quiz", due_at: days(-13), weight: 10, max_mark: 10 },
+  { id: "a2", kind: "assignment", title: "Essay: algorithms", due_at: days(-6), weight: 25, max_mark: 50 },
+  { id: "a3", kind: "assignment", title: "Lab 2: functions", due_at: days(-1), weight: 10, max_mark: 20 },
+  { id: quiz.id, kind: "quiz", title: quiz.title, due_at: quiz.due_at, weight: quiz.weight, max_mark: 0 },
+];
+// cells[studentId][columnId] = { mark, submitted, late }
+const cells = {
+  s1: { a1: { mark: 17, submitted: true }, q1: { mark: 8, submitted: true }, a2: { mark: 41, submitted: true, late: true }, a3: { submitted: true } },
+  s2: { a1: { mark: 19, submitted: true }, q1: { mark: 10, submitted: true }, a2: { mark: 46, submitted: true }, a3: { mark: 18, submitted: true } },
+  s3: { a1: { mark: 12, submitted: true }, q1: { mark: 6, submitted: true }, a3: { submitted: true, late: true } },
+  s4: { a1: { mark: 16, submitted: true }, q1: { mark: 9, submitted: true }, a2: { mark: 38, submitted: true }, a3: { mark: 15, submitted: true } },
+  s5: { a1: { mark: 14, submitted: true, late: true }, a2: { mark: 30, submitted: true } },
+  s6: { a1: { mark: 20, submitted: true }, q1: { mark: 7, submitted: true }, a2: { mark: 44, submitted: true }, a3: { mark: 19, submitted: true } },
+};
+// Some classmates have already taken the new quiz.
+const attempts = [];
+function seedAttempt(studentId, picks, saText, minutesAgo) {
+  const s = students.find(x => x.id === studentId);
+  const a = { id: uid(), student_id: studentId, student_name: s.name, number: 1, status: "in_progress",
+    started_at: new Date(Date.now() - (minutesAgo + 8) * 6e4).toISOString(), answers: {} };
+  questions.forEach((q, i) => {
+    if (q.type === "multiple_choice") a.answers[q.id] = picks[i] ? q.options.filter(o => o.correct).map(o => o.id) : [q.options[1].id];
+    if (q.type === "true_false") a.answers[q.id] = picks[i] ? q.answer : !q.answer;
+    if (q.type === "short_answer") a.answers[q.id] = i === 4 ? (picks[i] ? "Continue" : "skip") : saText;
+  });
+  attempts.push(a);
+  finishAttempt(a, false, new Date(Date.now() - minutesAgo * 6e4));
+}
+
+/* ---------- Marking (mirrors backend/app/quizzes.py) ---------- */
+const norm = t => String(t || "").replace(/\s+/g, " ").trim().toLowerCase();
+function markAnswer(q, ans) {
+  const r = { points: 0, max_points: q.points, correct: false, needs_marking: false };
+  if (q.type === "multiple_choice") {
+    const right = q.options.filter(o => o.correct).map(o => o.id).sort().join();
+    r.correct = Array.isArray(ans) && [...ans].sort().join() === right;
+  } else if (q.type === "true_false") {
+    r.correct = typeof ans === "boolean" && ans === q.answer;
+  } else {
+    const given = norm(ans);
+    if (!given) r.correct = false;
+    else if ((q.accepted_answers || []).map(norm).includes(given)) r.correct = true;
+    else { r.correct = null; r.needs_marking = true; }
+  }
+  if (r.correct) r.points = q.points;
+  return r;
+}
+function addUp(a) {
+  const rs = Object.values(a.results || {});
+  a.needs_marking = rs.filter(r => r.needs_marking).length;
+  a.status = a.needs_marking ? "submitted" : "graded";
+  a.score = a.needs_marking ? null : rs.reduce((t, r) => t + r.points, 0);
+}
+function finishAttempt(a, auto, when = new Date()) {
+  a.results = {};
+  questions.forEach(q => { a.results[q.id] = markAnswer(q, a.answers[q.id]); });
+  a.submitted_at = when.toISOString();
+  a.auto_submitted = auto;
+  a.late = when > new Date(quiz.due_at);
+  a.max_score = totalPoints();
+  addUp(a);
+  recordScore(a.student_id);
+}
+// Best fully marked attempt goes to the gradebook.
+function recordScore(studentId) {
+  const done = attempts.filter(a => a.student_id === studentId && a.status !== "in_progress");
+  if (!done.length) return;
+  const marked = done.filter(a => a.status === "graded");
+  const counted = marked.length ? marked.reduce((b, a) => (a.score >= b.score ? a : b)) : done[done.length - 1];
+  cells[studentId] = cells[studentId] || {};
+  cells[studentId][quiz.id] = { mark: marked.length ? counted.score : undefined, submitted: true, late: counted.late, pending: !marked.length };
+}
+const totalPoints = () => questions.reduce((t, q) => t + Number(q.points || 0), 0);
+
+/* ---------- State ---------- */
+let role = "lecturer";
+let tab = "builder";
+let current = null;      // the student's in-progress attempt
+let timerHandle = null;
+let lastResult = null;
+let editing = null;      // { studentId, columnId }
+let search = "";
+let editingQuestion = null;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const code = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
+const fmtDate = iso => new Date(iso).toLocaleString(undefined, { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" });
+function toast(msg) {
+  const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; t.setAttribute("role", "status");
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2600);
+}
+const pendingMarking = () => attempts.filter(a => a.status === "submitted").length;
+
+/* ---------- Tabs ---------- */
+function tabsFor() {
+  if (role === "lecturer") return [
+    ["builder", "Quiz builder"],
+    ["marking", "Mark short answers", pendingMarking()],
+    ["gradebook", "Gradebook"],
+  ];
+  return [["take", "Take the quiz"], ["mygrades", "My grades"]];
+}
+function renderTabs() {
+  const list = tabsFor();
+  if (!list.some(([id]) => id === tab)) tab = list[0][0];
+  $("#tabs").innerHTML = list.map(([id, label, n]) =>
+    `<button class="tab" role="tab" data-tab="${id}" aria-selected="${id === tab}">${label}${n ? `<span class="count">${n}</span>` : ""}</button>`).join("");
+}
+$("#tabs").addEventListener("click", e => {
+  const b = e.target.closest("[data-tab]"); if (!b) return;
+  tab = b.dataset.tab; render();
+});
+document.querySelector(".role-switch").addEventListener("click", e => {
+  const b = e.target.closest("[data-role]"); if (!b) return;
+  role = b.dataset.role;
+  document.querySelectorAll(".role-switch button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  tab = role === "lecturer" ? "builder" : "take";
+  $("#subtitle").textContent = role === "lecturer"
+    ? "Build quizzes, mark short answers, and keep every grade in one place."
+    : "Take your quiz within the time limit and see your score straight away.";
+  render();
+});
+
+function render() {
+  renderTabs();
+  const v = $("#view");
+  if (tab === "builder") v.innerHTML = builderHTML();
+  else if (tab === "marking") v.innerHTML = markingHTML();
+  else if (tab === "gradebook") v.innerHTML = gradebookHTML();
+  else if (tab === "take") v.innerHTML = takeHTML();
+  else if (tab === "mygrades") v.innerHTML = myGradesHTML();
+  if (tab === "gradebook" && editing) {
+    const input = $("#cellInput"); if (input) { input.focus(); input.select(); }
+  }
+}
+
+/* ---------- Lecturer: quiz builder ---------- */
+const typeChip = t => ({ multiple_choice: '<span class="chip chip-mc">Multiple choice</span>', true_false: '<span class="chip chip-tf">True / false</span>', short_answer: '<span class="chip chip-sa">Short answer</span>' }[t]);
+const locked = () => attempts.length > 0;
+
+function builderHTML() {
+  const qs = questions.map((q, i) => {
+    let answers = "";
+    if (q.type === "multiple_choice") answers = q.options.map(o => `<li class="${o.correct ? "right" : "wrong"}">${code(o.text)}</li>`).join("");
+    if (q.type === "true_false") answers = `<li class="right">${q.answer ? "True" : "False"}</li>`;
+    if (q.type === "short_answer") answers = q.accepted_answers.length
+      ? `<li class="right">Accepted: ${q.accepted_answers.map(esc).join(", ")}</li><li class="muted">Anything else goes to you to mark</li>`
+      : `<li class="muted">No accepted answers, so you mark every response</li>`;
+    return `<li class="q-card">
+      <div class="q-head">
+        <span class="q-num">${i + 1}.</span>
+        <div class="q-text">${code(q.text)}<div class="row" style="margin-top:6px">${typeChip(q.type)}<span class="muted" style="font-size:13px">${q.points} ${q.points === 1 ? "point" : "points"}</span></div></div>
+        <div class="q-tools">
+          <button class="icon-btn" data-act="up" data-id="${q.id}" aria-label="Move question ${i + 1} up" ${i === 0 || locked() ? "disabled" : ""}>↑</button>
+          <button class="icon-btn" data-act="down" data-id="${q.id}" aria-label="Move question ${i + 1} down" ${i === questions.length - 1 || locked() ? "disabled" : ""}>↓</button>
+          <button class="icon-btn" data-act="edit" data-id="${q.id}" aria-label="Edit question ${i + 1}">✎</button>
+          <button class="icon-btn" data-act="delete" data-id="${q.id}" aria-label="Delete question ${i + 1}" ${locked() ? "disabled" : ""}>✕</button>
+        </div>
+      </div>
+      <ul class="q-answers">${answers}</ul>
+    </li>`;
+  }).join("");
+  return `<div class="grid-2">
+    <div class="stack">
+      <div class="row" style="justify-content:space-between">
+        <h2 style="font-size:22px">${esc(quiz.title)}</h2>
+        <button class="btn btn-primary" data-act="add" ${locked() ? "disabled" : ""}>+ Add question</button>
+      </div>
+      ${locked() ? `<p class="chip chip-wait" style="width:fit-content">Students have started this quiz, so you can only edit question wording now.</p>` : ""}
+      ${questions.length ? `<ol class="stack" style="list-style:none;margin:0;padding:0">${qs}</ol>` : `<div class="empty">No questions yet. Add a multiple-choice, true/false or short-answer question.</div>`}
+    </div>
+    <aside class="card card-pad">
+      <h3 style="font-size:18px;margin-bottom:12px">Quiz settings</h3>
+      <div class="settings-list">
+        <div><label class="lbl" for="sLimit">Time limit (minutes)</label>
+          <input class="field" id="sLimit" type="number" min="1" max="600" value="${quiz.time_limit_minutes ?? ""}" placeholder="No limit" data-setting="time_limit_minutes"></div>
+        <div><label class="lbl" for="sAttempts">Allowed attempts</label>
+          <input class="field" id="sAttempts" type="number" min="1" max="50" value="${quiz.max_attempts ?? ""}" placeholder="Unlimited" data-setting="max_attempts"></div>
+        <div><label class="lbl" for="sDue">Due date</label>
+          <input class="field" id="sDue" type="datetime-local" value="${toLocalInput(quiz.due_at)}" data-setting="due_at"></div>
+        <div><label class="lbl" for="sWeight">Weight (% of final grade)</label>
+          <input class="field" id="sWeight" type="number" min="0" max="100" value="${quiz.weight}" data-setting="weight"></div>
+        <label class="check"><input type="checkbox" data-setting="shuffle_answers" ${quiz.shuffle_answers ? "checked" : ""}> Shuffle answer options</label>
+        <label class="check"><input type="checkbox" data-setting="show_score" ${quiz.show_score ? "checked" : ""}> Show students their score straight away</label>
+        <label class="check"><input type="checkbox" data-setting="show_correct_answers" ${quiz.show_correct_answers ? "checked" : ""}> Show the right answers after submitting</label>
+      </div>
+      <div class="total"><span class="muted">Total points</span><strong>${totalPoints()}</strong></div>
+      <p class="muted" style="font-size:13px;margin:6px 0 0">${questions.length} questions. Total points update as you add questions and become the quiz's mark in the gradebook.</p>
+    </aside>
+  </div>`;
+}
+function toLocalInput(iso) {
+  const d = new Date(iso); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 16);
+}
+$("#view").addEventListener("change", e => {
+  const el = e.target.closest("[data-setting]"); if (!el) return;
+  const k = el.dataset.setting;
+  if (el.type === "checkbox") quiz[k] = el.checked;
+  else if (k === "due_at") { if (el.value) quiz.due_at = new Date(el.value).toISOString(); }
+  else quiz[k] = el.value === "" ? null : Math.max(0, parseInt(el.value, 10));
+  columns.find(c => c.id === quiz.id).weight = quiz.weight;
+  toast("Quiz settings saved");
+});
+$("#view").addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  const act = b.dataset.act, id = b.dataset.id;
+  const i = questions.findIndex(q => q.id === id);
+  if (act === "add") openQuestion(null);
+  if (act === "edit") openQuestion(questions[i]);
+  if (act === "delete" && confirm("Delete this question?")) { questions.splice(i, 1); render(); toast("Question deleted"); }
+  if (act === "up" || act === "down") {
+    const j = act === "up" ? i - 1 : i + 1;
+    [questions[i], questions[j]] = [questions[j], questions[i]]; render();
+  }
+  if (act === "start") startAttempt();
+  if (act === "submit") submitAttempt(false);
+  if (act === "again") { lastResult = null; render(); }
+  if (act === "mark") saveMarks(id);
+  if (act === "csv") exportCSV();
+  if (act === "cell") { editing = { studentId: b.dataset.student, columnId: b.dataset.column }; render(); }
+});
+
+/* Question dialog */
+const dlg = $("#qDialog");
+function openQuestion(q) {
+  editingQuestion = q;
+  $("#qDialogTitle").textContent = q ? "Edit question" : "Add a question";
+  $("#qType").value = q ? q.type : "multiple_choice";
+  $("#qType").disabled = !!q && locked();
+  $("#qPoints").value = q ? q.points : 1;
+  $("#qPoints").disabled = !!q && locked();
+  $("#qText").value = q ? q.text : "";
+  $("#qError").textContent = "";
+  drawAnswerArea(q);
+  dlg.showModal();
+  $("#qText").focus();
+}
+function drawAnswerArea(q) {
+  const type = $("#qType").value;
+  const off = q && locked() ? "disabled" : "";
+  let html = "";
+  if (type === "multiple_choice") {
+    const opts = q && q.type === "multiple_choice" ? q.options : [{ text: "", correct: true }, { text: "", correct: false }, { text: "", correct: false }];
+    html = `<div><span class="lbl">Options <span class="muted" style="font-weight:400">(tick every right answer)</span></span><div id="optList">
+      ${opts.map((o, i) => optRow(o, i, off)).join("")}</div>
+      <button type="button" class="btn btn-secondary btn-sm" id="addOpt" ${off}>+ Add option</button></div>`;
+  } else if (type === "true_false") {
+    const ans = q && q.type === "true_false" ? q.answer : true;
+    html = `<fieldset><legend class="lbl">Right answer</legend><div class="row">
+      <label class="check"><input type="radio" name="tf" value="true" ${ans ? "checked" : ""} ${off}> True</label>
+      <label class="check"><input type="radio" name="tf" value="false" ${!ans ? "checked" : ""} ${off}> False</label></div></fieldset>`;
+  } else {
+    const acc = q && q.type === "short_answer" ? q.accepted_answers.join("\n") : "";
+    html = `<div><label class="lbl" for="qAccepted">Accepted answers, one per line <span class="muted" style="font-weight:400">(optional)</span></label>
+      <textarea class="field" id="qAccepted" ${off} placeholder="continue">${esc(acc)}</textarea>
+      <p class="muted" style="font-size:13px;margin:4px 0 0">Matching answers are marked right automatically, ignoring case and spacing. Anything else comes to you to mark.</p></div>`;
+  }
+  $("#qAnswerArea").innerHTML = html;
+}
+const optRow = (o, i, off) => `<div class="opt-row">
+  <input type="checkbox" class="opt-correct" aria-label="Option ${i + 1} is right" ${o.correct ? "checked" : ""} ${off} style="width:18px;height:18px;accent-color:var(--forest)">
+  <input class="field opt-text" aria-label="Option ${i + 1}" value="${esc(o.text)}" data-id="${o.id || ""}">
+  <button type="button" class="icon-btn opt-del" aria-label="Remove option ${i + 1}" ${off}>✕</button></div>`;
+$("#qType").addEventListener("change", () => drawAnswerArea(null));
+$("#qAnswerArea").addEventListener("click", e => {
+  if (e.target.id === "addOpt") {
+    const n = document.querySelectorAll(".opt-row").length;
+    if (n >= 10) return;
+    $("#optList").insertAdjacentHTML("beforeend", optRow({ text: "", correct: false }, n, ""));
+  }
+  if (e.target.closest(".opt-del")) e.target.closest(".opt-row").remove();
+});
+$("#qCancel").addEventListener("click", () => dlg.close());
+$("#qForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const type = $("#qType").value, text = $("#qText").value.trim(), points = parseInt($("#qPoints").value, 10);
+  const fail = m => { $("#qError").textContent = m; };
+  if (!text) return fail("Type the question.");
+  if (!(points >= 0 && points <= 100)) return fail("Points must be between 0 and 100.");
+  const q = { id: editingQuestion ? editingQuestion.id : uid(), type, text, points };
+  if (type === "multiple_choice") {
+    q.options = [...document.querySelectorAll(".opt-row")].map(r => ({
+      id: r.querySelector(".opt-text").dataset.id || uid(), text: r.querySelector(".opt-text").value.trim(), correct: r.querySelector(".opt-correct").checked,
+    })).filter(o => o.text);
+    if (q.options.length < 2) return fail("Add at least two options.");
+    if (!q.options.some(o => o.correct)) return fail("Tick at least one right answer.");
+  } else if (type === "true_false") {
+    q.answer = document.querySelector('input[name="tf"]:checked').value === "true";
+  } else {
+    q.accepted_answers = $("#qAccepted").value.split("\n").map(s => s.trim()).filter(Boolean);
+  }
+  if (editingQuestion) questions[questions.indexOf(editingQuestion)] = q; else questions.push(q);
+  dlg.close(); render(); toast(editingQuestion ? "Question updated" : "Question added");
+});
+
+/* ---------- Lecturer: mark short answers ---------- */
+function markingHTML() {
+  const waiting = attempts.filter(a => a.status === "submitted");
+  if (!waiting.length) return `<div class="empty">Nothing to mark. Short answers that don't match an accepted answer will appear here.</div>`;
+  return `<div class="stack">${waiting.map(a => {
+    const items = questions.filter(q => a.results[q.id] && a.results[q.id].needs_marking).map(q => `
+      <div class="result-line" style="align-items:flex-start">
+        <div class="grow"><div style="font-weight:600">${code(q.text)}</div>
+          <div style="margin-top:4px;padding:8px 10px;background:var(--mint-2);border-radius:8px">${esc(a.answers[q.id])}</div></div>
+        <div><label class="lbl" for="m-${a.id}-${q.id}">Points (out of ${q.points})</label>
+          <input class="field" style="width:96px" type="number" min="0" max="${q.points}" id="m-${a.id}-${q.id}" data-attempt="${a.id}" data-q="${q.id}"></div>
+      </div>`).join("");
+    const auto = Object.values(a.results).filter(r => !r.needs_marking).reduce((t, r) => t + r.points, 0);
+    return `<article class="card card-pad">
+      <div class="row" style="justify-content:space-between"><h3 style="font-size:18px">${esc(a.student_name)} · attempt ${a.number}</h3>
+      <span class="chip chip-wait">${a.needs_marking} to mark · ${auto} points so far</span></div>
+      ${items}
+      <div class="row" style="justify-content:flex-end;margin-top:10px"><button class="btn btn-primary" data-act="mark" data-id="${a.id}">Save marks</button></div>
+    </article>`;
+  }).join("")}</div>`;
+}
+function saveMarks(attemptId) {
+  const a = attempts.find(x => x.id === attemptId);
+  const inputs = [...document.querySelectorAll(`[data-attempt="${attemptId}"]`)];
+  for (const input of inputs) {
+    const q = questions.find(x => x.id === input.dataset.q), v = parseInt(input.value, 10);
+    if (input.value === "") continue;
+    if (!(v >= 0 && v <= q.points)) { input.focus(); toast(`Points must be 0 to ${q.points}`); return; }
+    a.results[q.id] = { points: v, max_points: q.points, correct: v === q.points, needs_marking: false };
+  }
+  addUp(a); recordScore(a.student_id); render();
+  toast(a.status === "graded" ? `${a.student_name}: ${a.score}/${a.max_score}, sent to the gradebook` : "Marks saved");
+}
+
+/* ---------- Gradebook ---------- */
+function liveColumns() {
+  columns.find(c => c.id === quiz.id).max_mark = totalPoints();
+  return columns;
+}
+function rowFor(s) {
+  let earned = 0, possible = 0, weighted = 0, weightMarked = 0, missing = 0, late = 0;
+  const now = new Date();
+  const out = liveColumns().map(c => {
+    const cell = (cells[s.id] || {})[c.id] || {};
+    const status = cell.mark != null ? "graded" : cell.submitted ? "submitted" : new Date(c.due_at) < now ? "missing" : "upcoming";
+    if (status === "missing") missing++;
+    if (cell.late) late++;
+    if (cell.mark != null && c.max_mark) { earned += cell.mark; possible += c.max_mark; weighted += cell.mark / c.max_mark * c.weight; weightMarked += c.weight; }
+    return { c, cell, status };
+  });
+  const pct = possible ? Math.round(earned / possible * 1000) / 10 : null;
+  const wpct = weightMarked ? Math.round(weighted / weightMarked * 1000) / 10 : pct;
+  return { s, out, earned, possible, pct, wpct, missing, late };
+}
+function gradebookHTML() {
+  const cols = liveColumns();
+  const rows = students.filter(s => (s.name + s.email).toLowerCase().includes(search.toLowerCase())).map(rowFor);
+  const head = cols.map(c => `<th scope="col">${esc(c.title)}<span class="sub">${c.kind === "quiz" ? "Quiz" : "Assignment"} · /${c.max_mark} · ${c.weight}%</span></th>`).join("");
+  const body = rows.map(r => `<tr>
+    <td class="name"><span style="font-weight:600">${esc(r.s.name)}</span><small>${esc(r.s.email)}</small></td>
+    ${r.out.map(({ c, cell, status }) => {
+      const isEditing = editing && editing.studentId === r.s.id && editing.columnId === c.id;
+      if (isEditing) return `<td><label class="sr-only" for="cellInput">Mark for ${esc(r.s.name)}, ${esc(c.title)}, out of ${c.max_mark}</label>
+        <input id="cellInput" class="cell-edit" type="number" min="0" max="${c.max_mark}" value="${cell.mark ?? ""}" data-student="${r.s.id}" data-column="${c.id}"></td>`;
+      const inner = cell.mark != null ? `<span class="mark">${cell.mark}</span>`
+        : status === "missing" ? `<span class="chip chip-missing">Missing</span>`
+        : status === "submitted" ? `<span class="chip chip-wait">${cell.pending ? "To mark" : "Submitted"}</span>`
+        : `<span class="dash">–</span>`;
+      const late = cell.late ? `<span class="chip chip-late">Late</span>` : "";
+      const label = `${r.s.name}, ${c.title}: ${cell.mark != null ? cell.mark + " out of " + c.max_mark : status}. Edit mark`;
+      return `<td><button class="cell-btn ${status === "missing" ? "missing" : ""}" data-act="cell" data-student="${r.s.id}" data-column="${c.id}" aria-label="${esc(label)}">${inner}${late}</button></td>`;
+    }).join("")}
+    <td class="total">${r.earned}<span class="muted" style="font-weight:400"> / ${r.possible}</span></td>
+    <td class="total pct">${r.pct == null ? "–" : r.pct + "%"}</td>
+    <td class="total pct">${r.wpct == null ? "–" : r.wpct + "%"}</td>
+    <td class="total">${r.missing ? `<span class="chip chip-missing">${r.missing}</span>` : "0"}</td>
+  </tr>`).join("");
+  const avg = cols.map(c => {
+    const marks = students.map(s => ((cells[s.id] || {})[c.id] || {}).mark).filter(m => m != null);
+    return `<td>${marks.length && c.max_mark ? Math.round(marks.reduce((a, b) => a + b, 0) / (marks.length * c.max_mark) * 1000) / 10 + "%" : "–"}<span class="sub" style="display:block;font-weight:400">${marks.length}/${students.length} marked</span></td>`;
+  }).join("");
+  return `<div class="gb-tools">
+      <label class="sr-only" for="gbSearch">Search students</label>
+      <input id="gbSearch" class="field search" type="search" placeholder="Search students" value="${esc(search)}">
+      <span class="spacer"></span>
+      <button class="btn btn-primary" data-act="csv">Export to CSV</button>
+    </div>
+    <div class="legend"><span>Click any mark to edit it. Enter saves, Esc cancels.</span>
+      <span><span class="chip chip-missing">Missing</span> past due, nothing handed in</span>
+      <span><span class="chip chip-late">Late</span> handed in after the due date</span></div>
+    <div class="table-wrap"><table class="gb">
+      <thead><tr><th scope="col" class="name">Student</th>${head}<th scope="col">Points</th><th scope="col">Percent</th><th scope="col">Weighted</th><th scope="col">Missing</th></tr></thead>
+      <tbody>${body || `<tr><td class="name" colspan="${cols.length + 5}">No students match.</td></tr>`}</tbody>
+      <tfoot><tr><td class="name">Class average</td>${avg}<td colspan="4"></td></tr></tfoot>
+    </table></div>`;
+}
+$("#view").addEventListener("input", e => {
+  if (e.target.id === "gbSearch") {
+    search = e.target.value;
+    const pos = e.target.selectionStart; render();
+    const s = $("#gbSearch"); s.focus(); s.setSelectionRange(pos, pos);
+  }
+});
+$("#view").addEventListener("keydown", e => {
+  if (e.target.id !== "cellInput") return;
+  if (e.key === "Escape") { editing = null; render(); return; }
+  if (e.key === "Enter" || e.key === "Tab") { e.preventDefault(); commitCell(e.target, e.key === "Tab" ? (e.shiftKey ? -1 : 1) : 0); }
+});
+$("#view").addEventListener("focusout", e => {
+  if (e.target.id === "cellInput" && editing) setTimeout(() => { if (editing && document.activeElement?.id !== "cellInput") commitCell(e.target, 0); }, 0);
+});
+function commitCell(input, move) {
+  const { student, column } = input.dataset;
+  const col = columns.find(c => c.id === column);
+  const raw = input.value.trim();
+  cells[student] = cells[student] || {};
+  const cell = cells[student][column] = cells[student][column] || {};
+  if (raw === "") { delete cell.mark; }
+  else {
+    const v = Number(raw);
+    if (!Number.isInteger(v) || v < 0 || v > col.max_mark) { input.classList.add("bad"); toast(`Enter a whole number from 0 to ${col.max_mark}`); return; }
+    cell.mark = v; cell.pending = false;
+  }
+  editing = null;
+  if (move) {
+    const i = columns.findIndex(c => c.id === column) + move;
+    if (i >= 0 && i < columns.length) editing = { studentId: student, columnId: columns[i].id };
+  }
+  render();
+  if (!editing) {
+    const btn = document.querySelector(`.cell-btn[data-student="${student}"][data-column="${column}"]`);
+    if (btn) { btn.classList.add("saved"); btn.focus(); }
+  }
+}
+function exportCSV() {
+  const cols = liveColumns();
+  const q = v => /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v);
+  const lines = [["Student", "Email", ...cols.map(c => `${c.title} (/${c.max_mark}, ${c.weight}%)`), "Points", "Out of", "Percent", "Weighted percent", "Missing", "Late"]];
+  students.map(rowFor).forEach(r => lines.push([r.s.name, r.s.email,
+    ...r.out.map(({ cell, status }) => cell.mark != null ? cell.mark : status === "missing" ? "MISSING" : ""),
+    r.earned, r.possible, r.pct ?? "", r.wpct ?? "", r.missing, r.late]));
+  const blob = new Blob(["﻿" + lines.map(l => l.map(q).join(",")).join("\r\n")], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "ICT102-gradebook.csv"; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast("Downloaded ICT102-gradebook.csv");
+}
+
+/* ---------- Student: take the quiz ---------- */
+const myAttempts = () => attempts.filter(a => a.student_id === ME);
+function takeHTML() {
+  if (current) return attemptHTML();
+  if (lastResult) return resultHTML(lastResult);
+  const mine = myAttempts();
+  const left = quiz.max_attempts ? quiz.max_attempts - mine.length : null;
+  const canStart = questions.length > 0 && (left === null || left > 0);
+  const past = mine.map(a => `<div class="result-line"><span class="grow">Attempt ${a.number} · ${fmtDate(a.submitted_at)}${a.auto_submitted ? " · time ran out" : ""}</span>
+    ${a.status === "graded" ? `<strong>${a.score} / ${a.max_score}</strong>` : `<span class="chip chip-wait">Waiting for marking</span>`}</div>`).join("");
+  return `<article class="card card-pad" style="max-width:760px">
+    <span class="chip chip-tf">Quiz</span>
+    <h2 style="font-size:24px;margin-top:8px">${esc(quiz.title)}</h2>
+    <p class="muted" style="margin:6px 0 0">${esc(quiz.instructions)}</p>
+    <div class="quiz-intro">
+      <div class="fact"><b>${questions.length}</b><span>questions</span></div>
+      <div class="fact"><b>${totalPoints()}</b><span>points</span></div>
+      <div class="fact"><b>${quiz.time_limit_minutes ? quiz.time_limit_minutes + " min" : "None"}</b><span>time limit</span></div>
+      <div class="fact"><b>${left === null ? "∞" : left}</b><span>attempts left</span></div>
+    </div>
+    <p class="muted" style="font-size:14px">Due ${fmtDate(quiz.due_at)}.${quiz.time_limit_minutes ? " The timer starts when you press Start and keeps running if you leave. When it reaches zero your saved answers are submitted for you." : ""}</p>
+    <button class="btn btn-primary" data-act="start" ${canStart ? "" : "disabled"}>${mine.length ? "Start another attempt" : "Start the quiz"}</button>
+    ${!canStart && questions.length ? `<p class="muted" style="font-size:14px">You've used all your attempts.</p>` : ""}
+    ${past ? `<h3 style="font-size:17px;margin-top:20px">Your attempts</h3>${past}<p class="muted" style="font-size:13px">Your best marked attempt counts.</p>` : ""}
+  </article>`;
+}
+function shuffled(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function startAttempt() {
+  const started = new Date();
+  current = {
+    id: uid(), student_id: ME, student_name: "Jordan Lee", number: myAttempts().length + 1, status: "in_progress",
+    started_at: started.toISOString(), answers: {},
+    deadline: quiz.time_limit_minutes ? new Date(started.getTime() + quiz.time_limit_minutes * 6e4) : null,
+    order: Object.fromEntries(questions.filter(q => q.options).map(q => [q.id, quiz.shuffle_answers ? shuffled(q.options.map(o => o.id)) : q.options.map(o => o.id)])),
+  };
+  render(); tick();
+  timerHandle = setInterval(tick, 1000);
+}
+function tick() {
+  if (!current || !current.deadline) return;
+  const left = Math.max(0, Math.round((current.deadline - new Date()) / 1000));
+  const el = $("#timer"), bar = $("#timerBar");
+  if (el) {
+    el.textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
+    bar.classList.toggle("low", left <= 60);
+    $("#timerFill").style.width = (left / (quiz.time_limit_minutes * 60) * 100) + "%";
+  }
+  if (left === 0) submitAttempt(true);
+}
+function attemptHTML() {
+  const answered = questions.filter(q => isAnswered(current.answers[q.id])).length;
+  const qs = questions.map((q, i) => {
+    const a = current.answers[q.id];
+    let body = "";
+    if (q.type === "multiple_choice") {
+      const multi = q.options.filter(o => o.correct).length > 1;
+      body = current.order[q.id].map(oid => q.options.find(o => o.id === oid)).filter(Boolean).map(o =>
+        `<label class="choice"><input type="${multi ? "checkbox" : "radio"}" name="q-${q.id}" value="${o.id}" data-q="${q.id}" ${(a || []).includes(o.id) ? "checked" : ""}> ${code(o.text)}</label>`).join("")
+        + (multi ? `<p class="muted" style="font-size:13px;margin:4px 0 0">Choose all that apply.</p>` : "");
+    } else if (q.type === "true_false") {
+      body = [true, false].map(v => `<label class="choice"><input type="radio" name="q-${q.id}" value="${v}" data-q="${q.id}" ${a === v ? "checked" : ""}> ${v ? "True" : "False"}</label>`).join("");
+    } else {
+      body = `<label class="sr-only" for="sa-${q.id}">Your answer</label><textarea class="field" id="sa-${q.id}" data-q="${q.id}" placeholder="Type your answer">${esc(a || "")}</textarea>`;
+    }
+    return `<fieldset class="card take-q"><legend><span class="q-num">${i + 1}.</span><span>${code(q.text)}</span><span class="pts">${q.points} ${q.points === 1 ? "pt" : "pts"}</span></legend>${body}</fieldset>`;
+  }).join("");
+  return `<div style="max-width:760px">
+    ${current.deadline ? `<div class="timer-bar" id="timerBar" role="timer" aria-label="Time left"><span>Time left</span><span class="timer" id="timer">--:--</span><div class="progress" aria-hidden="true"><div id="timerFill" style="width:100%"></div></div><span id="answeredCount">${answered}/${questions.length} answered</span></div>` : ""}
+    <div class="stack">${qs}</div>
+    <div class="row" style="justify-content:space-between;margin-top:16px">
+      <span class="muted" style="font-size:14px">Answers save as you go.</span>
+      <button class="btn btn-primary" data-act="submit">Submit quiz</button>
+    </div></div>`;
+}
+const isAnswered = a => Array.isArray(a) ? a.length > 0 : typeof a === "boolean" ? true : !!(a && String(a).trim());
+$("#view").addEventListener("change", e => {
+  if (!current) return;
+  const el = e.target; const qid = el.dataset.q; if (!qid || el.tagName === "TEXTAREA") return;
+  const q = questions.find(x => x.id === qid);
+  if (q.type === "true_false") current.answers[qid] = el.value === "true";
+  else current.answers[qid] = [...document.querySelectorAll(`input[name="q-${qid}"]:checked`)].map(x => x.value);
+  updateAnswered();
+});
+$("#view").addEventListener("input", e => {
+  if (current && e.target.tagName === "TEXTAREA" && e.target.dataset.q) { current.answers[e.target.dataset.q] = e.target.value; updateAnswered(); }
+});
+function updateAnswered() {
+  const el = $("#answeredCount"); if (el) el.textContent = `${questions.filter(q => isAnswered(current.answers[q.id])).length}/${questions.length} answered`;
+}
+function submitAttempt(auto) {
+  if (!current) return;
+  const unanswered = questions.filter(q => !isAnswered(current.answers[q.id])).length;
+  if (!auto && unanswered && !confirm(`You haven't answered ${unanswered} question${unanswered > 1 ? "s" : ""}. Submit anyway?`)) return;
+  clearInterval(timerHandle);
+  const a = current; current = null;
+  attempts.push(a);
+  finishAttempt(a, auto);
+  lastResult = a;
+  render();
+  toast(auto ? "Time's up. Your answers were submitted." : "Quiz submitted");
+}
+function resultHTML(a) {
+  const show = quiz.show_score, reveal = show && quiz.show_correct_answers;
+  const lines = questions.map((q, i) => {
+    const r = a.results[q.id];
+    const badge = r.needs_marking ? `<span class="chip chip-wait">Your lecturer will mark this</span>`
+      : r.correct ? `<span class="chip chip-ok">${r.points}/${r.max_points}</span>` : `<span class="chip chip-missing">0/${r.max_points}</span>`;
+    let detail = "";
+    if (reveal && !r.needs_marking) {
+      if (q.type === "multiple_choice") detail = "Right answer: " + q.options.filter(o => o.correct).map(o => code(o.text)).join(", ");
+      if (q.type === "true_false") detail = "Right answer: " + (q.answer ? "True" : "False");
+      if (q.type === "short_answer" && q.accepted_answers.length) detail = "Accepted: " + q.accepted_answers.map(esc).join(", ");
+    }
+    return `<div class="result-line"><span class="q-num">${i + 1}.</span><div class="grow">${code(q.text)}${detail ? `<div class="muted" style="font-size:13px">${detail}</div>` : ""}</div>${show ? badge : ""}</div>`;
+  }).join("");
+  const auto = Object.values(a.results).filter(r => !r.needs_marking).reduce((t, r) => t + r.points, 0);
+  return `<article class="card" style="max-width:760px">
+    <div class="score-hero">
+      ${!show ? `<h2>Submitted</h2><p class="muted">Your lecturer will release your score.</p>`
+        : a.status === "graded" ? `<p class="muted" style="margin:0 0 6px">Your score</p><div class="big">${a.score}<span class="muted" style="font-size:26px"> / ${a.max_score}</span></div><p class="muted">${Math.round(a.score / a.max_score * 100)}%${a.auto_submitted ? " · submitted when time ran out" : ""}</p>`
+        : `<p class="muted" style="margin:0 0 6px">Marked automatically so far</p><div class="big">${auto}<span class="muted" style="font-size:26px"> / ${a.max_score}</span></div><p class="muted">${a.needs_marking} short answer${a.needs_marking > 1 ? "s" : ""} still to be marked by your lecturer.</p>`}
+    </div>
+    <div class="card-pad" style="padding-top:0">${lines}
+      <div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn btn-secondary" data-act="again">Back to the quiz</button></div></div>
+  </article>`;
+}
+function myGradesHTML() {
+  const r = rowFor(students.find(s => s.id === ME));
+  return `<div class="card card-pad" style="max-width:760px">
+    <h2 style="font-size:22px">My grades · ICT102</h2>
+    ${r.out.map(({ c, cell, status }) => `<div class="result-line"><span class="grow"><b>${esc(c.title)}</b><br><span class="muted" style="font-size:13px">${c.kind === "quiz" ? "Quiz" : "Assignment"} · ${c.weight}% of final grade</span></span>
+      ${cell.late ? '<span class="chip chip-late">Late</span>' : ""}
+      ${cell.mark != null ? `<strong>${cell.mark} / ${c.max_mark}</strong>` : status === "missing" ? '<span class="chip chip-missing">Missing</span>' : status === "submitted" ? '<span class="chip chip-wait">Being marked</span>' : '<span class="muted">Not yet due</span>'}</div>`).join("")}
+    <div class="total"><span class="muted">Overall (weighted)</span><strong>${r.wpct == null ? "–" : r.wpct + "%"}</strong></div>
+  </div>`;
+}
+
+/* ---------- Start ---------- */
+seedAttempt("s2", [1, 1, 1, 1, 1, 1], "When I don't know how many times it needs to run.", 120);
+seedAttempt("s4", [1, 0, 1, 1, 1, 1], "When the loop depends on a condition, like reading input until the user types quit.", 60);
+seedAttempt("s6", [1, 1, 0, 1, 0, 1], "for loops are faster", 30);
+render();
+</script>
+</body>
+</html>
