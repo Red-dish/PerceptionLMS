@@ -12,15 +12,16 @@ Due **Wed 18 Nov**. New requirement from the client (Session 4): make the LMS sm
 ### Technical team
 - [ ] Explore the student dataset, AI Task 1, GitHub #119 (Amora) · KAN-82
 - [ ] At-risk student prediction: model, API and lecturer view, AI Task 2, GitHub #120 (Amora) · KAN-83
-- [ ] Quiz builder backend, GitHub #47, then hand over to Dipesh and Bishu (Roshan) · KAN-92
-- [ ] Quiz taking and auto-grading backend, GitHub #48, then hand over to Dipesh and Bishu (Roshan) · KAN-93
-- [ ] Deploy the coursework API: gradebook, CSV, files and late work from PR #85 are merged and tested but not live yet (Amora) · KAN-72
+- [x] Quiz builder backend, GitHub #47, handed over to Dipesh and Bishu (Roshan, PR #129, merged 16 Nov) · KAN-92
+- [x] Quiz taking and auto-grading backend, GitHub #48, handed over to Dipesh and Bishu (Roshan, PR #130, merged 16 Nov; 61 tests pass) · KAN-93
+- [ ] Deploy the coursework and quiz API: gradebook, CSV, files and late work (PR #85) and quizzes (PRs #129, #130) are merged and tested but not live yet (Amora) · KAN-72
 
 ### Business team
 - [ ] AI requirement analysis: user stories and acceptance criteria for the AI features, GitHub #121 (Apeksha) · KAN-84
 - [ ] Ethics and privacy note for AI at-risk prediction, in `docs/Compliance/`, GitHub #122 (Nancy, ready for her 19 Nov report) · KAN-85
 - [x] Compliance docs: privacy policy and terms, copyright, DPIA, data retention, now in `docs/Compliance/` (Yogesh) · KAN-33 to KAN-36
-- [ ] WCAG 2.2 accessibility audit: reopen as a PR with the file in `docs/Compliance/`, GitHub #102 (Yogesh) · KAN-37
+- [x] WCAG 2.2 accessibility audit, in `docs/Compliance/accessibility-audit.md`, GitHub #102 (Yogesh, PR #131, merged 16 Nov). Its findings go to Dipesh and Bishu · KAN-37
+- [x] DPIA system-design link fixed (Yogesh, PR #132) · KAN-35
 
 ### Everyone
 - [ ] Progress report 1 by Thu 19 Nov (all seven) · KAN-114

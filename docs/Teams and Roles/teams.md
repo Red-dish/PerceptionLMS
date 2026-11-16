@@ -60,14 +60,14 @@ Amora oversees every epic. Apeksha is on every epic to track progress for the bu
 
 ### Who builds each open feature (from 15 Nov)
 
-**Roshan builds the API**, then hands over to **Dipesh and Bishu**, who design and build the screens together. Amora builds the AI features and profile. "Done" in the API column means the endpoints are merged and tested, so the screens can start. The gradebook, CSV and files endpoints aren't deployed yet (KAN-72).
+**Roshan builds the API**, then hands over to **Dipesh and Bishu**, who design and build the screens together. Amora builds the AI features and profile. "Done" in the API column means the endpoints are merged and tested, so the screens can start. The gradebook, CSV, files and quiz endpoints aren't deployed yet (KAN-72), so build against a local backend for now.
 
 | Feature | API | Screens | Due |
 | --- | --- | --- | --- |
 | #119 Explore the student dataset (AI Task 1) | Amora | n/a | 18 Nov |
 | #120 At-risk student prediction (AI Task 2) | Amora | Amora | 18 Nov |
-| #47 Quiz builder | Roshan, by 18 Nov | Dipesh and Bishu | 25 Nov |
-| #48 Quiz taking and auto-grading | Roshan, by 18 Nov | Dipesh and Bishu | 25 Nov |
+| #47 Quiz builder | Done (Roshan, PR #129) | Dipesh and Bishu | 25 Nov |
+| #48 Quiz taking and auto-grading | Done (Roshan, PR #130) | Dipesh and Bishu | 25 Nov |
 | #49 Teacher gradebook | Done (Roshan, PR #85) | Dipesh and Bishu | 25 Nov |
 | #51 Grade export (CSV) | Done (Roshan, PR #85) | Dipesh and Bishu | 25 Nov |
 | #37 Files | Part done (Roshan, PR #85): folders and linking left | Dipesh and Bishu | 25 Nov |
@@ -88,10 +88,10 @@ Amora oversees every epic. Apeksha is on every epic to track progress for the bu
 The code in the app today was written by:
 
 - **Amora:** the API and the screens for every closed feature listed above apart from #44, plus sign-in, hosting, the domain and deployment.
-- **Roshan:** the coursework backend in PR #85. That's files, late and missing work, resubmissions and extensions, the gradebook and CSV export, scheduled announcements, and the new assignment settings.
+- **Roshan:** the coursework backend in PR #85. That's files, late and missing work, resubmissions and extensions, the gradebook and CSV export, scheduled announcements, and the new assignment settings. Also the quiz builder and quiz taking backend (#47 and #48, PRs #129 and #130, merged 16 Nov), with a clickable mock-up in `UI-UX-Design/Quizzes-Gradebook/`.
 - **Dipesh:** the lecturer grading view (#44, PR #97, merged 15 Nov).
 - **Bishu:** no code in the app yet. Earlier frontend drafts (PR #25, reverted in PR #59, and PR #62, not merged) aren't part of the current app.
-- **Yogesh:** the compliance docs in `docs/Compliance/` (PRs #103 to #106).
+- **Yogesh:** the compliance docs in `docs/Compliance/` (PRs #103 to #106), and the WCAG 2.2 accessibility audit (PR #131, merged 16 Nov).
 
 Some closed GitHub issues and Jira items are assigned to the person they were planned for rather than the person who built them.
 
