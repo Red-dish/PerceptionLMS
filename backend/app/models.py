@@ -365,9 +365,11 @@ class Grade(BaseModel):
     feedback: str
 
 
-# Quizzes. A quiz is an assignment with kind "quiz", so it shows in the gradebook
-# like any other assignment. Its points are the total of its questions' points.
+# Quizzes. A quiz is an assignment with kind "quiz"; its score is saved as the
+# student's submission, so it shows in the gradebook and the student's grades.
 QuestionType = Literal["multiple_choice", "true_false", "short_answer"]
+AttemptStatus = Literal["in_progress", "submitted", "graded"]
+Answer = bool | str | list[str]
 AcceptedAnswer = Annotated[str, Field(min_length=1, max_length=500)]
 
 
@@ -445,10 +447,60 @@ class QuestionOrder(BaseModel):
     question_ids: list[str] = Field(description="Every question ID in the quiz, in the order to show them")
 
 
+class QuestionResult(BaseModel):
+    points: int = Field(description="Points awarded")
+    max_points: int
+    correct: bool | None = Field(description="Empty while a short answer waits for marking")
+    needs_marking: bool = False
+
+
+class QuizAttempt(BaseModel):
+    id: str
+    quiz_id: str
+    course_id: str
+    student_id: str
+    student_name: str
+    number: int
+    status: AttemptStatus
+    started_at: datetime
+    deadline: datetime | None = Field(description="When time runs out. Empty means no time limit")
+    seconds_left: int | None = Field(default=None, description="While in progress with a time limit")
+    submitted_at: datetime | None = None
+    auto_submitted: bool = Field(default=False, description="Time ran out, so the saved answers were submitted")
+    late: bool = False
+    days_late: int = 0
+    score: int | None = Field(default=None, description="Hidden from students until the score is released")
+    max_score: int
+    needs_marking: int = Field(default=0, description="Short answers waiting for the lecturer")
+    questions: list[Question] = Field(default=[], description="In the order this student sees them")
+    answers: dict[str, Answer] = Field(default={}, description="Keyed by question ID")
+    results: dict[str, QuestionResult] | None = Field(
+        default=None, description="Keyed by question ID. Hidden from students until the score is released"
+    )
+
+
+class AnswersSave(BaseModel):
+    answers: dict[str, Answer] = Field(
+        default={},
+        description="Keyed by question ID. Multiple choice: a list of option IDs. True/false: true or false. "
+        "Short answer: text. Merged with answers saved earlier",
+    )
+
+
+class QuestionMarks(BaseModel):
+    marks: dict[str, Annotated[int, Field(ge=0)]] = Field(
+        description="Points for each question ID, usually the short answers"
+    )
+
+
 class QuizView(Assignment):
     question_count: int
     # Lecturers only.
     questions: list[Question] | None = None
+    # Students only.
+    my_attempts: list[QuizAttempt] | None = None
+    attempts_left: int | None = Field(default=None, description="Empty means unlimited")
+    can_start: bool | None = None
 
 
 # Gradebook

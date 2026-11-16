@@ -5,7 +5,7 @@ from typing import Literal
 from fastapi import APIRouter
 
 from app import coursework as cw
-from app import db
+from app import db, quizzes
 from app.access import require_teacher
 from app.auth import AdminUser, CurrentUser
 from app.models import WorkReport
@@ -20,6 +20,8 @@ def course_work(course: dict, only: StatusFilter = None) -> list[dict]:
     students = cw.course_students(course["id"])
     items = []
     for assignment in cw.course_assignments(course["id"]):
+        if assignment.get("kind") == "quiz":
+            quizzes.settle(assignment)  # submit attempts whose time ran out
         submissions, grants = cw.assignment_records(assignment["id"])
         for student in students:
             submission = submissions.get(student["user_id"])
