@@ -16,6 +16,7 @@ Every change to this repo goes through a pull request (PR), for both teams, incl
 | --- | --- |
 | Compliance, security, privacy, accessibility and legal docs (policies, DPIA, WCAG audit, terms of use) | `docs/Compliance/` |
 | Business case, research, stakeholders, user stories, personas | `docs/Product Management/` |
+| Business analyst weekly reports (one file per week, `week-NN-ba-report.md`) | `docs/BA Weekly Reports/` |
 | Weekly tasks, system design, build plans | `docs/Product Build/` |
 | Roles and team structure | `docs/Teams and Roles/` |
 | Wireframes and design mock-ups | `UI-UX-Design/` |

@@ -31,13 +31,15 @@ This team doesn't build features: every v1 feature is owned by the technical tea
 
 | Role | Person | Owns | Backs up |
 | --- | --- | --- | --- |
-| 5. Business team lead and business analyst | Apeksha | Leading the business team, market and competitor research, business case and cost comparison with Canvas, personas, design review with Bishu, usability testing, rollout and adoption plan | Role 6 |
+| 5. Business team lead and business analyst | Apeksha | Leading the business team, market and competitor research, business case and cost comparison with Canvas, personas, design review with Bishu, usability testing, rollout and adoption plan, a weekly BA report in [`docs/BA Weekly Reports/`](../BA%20Weekly%20Reports/README.md) | Role 6 |
 | 6. Project manager and governance lead | Nancy | Scope and user stories, Jira board, meetings and minutes, RACI chart, risk register, decision log, final report and presentation | Role 7 |
 | 7. Compliance and risk officer | Yogesh (Yoodem) | Privacy law requirements, privacy policy and terms, copyright for lecturer content, accessibility (WCAG) audit, data protection impact assessment, security and data-retention policies | Role 5 |
 
 **This week (to 18 Nov):** Apeksha does the AI requirement analysis (#121). Nancy writes a short ethics and privacy note on AI at-risk prediction (#122). Yogesh's compliance docs (privacy policy and terms, copyright, DPIA, data retention) are done and in `docs/Compliance/`; the WCAG audit (#102) still needs a PR with the right path.
 
 **Progress reports:** every team member submits one every two weeks, on a Thursday: 19 Nov, 3 Dec and 17 Dec (the last one).
+
+**BA weekly reports:** from Week 4, Apeksha writes a business analyst report every week. All of them go in [`docs/BA Weekly Reports/`](../BA%20Weekly%20Reports/README.md), named `week-NN-ba-report.md`.
 
 Work is tracked in the Perception LMS (KAN) Jira project, which mirrors the GitHub epics below: one Jira epic per GitHub epic, and one Jira task per GitHub feature. Deliverables are due every Wednesday; see [tasks.md](../Product%20Build/tasks.md) for this week's list.
 
