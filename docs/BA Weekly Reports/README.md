@@ -1,6 +1,6 @@
 # BA Weekly Reports
 
-Weekly reports from the business analyst (Apeksha). Every BA weekly report goes in this folder, one file per week, starting from Week 4.
+Weekly reports written by Apeksha as the project's Business Analyst. Every BA weekly report goes in this folder, one file per week, starting from Week 4.
 
 - **File name:** `week-NN-ba-report.md`, with a two-digit week number, for example `week-04-ba-report.md`.
 - **Week numbers** count project weeks from the first week of the project (week of 26 Oct 2026), so Week 4 is 16–22 Nov 2026. Each report states its dates and which deliverable in [tasks.md](../Product%20Build/tasks.md) it covers.
