@@ -1,12 +1,12 @@
-# BA Weekly Report: Week 4
+# Business Analyst Weekly Report: Week 4
 
 **Project week:** 4 (16–22 Nov 2026) · **Report date:** Wed 18 Nov 2026
-**Author:** Apeksha (Business team lead and business analyst)
+**Prepared by:** Apeksha, Business Analyst
 **Deliverable this week:** AI at-risk prediction and quiz backend, due Wed 18 Nov (listed as the "Week 3 deliverable" in [tasks.md](../Product%20Build/tasks.md), which counts from 2 Nov)
 
 ## 1. Summary
 
-This week the client added a new requirement in Session 4: make the LMS smarter with AI (Epic 6, [#118](https://github.com/Red-dish/PerceptionLMS/issues/118)). My main task was the business analysis for it: I wrote the AI user stories and acceptance criteria ([ai-insights-user-stories.md](../Product%20Management/ai-insights-user-stories.md), #121, KAN-84), merged in PR #135 on 17 Nov. The quiz backend is merged and the compliance documents are complete. The main risks are that the AI prediction (#120) is not merged yet on deadline day and that the coursework and quiz API is still not live.
+This report is my weekly update as the project's business analyst. This week the client added a new requirement in Session 4: make the LMS smarter with AI (Epic 6, [#118](https://github.com/Red-dish/PerceptionLMS/issues/118)). My main task was the business analysis for it: I wrote the AI user stories and acceptance criteria ([ai-insights-user-stories.md](../Product%20Management/ai-insights-user-stories.md), #121, KAN-84), merged in PR #135 on 17 Nov. The quiz backend is merged and the compliance documents are complete. The main risks are that the AI prediction (#120) is not merged yet on deadline day and that the coursework and quiz API is still not live.
 
 **Overall status:** Amber. Business work is on track; the AI build and API deployment are behind.
 
@@ -41,7 +41,7 @@ Counts are closed feature issues against all feature issues in each epic. "API d
 **Business team**
 - Yogesh: WCAG 2.2 accessibility audit merged (PR #131, #102) and DPIA link fixed (PR #132). All compliance documents are now in `docs/Compliance/`.
 - Nancy: ethics and privacy note on AI at-risk prediction (#122, KAN-85) written and pushed to `docs/KAN-85-ai-ethics-privacy` on 18 Nov; PR into `dev` still to open. It covers fairness, transparency, access, consent and retention, and states that an AI risk flag must never decide grades, penalties or course access.
-- Apeksha: AI user stories merged (PR #135) and #121 closed; BA weekly reports set up (PR #137).
+- Me (Business Analyst): AI user stories merged (PR #135) and #121 closed; BA weekly reports set up (PR #137). Details in section 2.
 
 **Technical team**
 - Roshan: quiz builder (#47, PR #129) and quiz taking and auto-grading (#48, PR #130) backends merged 16 Nov, 61 tests passing, handed over to the frontend.
@@ -72,7 +72,9 @@ Counts are closed feature issues against all feature issues in each epic. "API d
 - For at-risk alerts, recall (finding struggling students) matters more than precision: target recall of 80% or more and precision of 70% or more.
 - Students get a supportive nudge rather than seeing an "at risk" label (assumption A2, pending confirmation).
 
-## 7. Plan for next week (23–27 Nov, deliverable due Wed 25 Nov)
+## 7. My plan for next week (23–27 Nov, deliverable due Wed 25 Nov)
+
+As business analyst, next week I will:
 
 - Get answers to A1 to A6 from Doctor Mo and update the AI requirements.
 - Confirm owners for #123 and #124 with Amora and Nancy.
