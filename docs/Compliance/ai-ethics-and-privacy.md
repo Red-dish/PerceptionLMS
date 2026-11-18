@@ -5,7 +5,7 @@
 
 ## 1. Purpose and scope
 
-Perception LMS will use a machine learning model to predict which students may be at risk of falling behind, so lecturers can offer support early (#120). This note sets out the ethical and privacy risks of that feature and the safeguards the app must follow. The safeguards in section 8 become backend and frontend criteria on #120.
+Perception LMS will use a machine learning model to predict which students may be at risk of falling behind, so lecturers can offer support early (#120). This note sets out the ethical and privacy risks of that feature and the safeguards the app must follow. The safeguards in section 9 become backend and frontend criteria on #120.
 
 **In scope:** the at-risk model, the risk scores and reasons it produces, who sees them, and how long they're kept.
 **Out of scope:** the course chatbot (#123) and study recommendations (#124). They send different data to different places and need their own note before they're built.
