@@ -9,7 +9,8 @@ Deliverables are due **every Wednesday**. Progress reports are due from everyone
 **Week 3, due Wed 18 Nov 2026 (GitHub milestone "Deliverable 18 Nov"):**
 
 - [ ] AI Task 1: explore `students_demo.csv` (Amora) · #119 · KAN-82
-- [ ] AI Task 2: at-risk prediction model, API and lecturer view (Amora) · #120 · KAN-83
+- [ ] AI Task 2: at-risk prediction model, API and lecturer view (Amora) · #120 · KAN-83. The dataset is in `ml/dataset/students_demo.csv`. The brief also asks us to run the program, check it trained, find the accuracy, test it on one new fictional student, save the model, and answer 4 questions (algorithm name, what training means, training vs testing data, accuracy achieved)
+- [ ] **Requirements v3 (18 Nov):** plan the ASA Smart LMS brief: student chatbot, Decision Tree + MLP risk labels, demo sign-in and a five-student MAI600 class. Draft in [ai-features-plan.md](Product%20Build/ai-features-plan.md); version history in [requirements/](requirements/README.md). The `test-student` idea is replaced; v2.1 code archived in `ml/archive/v2.1-student-risk-qwen/`. Checkpoint Wed 25 Nov, final demo Thu 3 Dec (Amora)
 - [x] Quiz builder backend, handed over to Dipesh and Bishu (Roshan, PR #129, merged 16 Nov) · #47 · KAN-92
 - [x] Quiz taking and auto-grading backend, handed over (Roshan, PR #130, merged 16 Nov) · #48 · KAN-93
 - [ ] Deploy the coursework and quiz API: PR #85 (gradebook, CSV, files, late work) and PRs #129 and #130 (quizzes) are merged on `dev` and 61 tests pass, but none of it is live yet (Amora) · KAN-72

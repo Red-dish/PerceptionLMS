@@ -6,12 +6,17 @@ Our lecturer sets a deliverable each week, **due every Wednesday**. This file li
 
 **Progress reports:** every team member submits a progress report every two weeks, on a Thursday: **Thu 19 Nov**, Thu 3 Dec, and Thu 17 Dec (the last one). Jira KAN-114, KAN-115, KAN-116.
 
+> **Requirements changed on 18 Nov (v3):** the lecturer's *ASA Smart LMS* brief replaces the earlier AI tasks: a student course chatbot over unit documents and lecturer risk labels from a Decision Tree + small MLP, demonstrated with a five-student MAI600 class. See [requirements/v3.md](../requirements/v3.md) and [ai-features-plan.md](ai-features-plan.md). Owner: Amora. Progress checkpoint Wed 25 Nov; final demo and presentation Thu 3 Dec.
+
 ## Week 3 deliverable: AI at-risk prediction and quiz backend
 Due **Wed 18 Nov**. New requirement from the client (Session 4): make the LMS smarter with AI. See [Epic 6 #118](https://github.com/Red-dish/PerceptionLMS/issues/118).
 
 ### Technical team
 - [ ] Explore the student dataset, AI Task 1, GitHub #119 (Amora) · KAN-82
 - [ ] At-risk student prediction: model, API and lecturer view, AI Task 2, GitHub #120 (Amora) · KAN-83
+  - Test the model (from the brief): run the program, check it trained, find the accuracy score, and test it on one new fictional student. Save the trained model
+  - Answer: 1. the algorithm's name; 2. what training a model means; 3. training data vs testing data; 4. the accuracy achieved
+  - Expected outcome: a trained, saved model, and we can explain what it predicts and how its accuracy was measured
 - [x] Quiz builder backend, GitHub #47, handed over to Dipesh and Bishu (Roshan, PR #129, merged 16 Nov) · KAN-92
 - [x] Quiz taking and auto-grading backend, GitHub #48, handed over to Dipesh and Bishu (Roshan, PR #130, merged 16 Nov; 61 tests pass) · KAN-93
 - [ ] Deploy the coursework and quiz API: gradebook, CSV, files and late work (PR #85) and quizzes (PRs #129, #130) are merged and tested but not live yet (Amora) · KAN-72
