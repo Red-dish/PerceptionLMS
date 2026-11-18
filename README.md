@@ -135,6 +135,7 @@ Project success will be evaluated against agreed requirements, including:
 
 - **Team and roles:** [teams.md](docs/Teams%20and%20Roles/teams.md)
 - **This week's tasks:** [tasks.md](docs/Product%20Build/tasks.md)
+- **BA weekly reports:** every weekly business analyst report goes in [docs/BA Weekly Reports/](docs/BA%20Weekly%20Reports/README.md)
 - **System design:** [system-design.md](docs/Product%20Build/system-design.md)
 - **Backend API (FastAPI on AWS Lambda):** [backend/README.md](backend/README.md)
 - **Work tracking:** the Perception LMS (KAN) project in [Jira](https://amorachk.atlassian.net/jira/software/projects/KAN). Each week's tasks sit under that week's epic; filter the board by your name to see your items.
