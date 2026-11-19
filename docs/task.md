@@ -8,15 +8,17 @@ Deliverables are due **every Wednesday**. Progress reports are due from everyone
 
 **Week 3, due Wed 18 Nov 2026 (GitHub milestone "Deliverable 18 Nov"):**
 
-- [ ] AI Task 1: explore `students_demo.csv` (Amora) · #119 · KAN-82
-- [ ] AI Task 2: at-risk prediction model, API and lecturer view (Amora) · #120 · KAN-83. The dataset is in `ml/dataset/students_demo.csv`. The brief also asks us to run the program, check it trained, find the accuracy, test it on one new fictional student, save the model, and answer 4 questions (algorithm name, what training means, training vs testing data, accuracy achieved)
+- [x] ~~AI Task 1: explore `students_demo.csv`~~ closed as superseded by v3 on 19 Nov; the dataset is committed in `ml/dataset/` (Amora) · #119 · KAN-82
+- [ ] **v3 Feature B:** Decision Tree + MLP, risk API and lecturer view; ML and API by Wed 25 Nov (Amora) · #120 · KAN-83
+- [ ] **v3 Feature A:** student chatbot grounded in unit documents; provider chosen by 25 Nov, done by Thu 3 Dec (Amora) · #123 · KAN-86
+- [ ] **v3 demo:** MAI600 seed data by 25 Nov; demo sign-in by 3 Dec (Amora) · #143 · KAN-117
 - [ ] **Requirements v3 (18 Nov):** plan the ASA Smart LMS brief: student chatbot, Decision Tree + MLP risk labels, demo sign-in and a five-student MAI600 class. Draft in [ai-features-plan.md](Product%20Build/ai-features-plan.md); version history in [requirements/](requirements/README.md). The `test-student` idea is replaced; v2.1 code archived in `ml/archive/v2.1-student-risk-qwen/`. Checkpoint Wed 25 Nov, final demo Thu 3 Dec (Amora)
-- [x] Quiz builder backend, handed over to Dipesh and Bishu (Roshan, PR #129, merged 16 Nov) · #47 · KAN-92
+- [x] Quiz builder backend, handed over to Dipesh and Bishu (Roshan, PR #129, merged 16 Nov) · #47 · KAN-92. Frontend (19 Nov): Bishu's design is done; Dipesh hasn't wired it to the API yet, due 25 Nov. KAN-92 and KAN-93 are now assigned to Dipesh
 - [x] Quiz taking and auto-grading backend, handed over (Roshan, PR #130, merged 16 Nov) · #48 · KAN-93
 - [ ] Deploy the coursework and quiz API: PR #85 (gradebook, CSV, files, late work) and PRs #129 and #130 (quizzes) are merged on `dev` and 61 tests pass, but none of it is live yet (Amora) · KAN-72
 - [ ] Bring `dev` into `frontend` (PR `dev` → `frontend`) so Dipesh and Bishu have the quiz API and the new handover (Amora). Checked 17 Nov: it changes nothing under `frontend/`, so it's safe
 
-**Week 4, due Wed 25 Nov:** everything else open on the epics. Dipesh and Bishu build the screens for the gradebook (#49), CSV (#51), files (#37) and quizzes; Roshan builds the remaining backend (pages, rubrics, discussions, inbox, calendar, notifications); Amora builds profile (#32). Chatbot (#123) and recommendations (#124) have no owner yet.
+**Week 4, due Wed 25 Nov:** everything else open on the epics. Dipesh and Bishu build the screens for the gradebook (#49), CSV (#51), files (#37) and quizzes; Roshan builds the remaining backend (pages, rubrics, discussions, inbox, calendar, notifications); Amora builds profile (#32) and the v3 AI work (#120, #123, #143). Study recommendations (#124) are dropped: v3 doesn't include them. Gradebook and CSV (KAN-94, KAN-95) are back to In Progress: no frontend PR yet.
 
 **How work flows now (from 15 Nov):** Roshan builds the APIs and hands each one to Dipesh and Bishu, who design and build the screens together and review each other's PRs. Bishu is no longer frontend lead. Amora builds the AI features and profile, and oversees the project. See [teams.md](Teams%20and%20Roles/teams.md). Jira now mirrors the GitHub epics (KAN-76 to KAN-81). The full list is in [Product Build/tasks.md](Product%20Build/tasks.md).
 

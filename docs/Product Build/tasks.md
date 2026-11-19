@@ -12,8 +12,8 @@ Our lecturer sets a deliverable each week, **due every Wednesday**. This file li
 Due **Wed 18 Nov**. New requirement from the client (Session 4): make the LMS smarter with AI. See [Epic 6 #118](https://github.com/Red-dish/PerceptionLMS/issues/118).
 
 ### Technical team
-- [ ] Explore the student dataset, AI Task 1, GitHub #119 (Amora) · KAN-82
-- [ ] At-risk student prediction: model, API and lecturer view, AI Task 2, GitHub #120 (Amora) · KAN-83
+- [x] Explore the student dataset, AI Task 1, GitHub #119 (Amora) · KAN-82. Closed as superseded by v3 (19 Nov)
+- [ ] At-risk prediction, now v3 Feature B (Decision Tree + MLP), GitHub #120 (Amora) · KAN-83. Moved to the 25 Nov checkpoint
   - Test the model (from the brief): run the program, check it trained, find the accuracy score, and test it on one new fictional student. Save the trained model
   - Answer: 1. the algorithm's name; 2. what training a model means; 3. training data vs testing data; 4. the accuracy achieved
   - Expected outcome: a trained, saved model, and we can explain what it predicts and how its accuracy was measured
@@ -22,8 +22,8 @@ Due **Wed 18 Nov**. New requirement from the client (Session 4): make the LMS sm
 - [ ] Deploy the coursework and quiz API: gradebook, CSV, files and late work (PR #85) and quizzes (PRs #129, #130) are merged and tested but not live yet (Amora) · KAN-72
 
 ### Business team
-- [ ] AI requirement analysis: user stories and acceptance criteria for the AI features, GitHub #121 (Apeksha) · KAN-84
-- [ ] Ethics and privacy note for AI at-risk prediction, in `docs/Compliance/`, GitHub #122 (Nancy, ready for her 19 Nov report) · KAN-85
+- [x] AI requirement analysis: user stories and acceptance criteria for the AI features, GitHub #121 (Apeksha, PR #135) · KAN-84
+- [x] Ethics and privacy note for AI at-risk prediction, in `docs/Compliance/ai-ethics-and-privacy.md`, GitHub #122 (Nancy, PR #139, merged 18 Nov) · KAN-85
 - [x] Compliance docs: privacy policy and terms, copyright, DPIA, data retention, now in `docs/Compliance/` (Yogesh) · KAN-33 to KAN-36
 - [x] WCAG 2.2 accessibility audit, in `docs/Compliance/accessibility-audit.md`, GitHub #102 (Yogesh, PR #131, merged 16 Nov). Its findings go to Dipesh and Bishu · KAN-37
 - [x] DPIA system-design link fixed (Yogesh, PR #132) · KAN-35
@@ -34,10 +34,11 @@ Due **Wed 18 Nov**. New requirement from the client (Session 4): make the LMS sm
 ## Week 4 deliverable: everything else on the epics
 Due **Wed 25 Nov**. Milestone "Deliverable 25 Nov" on GitHub.
 
-- Screens for the gradebook (#49), CSV export (#51), files (#37), quizzes (#47, #48) and everything below (Dipesh and Bishu)
+- Screens for the gradebook (#49), CSV export (#51), files (#37), quizzes (#47, #48) and everything below (Dipesh and Bishu). Quiz screens: Bishu's design is done, and Dipesh is wiring them to the API
+- v3 checkpoint: Decision Tree + MLP trained and saved, risk API (#120), MAI600 seed data (#143), chatbot provider chosen (#123) (Amora)
 - Backend for pages (#36), rubrics (#45), discussions (#55), inbox (#56), calendar (#57) and notifications (#58) (Roshan)
 - User profile and settings (#32) (Amora)
-- Course chatbot (#123) and study recommendations (#124) (owners to be decided)
+- Study recommendations (#124) are dropped: v3 doesn't include them. The course chatbot (#123) is v3 Feature A, due Thu 3 Dec (Amora)
 
 ## Week 2 deliverable: coursework API and grading view · KAN-68
 Due Wed 11 Nov. Closed on 15 Nov.
