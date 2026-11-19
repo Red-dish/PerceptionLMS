@@ -10,7 +10,7 @@ The lecturer's requirements have changed several times. This folder keeps **one 
 |---|---|---|---|---|
 | [v3](v3.md) | 18 Nov 2026 | Lecturer: *ASA Smart LMS* brief (PDF) | **Current** | A student chatbot grounded in unit documents, and lecturer risk labels from a trained Decision Tree / MLP, for a five-student demo class |
 | [v2.1](v2.1.md) | 17–18 Nov 2026 | The team | Superseded by v3 | A `test-student` role and CSV import; logistic regression plus Qwen on AWS Lambda; a lecturer chatbot over the CSV. Code archived in `ml/archive/v2.1-student-risk-qwen/` |
-| [v2](v2.md) | 15 Nov 2026 | Lecturer, Session 4 | Superseded by v3 | Add AI: at-risk prediction from `students_demo.csv`, a course chatbot, study recommendations |
+| [v2](v2.md) | 15 Nov 2026 | Lecturer, Session 4 | Superseded by v3 | Add AI: predict each student's `at_risk` status with a machine learning model trained on `students_demo.csv` (400 students) |
 | [v1](v1.md) | 28 Oct 2026 | Lecturer, project outline | Superseded by v2 (MVP features still apply) | A Canvas-replacement LMS for students, lecturers and admins |
 
 ## How versions are numbered

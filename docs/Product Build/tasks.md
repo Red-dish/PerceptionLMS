@@ -38,7 +38,7 @@ Due **Wed 25 Nov**. Milestone "Deliverable 25 Nov" on GitHub.
 - v3 checkpoint: Decision Tree + MLP trained and saved, risk API (#120), MAI600 seed data (#143), chatbot provider chosen (#123) (Amora)
 - Backend for pages (#36), rubrics (#45), discussions (#55), inbox (#56), calendar (#57) and notifications (#58) (Roshan)
 - User profile and settings (#32) (Amora)
-- Course chatbot (#123) and study recommendations (#124) (owners to be decided)
+- Study recommendations (#124) are dropped: neither brief asks for them. The course chatbot (#123) is v3 Feature A, due Thu 3 Dec (Amora)
 
 ## Week 2 deliverable: coursework API and grading view · KAN-68
 Due Wed 11 Nov. Closed on 15 Nov.
