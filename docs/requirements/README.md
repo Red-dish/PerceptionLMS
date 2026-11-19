@@ -29,4 +29,4 @@ The lecturer's requirements have changed several times. This folder keeps **one 
 3. **Archive code built only for the old version:** move it to `ml/archive/<version>-<name>/` (or the matching area) with an `ARCHIVE.md`, and tag the commit `requirements-<version>`.
 4. **Update this table**, plus [task.md](../task.md) and the current plan.
 
-The Session 4 practical work (v2) is in this folder. The v3 PDF is kept in the private tracking folder (`docs/Tracking/briefs/`).
+The lecturer's source documents are in this folder: the Session 4 practical work (v2) and the *ASA Smart LMS* PDF (v3).
