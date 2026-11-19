@@ -2,7 +2,7 @@
 
 > **Superseded on 18 Nov 2026. Don't start section 6 (Qwen retraining).** The lecturer issued a new brief (requirements v3): risk labels must come from a **Decision Tree and a small MLP**, scoring a five-student demo class, and the chatbot is a **student** chatbot over unit documents. Qwen is no longer needed. See `docs/requirements/v3.md` and `docs/Product Build/ai-features-plan.md`. This folder is archived at `ml/archive/v2.1-student-risk-qwen/` (see `ARCHIVE.md`). The text below is kept as a record of the v2.1 decisions.
 
-**Updated:** 18 Nov 2026 · **Owner:** Amora · **Qwen retraining:** you (the friend who built this folder)
+**Updated:** 18 Nov 2026 · **Owner:** Amora · **Qwen retraining:** you (who built this folder)
 
 This document has two jobs:
 1. **A handover for you.** It explains the course requirement and the website, what has changed since you built the Qwen model, and exactly what we need from you next (section 6). You don't need access to GitHub or the course pages; everything you need is here or comes with this folder.
@@ -197,5 +197,5 @@ Use Google Drive or OneDrive, **not Git**: the files are too big, and `outputs/`
 ## 9. Review checklist (Amora)
 - [ ] Decisions 1–9 agreed
 - [ ] Balanced class weights for logistic regression
-- [ ] Friend's deadline (Sun 22 Nov) agreed with him
-- [ ] Section 6 sent to the friend with the CSV
+- [ ] Deadline (Sun 22 Nov) agreed with the contributor
+- [ ] Section 6 sent to the contributor with the CSV

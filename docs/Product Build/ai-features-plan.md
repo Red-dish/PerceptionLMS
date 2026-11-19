@@ -142,4 +142,4 @@ The brief needs live logins as `emma.park@example.com` (and the other four stude
 **Still open**
 1. **Sign-in:** demo sign-in (A) or team Google accounts (B)?
 2. **LLM provider:** under review. Compare the options in section 3 before choosing.
-3. **The friend who built Qwen:** any role in v3?
+3. **Qwen:** any further role in v3?
