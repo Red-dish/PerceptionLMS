@@ -7,7 +7,7 @@
 ## What's here
 | Part | What it is | Who wrote it |
 |---|---|---|
-| `workflow.py`, `optimize_qwen.py`, `tune_precision.py`, `package_lambda.py`, `benchmark_*.py`, `cpu_runtime.py`, `test_*.py`, `lambda_src/`, `student-risk.ipynb`, `requirements.lock`, `README.md` | Qwen3.5-0.8B fine-tuned with a decision head to predict at risk, with TabICL and logistic regression comparisons, a CPU-only AWS Lambda package and tests. **Trained on 2,000 synthetic students**, before the real CSV was available | A friend of the team, outside the team (credit to be added) |
+| `workflow.py`, `optimize_qwen.py`, `tune_precision.py`, `package_lambda.py`, `benchmark_*.py`, `cpu_runtime.py`, `test_*.py`, `lambda_src/`, `student-risk.ipynb`, `requirements.lock`, `README.md` | Qwen3.5-0.8B fine-tuned with a decision head to predict at risk, with TabICL and logistic regression comparisons, a CPU-only AWS Lambda package and tests. **Trained on 2,000 synthetic students**, before the real CSV was available | A contributor outside the team, who asked not to be named |
 | `train_at_risk.py`, `at-risk-model/` | Logistic regression trained on the real `ml/dataset/students_demo.csv` (400 students) for Session 4 Task 2. Accuracy 77.5%, at-risk recall 39.1% | Amora, with Claude Code |
 | `plan.md` | The v2.1 plan and handover for retraining Qwen on the real CSV. **Never carried out** | Amora, with Claude Code |
 
@@ -15,7 +15,7 @@
 Requirements v3 (the *ASA Smart LMS* brief) requires a **Decision Tree baseline and a small MLP**, scoring a five-student demo class, and a **student** chatbot over unit documents. A fine-tuned LLM classifier isn't part of v3. It would also need GPU training and an 8 GB Lambda with a 2.3 GB image, which isn't worth the cost for a five-student demo. The v3 models will live in a new folder, `ml/at-risk/`.
 
 ## Not in the repo
-The model weights and generated files in `outputs/` (about 1.7 GB) are gitignored and stay on the author's machine. To match a copy later, check these SHA-256 hashes from `outputs/qwen-lambda-image-report.json`:
+The model weights and generated files in `outputs/` (about 1.7 GB) are gitignored and stay on the contributor's machine. To match a copy later, check these SHA-256 hashes from `outputs/qwen-lambda-image-report.json`:
 
 | File | SHA-256 |
 |---|---|
@@ -25,4 +25,4 @@ The model weights and generated files in `outputs/` (about 1.7 GB) are gitignore
 
 ## Running it
 - **Logistic regression** still runs from the repository root: `uv run ml/archive/v2.1-student-risk-qwen/train_at_risk.py` (checked 18 Nov; same results).
-- **The Qwen scripts** need the author's GPU environment and the pruned weights, so they won't run as they are. They aren't maintained.
+- **The Qwen scripts** need the contributor's GPU environment and the pruned weights, so they won't run as they are. They aren't maintained.
