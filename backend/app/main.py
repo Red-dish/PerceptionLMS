@@ -9,10 +9,14 @@ from app.routers import (
     admin,
     announcements,
     assignments,
+    calendar,
     courses,
+    discussions,
     gradebook,
+    inbox,
     login,
     me,
+    notifications,
     quiz_attempts,
     quizzes,
     tracking,
@@ -41,6 +45,10 @@ for router in (
     gradebook.router,
     tracking.router,
     announcements.router,
+    discussions.router,
+    inbox.router,
+    calendar.router,
+    notifications.router,
 ):
     app.include_router(router)
 

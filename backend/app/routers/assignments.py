@@ -305,7 +305,11 @@ def grade(course_id: str, assignment_id: str, student_id: str, body: GradeSet, u
             "attempt": 0,
         }
     submission = db.strip_keys(submission)
-    submission.update(mark=body.mark, feedback=body.feedback, released=body.release, graded_at=db.now_iso())
+    graded_at = db.now_iso()
+    submission.update(
+        mark=body.mark, feedback=body.feedback, released=body.release, graded_at=graded_at,
+        released_at=graded_at if body.release else None,
+    )
     return _with_final_mark(assignment, _save_submission(submission))
 
 
@@ -331,7 +335,10 @@ def release_all(course_id: str, assignment_id: str, body: ReleaseSet, user: Curr
     updated = 0
     for item in db.query(f"ASSIGNMENT#{assignment_id}", "SUBMISSION#"):
         if item.get("mark") is not None and bool(item.get("released")) != body.release:
-            _save_submission({**db.strip_keys(item), "released": body.release})
+            _save_submission({
+                **db.strip_keys(item), "released": body.release,
+                "released_at": db.now_iso() if body.release else None,
+            })
             updated += 1
     return {"updated": updated}
 
