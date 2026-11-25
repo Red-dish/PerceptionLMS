@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Response, status
 
 from app import db, storage
+from app.routers.pages import unlink_files
 from app.access import course_role, my_courses, require_teacher
 from app.auth import CurrentUser
 from app.models import (
@@ -131,9 +132,12 @@ def delete_module(course_id: str, module_id: str, user: CurrentUser):
     """Deletes the module and its files. Its pages are kept, moved out of the module and unpublished."""
     require_teacher(course_id, user)
     _module_or_404(course_id, module_id)
+    deleted = set()
     for material in db.query(f"COURSE#{course_id}", f"MATERIAL#{module_id}#"):
         storage.delete_file(material["s3_key"])
         db.delete(db.material_key(course_id, module_id, material["id"]))
+        deleted.add(material["id"])
+    unlink_files(course_id, deleted)
     # Pages are kept: they leave the module and are unpublished, so nothing hidden becomes visible.
     for page in db.query(f"COURSE#{course_id}", "PAGE#"):
         if page.get("module_id") == module_id:
@@ -213,6 +217,7 @@ def delete_material(course_id: str, module_id: str, material_id: str, user: Curr
     material = _material_or_404(course_id, module_id, material_id)
     storage.delete_file(material["s3_key"])
     db.delete(db.material_key(course_id, module_id, material_id))
+    unlink_files(course_id, {material_id})
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
