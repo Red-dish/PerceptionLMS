@@ -51,14 +51,21 @@ def get_course(course_id: str, user: CurrentUser):
     role = course_role(course_id, user)
     course = db.get(db.course_key(course_id))
     items = db.query(f"COURSE#{course_id}")
-    modules = {item["id"]: {**item, "materials": []} for item in items if item["SK"].startswith("MODULE#")}
+    modules = {
+        item["id"]: {**item, "materials": [], "pages": []} for item in items if item["SK"].startswith("MODULE#")
+    }
     for item in items:
         if item["SK"].startswith("MATERIAL#") and item["module_id"] in modules:
             modules[item["module_id"]]["materials"].append(item)
+        # Pages show in their module's outline; students only see published ones.
+        elif item["SK"].startswith("PAGE#") and item.get("module_id") in modules:
+            if role != "student" or item["published"]:
+                modules[item["module_id"]]["pages"].append(item)
     # Students only see published modules.
     visible = [module for module in modules.values() if role != "student" or module["published"]]
     for module in visible:
         module["materials"] = _ordered(module["materials"])
+        module["pages"] = _ordered(module["pages"])
     return {"course": course, "my_role": role, "modules": _ordered(visible)}
 
 
@@ -121,11 +128,17 @@ def update_module(course_id: str, module_id: str, body: ModuleUpdate, user: Curr
 
 @router.delete("/{course_id}/modules/{module_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_module(course_id: str, module_id: str, user: CurrentUser):
+    """Deletes the module and its files. Its pages are kept, moved out of the module and unpublished."""
     require_teacher(course_id, user)
     _module_or_404(course_id, module_id)
     for material in db.query(f"COURSE#{course_id}", f"MATERIAL#{module_id}#"):
         storage.delete_file(material["s3_key"])
         db.delete(db.material_key(course_id, module_id, material["id"]))
+    # Pages are kept: they leave the module and are unpublished, so nothing hidden becomes visible.
+    for page in db.query(f"COURSE#{course_id}", "PAGE#"):
+        if page.get("module_id") == module_id:
+            moved = {**db.strip_keys(page), "module_id": None, "published": False, "updated_at": db.now_iso()}
+            db.put(db.page_key(course_id, page["id"]), moved)
     db.delete(db.module_key(course_id, module_id))
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 

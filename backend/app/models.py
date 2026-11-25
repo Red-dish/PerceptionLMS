@@ -99,6 +99,46 @@ class Material(BaseModel):
     updated_at: datetime | None = None
 
 
+class PageSummary(BaseModel):
+    """A page without its content, for lists and module outlines."""
+
+    id: str
+    course_id: str
+    title: str
+    module_id: str | None = None
+    published: bool
+    position: int = 0
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class Page(PageSummary):
+    body: str = Field(description="The page as HTML, already sanitised on save")
+    author_name: str
+
+
+class PageCreate(BaseModel):
+    title: Title
+    body: str = Field(
+        default="",
+        max_length=200_000,
+        description="HTML from the rich-text editor. Anything unsafe (scripts, event handlers, "
+        "javascript: links, embeds from unknown sites) is removed on save",
+    )
+    module_id: str | None = Field(default=None, description="Put the page in this module")
+    published: bool = Field(default=False, description="Students only see published pages")
+
+
+class PageUpdate(BaseModel):
+    """Only the fields you send are changed. Send null for module_id to take the page out of its module."""
+
+    title: str | None = Field(default=None, min_length=1, max_length=200)
+    body: str | None = Field(default=None, max_length=200_000)
+    module_id: str | None = None
+    published: bool | None = None
+    position: int | None = Field(default=None, ge=0)
+
+
 class Module(BaseModel):
     id: str
     title: str
@@ -106,6 +146,7 @@ class Module(BaseModel):
     position: int = 0
     created_at: datetime
     materials: list[Material] = []
+    pages: list[PageSummary] = []
 
 
 class ModuleCreate(BaseModel):
