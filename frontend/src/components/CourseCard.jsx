@@ -1,17 +1,17 @@
+import { ArrowUpRight, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { roleLabels } from '../lib/format';
 
 export default function CourseCard({ course }) {
   return (
-    <Link to={`/courses/${course.id}`} className="card overflow-hidden hover:shadow-md transition group block">
-      <div className="h-20 p-4 bg-gradient-to-br from-blue-600 to-indigo-700">
-        <span className="badge bg-white/25 text-white">{course.term}</span>
+    <Link to={`/courses/${course.id}`} className="card group block overflow-hidden p-5 transition-shadow hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-forest">
+      <div className="mb-5 flex items-start justify-between gap-3">
+        <span className="badge bg-brand-mint text-brand-forest">{course.code || 'Course'}</span>
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-mint/60 text-brand-forest"><BookOpen size={19} aria-hidden="true" /></span>
       </div>
-      <div className="p-4">
-        <div className="text-xs font-semibold text-blue-700">{course.code}</div>
-        <div className="font-semibold text-slate-900 group-hover:underline">{course.title}</div>
-        <div className="text-sm text-slate-500 mt-1">{roleLabels[course.my_role]}</div>
-      </div>
+      <h3 className="font-display text-xl font-semibold leading-snug text-brand-ink group-hover:text-brand-forest">{course.title}</h3>
+      <p className="mt-2 text-sm text-brand-muted">{course.term || 'Course'} · {roleLabels[course.my_role] || 'Member'}</p>
+      <span className="mt-6 flex items-center justify-between border-t border-brand-line pt-4 text-sm font-bold text-brand-forest">Open course <ArrowUpRight size={18} aria-hidden="true" /></span>
     </Link>
   );
 }
