@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useOutletContext, useParams } from 'react-router-dom';
 import { Download, EyeOff, Pencil, Send } from 'lucide-react';
 import { Empty, ErrorNote, Loading, PageHeader } from '../../components/ui';
@@ -12,15 +12,35 @@ import { gradingStatus, LateBadge, markText, StatusBadge } from './grading';
 function StudentSubmission({ assignment, path, onSubmitted }) {
   const { user } = useAuth();
   const submission = assignment.my_submission;
+  const submissionType = assignment.submission_type ?? 'both';
+  const allowsText = submissionType === 'text' || submissionType === 'both';
+  const allowsFile = submissionType === 'file' || submissionType === 'both';
+  const hasGrant = Boolean(assignment.my_grant);
+  const attemptsUsed = submission?.submitted_at ? submission.attempt ?? 1 : 0;
+  const blockedReason = submissionType === 'none'
+    ? 'Hand in this assignment in class.'
+    : assignment.accepting_submissions === false
+      ? 'Submissions for this assignment have closed.'
+      : !hasGrant && assignment.max_attempts && attemptsUsed >= assignment.max_attempts
+        ? 'You have used all your submission attempts.'
+        : null;
   const [text, setText] = useState(submission?.text ?? '');
   const [file, setFile] = useState(null);
+  const fileInput = useRef(null);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [downloadError, setDownloadError] = useState(null);
+
+  const answer = allowsText && text.trim() ? text : null;
+  const attachment = allowsFile ? file : null;
+  const canSubmit = submissionType === 'file' ? Boolean(attachment) : Boolean(answer || attachment);
 
   const submit = async (event) => {
     event.preventDefault();
-    const problem = fileProblem(file);
+    if (saving || blockedReason || !canSubmit) return;
+    setSubmitted(false);
+    const problem = fileProblem(attachment);
     if (problem) {
       setError(problem);
       return;
@@ -28,16 +48,20 @@ function StudentSubmission({ assignment, path, onSubmitted }) {
     setError(null);
     setSaving(true);
     try {
-      const body = { text: text.trim() ? text : null };
-      if (file) body.file = { file_name: file.name, content_type: file.type || 'application/octet-stream' };
+      const body = { text: answer };
+      if (attachment) {
+        body.file = { file_name: attachment.name, content_type: attachment.type || 'application/octet-stream' };
+      }
       const created = await api.post(`${path}/submission`, body);
-      if (file) await uploadFile(created.upload, file);
+      if (attachment) await uploadFile(created.upload, attachment);
+      if (fileInput.current) fileInput.current.value = '';
       setFile(null);
-      onSubmitted();
+      setSubmitted(true);
+      await onSubmitted();
     } catch (failure) {
-      // A failed upload leaves a submission with no file behind, so reload to show what was saved.
+      // The API can save an attempt before the file upload fails.
       setError(failure);
-      onSubmitted();
+      await onSubmitted();
     } finally {
       setSaving(false);
     }
@@ -78,21 +102,26 @@ function StudentSubmission({ assignment, path, onSubmitted }) {
         </div>
       )}
 
-      {/* The API refuses a resubmission once the mark is released. */}
-      {!submission?.released && (
+      {submitted && <p role="status" className="text-sm text-emerald-700">Submission saved.</p>}
+      {blockedReason && <p className="text-sm text-slate-600">{blockedReason}</p>}
+      <ErrorNote error={error} />
+      {!blockedReason && (!submission?.released || hasGrant) && (
         <form className="card p-4 space-y-3" onSubmit={submit}>
-          <h2 className="font-semibold">{submission ? 'Resubmit' : 'Submit your work'}</h2>
-          <div>
-            <label className="label" htmlFor="submission-text">Your answer</label>
-            <textarea id="submission-text" rows={5} maxLength={20000} className="input" value={text} onChange={(event) => setText(event.target.value)} />
-          </div>
-          <div>
-            <label className="label" htmlFor="submission-file">File, up to {MAX_UPLOAD_MB} MB</label>
-            <input id="submission-file" type="file" className="input" onChange={(event) => setFile(event.target.files[0] ?? null)} />
-          </div>
-          <p className="text-xs text-slate-500">Add an answer, a file or both.</p>
-          <ErrorNote error={error} />
-          <button className="btn-primary" disabled={saving || (!text.trim() && !file)}>
+          <h2 className="font-semibold">{submission?.submitted_at ? 'Resubmit' : 'Submit your work'}</h2>
+          {allowsText && (
+            <div>
+              <label className="label" htmlFor="submission-text">Your answer</label>
+              <textarea id="submission-text" rows={5} maxLength={20000} className="input" value={text} disabled={saving} onChange={(event) => setText(event.target.value)} />
+            </div>
+          )}
+          {allowsFile && (
+            <div>
+              <label className="label" htmlFor="submission-file">File, up to {MAX_UPLOAD_MB} MB</label>
+              <input id="submission-file" type="file" className="input" ref={fileInput} disabled={saving} onChange={(event) => setFile(event.target.files[0] ?? null)} />
+            </div>
+          )}
+          {allowsText && allowsFile && <p className="text-xs text-slate-500">Add an answer, a file or both.</p>}
+          <button type="submit" className="btn-primary" disabled={saving || !canSubmit}>
             {saving ? 'Submitting…' : 'Submit'}
           </button>
         </form>
@@ -245,7 +274,7 @@ export default function AssignmentDetail() {
       </div>
 
       {myRole === 'student'
-        ? <StudentSubmission assignment={assignment} path={path} onSubmitted={reload} />
+        ? <StudentSubmission key={path} assignment={assignment} path={path} onSubmitted={reload} />
         : <Submissions assignment={assignment} path={path} />}
 
       {editing && (
