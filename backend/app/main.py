@@ -20,6 +20,7 @@ from app.routers import (
     pages,
     quiz_attempts,
     quizzes,
+    rubrics,
     tracking,
 )
 
@@ -42,6 +43,7 @@ for router in (
     courses.router,
     pages.router,
     assignments.router,
+    rubrics.router,
     quizzes.router,
     quiz_attempts.router,
     gradebook.router,

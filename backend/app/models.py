@@ -257,6 +257,102 @@ Instructions = Annotated[
 ]
 
 
+# Rubrics: criteria x rating levels, reused across a course's assignments.
+class RatingCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=100, description='For example "Excellent"')
+    description: str = Field(default="", max_length=1_000)
+    points: int = Field(ge=0, le=1000)
+
+
+class Rating(RatingCreate):
+    id: str
+
+
+class CriterionCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=200, description='For example "Structure"')
+    description: str = Field(default="", max_length=2_000)
+    ratings: list[RatingCreate] = Field(min_length=1, max_length=10)
+
+
+class Criterion(BaseModel):
+    id: str
+    title: str
+    description: str = ""
+    ratings: list[Rating]
+    max_points: int = Field(description="The highest rating's points")
+
+
+def check_rubric(criteria: list[CriterionCreate]) -> None:
+    if sum(max(rating.points for rating in criterion.ratings) for criterion in criteria) < 1:
+        raise ValueError("A rubric must be worth at least 1 point")
+
+
+class RubricCreate(BaseModel):
+    title: Title
+    criteria: list[CriterionCreate] = Field(min_length=1, max_length=30)
+
+    @model_validator(mode="after")
+    def worth_something(self) -> Self:
+        check_rubric(self.criteria)
+        return self
+
+
+class RubricUpdate(BaseModel):
+    """Only the fields you send are changed. Sending criteria replaces all of them.
+    Marks already given keep the rubric as it was when they were given."""
+
+    title: str | None = Field(default=None, min_length=1, max_length=200)
+    criteria: list[CriterionCreate] | None = Field(default=None, min_length=1, max_length=30)
+
+    @model_validator(mode="after")
+    def worth_something(self) -> Self:
+        if self.criteria is not None:
+            check_rubric(self.criteria)
+        return self
+
+
+class Rubric(BaseModel):
+    id: str
+    course_id: str
+    title: str
+    criteria: list[Criterion]
+    points_possible: int = Field(description="The total of every criterion's highest rating")
+    assignment_ids: list[str] = Field(default=[], description="Assignments using this rubric")
+    created_at: datetime
+    updated_at: datetime | None = None
+
+
+class CriterionScore(BaseModel):
+    criterion_id: str
+    title: str
+    rating_id: str
+    rating_title: str
+    points: int
+    max_points: int
+    comment: str = ""
+
+
+class RubricAssessment(BaseModel):
+    """A completed rubric, saved with the grade. It keeps the rubric's wording and
+    points from when it was marked, so later edits to the rubric don't change it."""
+
+    rubric_id: str
+    rubric_title: str
+    criteria: list[CriterionScore]
+    score: int = Field(description="Total points from the chosen ratings")
+    points_possible: int
+    mark: int = Field(description="The score scaled to the assignment's max_mark")
+
+
+class RubricGradeSet(BaseModel):
+    ratings: dict[str, str] = Field(description="The chosen rating ID for every criterion ID")
+    comments: dict[str, Annotated[str, Field(max_length=2_000)]] = Field(
+        default={}, description="Optional comment per criterion ID"
+    )
+    feedback: str = Field(default="", max_length=5_000)
+    release: bool = False
+
+
 class Assignment(BaseModel):
     id: str
     course_id: str
@@ -281,6 +377,7 @@ class Assignment(BaseModel):
     shuffle_answers: bool = False
     show_score: bool = Field(default=True, description="Students see their score as soon as they submit")
     show_correct_answers: bool = Field(default=False, description="Students see the right answers after submitting")
+    rubric_id: str | None = Field(default=None, description="The rubric used to grade it")
     created_at: datetime
     updated_at: datetime | None = None
 
@@ -303,6 +400,7 @@ class AssignmentCreate(BaseModel):
     shuffle_answers: bool = False
     show_score: bool = True
     show_correct_answers: bool = False
+    rubric_id: str | None = None
 
     @model_validator(mode="after")
     def window_makes_sense(self) -> Self:
@@ -312,7 +410,7 @@ class AssignmentCreate(BaseModel):
 
 class AssignmentUpdate(BaseModel):
     """Only the fields you send are changed. Send null for available_from, available_until,
-    module_id, max_attempts or time_limit_minutes to clear it."""
+    module_id, max_attempts, time_limit_minutes or rubric_id to clear it."""
 
     kind: AssignmentKind | None = None
     title: str | None = Field(default=None, min_length=1, max_length=200)
@@ -331,6 +429,7 @@ class AssignmentUpdate(BaseModel):
     shuffle_answers: bool | None = None
     show_score: bool | None = None
     show_correct_answers: bool | None = None
+    rubric_id: str | None = None
 
 
 class Attempt(BaseModel):
@@ -363,6 +462,9 @@ class Submission(BaseModel):
     feedback: str | None = None
     released: bool = False
     graded_at: datetime | None = None
+    rubric_assessment: RubricAssessment | None = Field(
+        default=None, description="The completed rubric, when graded with one. Students see it once released"
+    )
     history: list[Attempt] = []
 
 
@@ -413,6 +515,8 @@ class AssignmentView(Assignment):
     my_submission: Submission | None = None
     my_grant: Grant | None = None
     accepting_submissions: bool | None = None
+    # The rubric it's graded with, so students know the criteria. Single assignment only.
+    rubric: Rubric | None = None
 
 
 class GradeSet(BaseModel):
@@ -431,6 +535,7 @@ class Grade(BaseModel):
     mark: int
     final_mark: int | None = Field(default=None, description="The mark after any late penalty")
     feedback: str
+    rubric_assessment: RubricAssessment | None = None
 
 
 # Quizzes. A quiz is an assignment with kind "quiz"; its score is saved as the
