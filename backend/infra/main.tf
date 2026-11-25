@@ -235,6 +235,11 @@ data "aws_iam_policy_document" "api" {
     resources = [aws_dynamodb_table.data.arn, "${aws_dynamodb_table.data.arn}/index/*"]
   }
   statement {
+    sid       = "CommunicationWrites"
+    actions   = ["dynamodb:ConditionCheckItem", "dynamodb:UpdateItem"]
+    resources = [aws_dynamodb_table.data.arn]
+  }
+  statement {
     sid       = "Files"
     actions   = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
     resources = ["${aws_s3_bucket.files.arn}/*"]

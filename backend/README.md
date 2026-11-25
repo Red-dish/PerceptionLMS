@@ -131,6 +131,17 @@ In Cloudflare, add a proxied CNAME from `perceptionlms.com` to the `frontend_web
 
 **Taking a quiz:** the student starts an attempt and gets the questions (in a shuffled order of options if the quiz says so) with a `deadline` and `seconds_left`. The server enforces the time limit: answers saved with `PUT …/answers` count until the deadline plus 30 seconds' grace, and an attempt left open after that is submitted with the answers saved in time. Multiple choice and true/false are marked straight away; short answers that match an accepted answer are too, and the rest wait for the lecturer (`needs_marking`). The student's best fully marked attempt is saved as their submission, so it appears in the gradebook, the CSV, the late and missing report and `GET /me/grades`. A new attempt replaces any mark the lecturer typed into the gradebook for that quiz.
 
+## Communication API
+
+Sign in as an enrolled lecturer or student, then authorize your session in the local Swagger UI at `/docs`. Use `GET /courses` to find a course ID.
+
+| Feature | Local test |
+| --- | --- |
+| Discussions | `POST /courses/{course_id}/discussions` with a title and body, then add a reply at `/{topic_id}/replies`. Pass a reply ID as `parent_id` to nest a reply. Lecturers can lock the topic with `PATCH /{topic_id}` or delete topics and replies. |
+| Inbox | `GET /inbox/courses/{course_id}/recipients` lists active members you can message. `POST /inbox/courses/{course_id}/conversations` accepts `recipient_ids` and `body`. Use `GET /inbox/conversations` to see unread counts. Inside a conversation, `PUT /read` accepts the last displayed `message_id`. |
+| Calendar | As a lecturer, create an event at `POST /courses/{course_id}/events` with a title and timezone-aware `starts_at` and `ends_at`. As a student, check `GET /me/calendar` for both course events and visible coursework. Supply optional `start` and `end` timestamps to filter. |
+| Notifications | Publish an announcement or send the student a message, then check their `GET /me/notifications`. Released grades and visible unsubmitted work due in the next 24 hours also appear. Use `PUT /me/notifications/{notification_id}/read` to mark an item read and `PUT /me/notification-preferences` to set the four category switches. |
+
 ## Folder layout
 
 ```
