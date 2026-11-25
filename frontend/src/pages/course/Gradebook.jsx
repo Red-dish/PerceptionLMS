@@ -12,6 +12,29 @@ function GradebookTable({ course }) {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
 
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState(null);
+
+  async function exportCsv() {
+    setExporting(true);
+    setExportError(null);
+    try {
+      const file = await api.getBlob(base + '/gradebook.csv');
+      const url = URL.createObjectURL(file);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = course.code + '-gradebook.csv';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (failure) {
+      setExportError(failure);
+    } finally {
+      setExporting(false);
+    }
+  }
+
   function edit(row, column, cell) {
     setEditing({ studentId: row.student_id, assignmentId: column.id });
     setMark(cell.mark ?? '');
@@ -46,6 +69,10 @@ function GradebookTable({ course }) {
   return (
     <div className="space-y-4">
       <PageHeader title="Gradebook" subtitle="Review assignment and quiz marks for this course." />
+      <button className="btn-secondary" type="button" disabled={exporting || !data || saving} onClick={exportCsv}>
+        {exporting ? 'Downloading…' : 'Export CSV'}
+      </button>
+      {exportError && <ErrorNote error={exportError} />}
       {error && <ErrorNote error={error} onRetry={reload} />}
       {saveError && <ErrorNote error={saveError} />}
       {loading && <Loading />}
