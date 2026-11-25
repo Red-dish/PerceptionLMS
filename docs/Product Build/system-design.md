@@ -58,6 +58,7 @@ There is one table with keys `PK` and `SK`, plus one index, `GSI1`, with keys `G
 | Assignment | `COURSE#<courseId>` | `ASSIGNMENT#<assignmentId>` | | |
 | Submission | `ASSIGNMENT#<assignmentId>` | `SUBMISSION#<studentId>` | `USER#<studentId>` | `SUBMISSION#<assignmentId>` |
 | Resubmission or extension | `ASSIGNMENT#<assignmentId>` | `GRANT#<studentId>` | | |
+| Rubric | `COURSE#<courseId>` | `RUBRIC#<rubricId>` | | |
 | Quiz question | `ASSIGNMENT#<quizId>` | `QUESTION#<questionId>` | | |
 | Quiz attempt | `ASSIGNMENT#<quizId>` | `ATTEMPT#<attemptId>` | | |
 | Announcement | `COURSE#<courseId>` | `ANNOUNCEMENT#<announcementId>` | | |

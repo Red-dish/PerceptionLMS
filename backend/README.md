@@ -117,12 +117,15 @@ In Cloudflare, add a proxied CNAME from `perceptionlms.com` to the `frontend_web
 | Course content and files | `GET /courses`, `GET /courses/{id}`, `GET /courses/{id}/files?folder=`, `POST/PATCH/DELETE …/modules`, `PUT …/modules/order`, `POST/PATCH/DELETE …/materials`, `POST …/materials/{id}/file` (replace), `GET …/materials/{id}/download` | Enrolled (changes: lecturer) |
 | Assignments and quizzes | `GET/POST /courses/{id}/assignments`, `GET/PATCH/DELETE …/{assignmentId}`, `POST …/{assignmentId}/release` | Enrolled (changes: lecturer) |
 | Submissions | `POST …/{assignmentId}/submission` (student), `GET …/submissions`, `PUT/DELETE …/submissions/{studentId}/grade` (lecturer), `GET …/submissions/{studentId}/download`, `GET …/submissions/{studentId}/attempts/{n}/download` | As shown |
+| Rubrics | `GET/POST /courses/{id}/rubrics`, `GET/PATCH/DELETE …/rubrics/{rubricId}`, `PUT …/assignments/{assignmentId}/submissions/{studentId}/rubric-grade` | Lecturer |
 | Resubmissions and extensions | `GET …/{assignmentId}/resubmissions`, `PUT/DELETE …/submissions/{studentId}/resubmission` | Lecturer |
 | Quiz builder | `GET /courses/{id}/quizzes/{quizId}`, `GET/POST …/questions`, `PATCH/DELETE …/questions/{questionId}`, `PUT …/questions/order` | Enrolled (questions: lecturer) |
 | Taking a quiz | `POST …/quizzes/{quizId}/attempts` (start or resume), `PUT …/attempts/{attemptId}/answers`, `POST …/attempts/{attemptId}/submit` (student), `GET …/attempts?student_id=&needs_marking=`, `GET …/attempts/{attemptId}`, `PUT …/attempts/{attemptId}/marks` (lecturer) | As shown |
 | Gradebook | `GET /courses/{id}/gradebook`, `GET /courses/{id}/gradebook.csv` | Lecturer |
 | Late and missing work | `GET /courses/{id}/late-missing?status=` (lecturer), `GET /admin/late-missing?status=` (admin, every course) | As shown |
 | Announcements | `GET/POST /courses/{id}/announcements`, `PATCH/DELETE …/{announcementId}` | Enrolled (changes: lecturer) |
+
+**Rubrics** are criteria with rating levels, each rating worth some points. A rubric belongs to a course and any of its assignments can use it (`rubric_id`). Grading with `…/rubric-grade` takes one rating per criterion (plus optional comments), adds up the points and scales them to the assignment's `max_mark`, rounding to the nearest whole mark. The completed rubric is saved with the grade as `rubric_assessment`, a snapshot that later edits to the rubric don't change, and students see it with their grade once it's released (on the assignment and in `GET /me/grades`). A plain `…/grade` replaces it. A rubric in use can't be deleted.
 
 **Quizzes** are assignments with `kind: "quiz"`. Create one with `POST /courses/{id}/assignments`, which also takes the quiz settings: `time_limit_minutes`, `max_attempts`, `due_at`, `shuffle_answers`, `show_score` and `show_correct_answers`. Then add questions: `multiple_choice` (2 to 10 `options`, each with `correct`), `true_false` (`answer`) or `short_answer` (optional `accepted_answers`). A quiz's `max_mark` is always the total of its questions' points. Once a student has started the quiz, only a question's wording can change.
 

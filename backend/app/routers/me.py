@@ -57,6 +57,7 @@ def my_grades(user: CurrentUser):
                 "mark": submission["mark"],
                 "final_mark": cw.final_mark(assignment, submission),
                 "feedback": submission.get("feedback") or "",
+                "rubric_assessment": submission.get("rubric_assessment"),
             }
         )
     return grades

@@ -15,6 +15,7 @@ from app.routers import (
     me,
     quiz_attempts,
     quizzes,
+    rubrics,
     tracking,
 )
 
@@ -36,6 +37,7 @@ for router in (
     admin.router,
     courses.router,
     assignments.router,
+    rubrics.router,
     quizzes.router,
     quiz_attempts.router,
     gradebook.router,

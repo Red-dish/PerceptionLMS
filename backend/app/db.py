@@ -79,6 +79,11 @@ def quiz_attempt_key(quiz_id: str, attempt_id: str) -> tuple[str, str]:
     return f"ASSIGNMENT#{quiz_id}", f"ATTEMPT#{attempt_id}"
 
 
+def rubric_key(course_id: str, rubric_id: str) -> tuple[str, str]:
+    """A grading rubric. Assignments in the course point to it with rubric_id."""
+    return f"COURSE#{course_id}", f"RUBRIC#{rubric_id}"
+
+
 def announcement_key(course_id: str, announcement_id: str) -> tuple[str, str]:
     return f"COURSE#{course_id}", f"ANNOUNCEMENT#{announcement_id}"
 
