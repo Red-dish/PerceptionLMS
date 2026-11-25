@@ -1,23 +1,23 @@
-# AI features plan (requirements v3)
+# AI features plan (requirements v2 + v3)
 
-**Status:** draft for review, 18 Nov 2026. Covers requirements **v3**, the ASA Smart LMS brief; see [requirements/v3.md](../requirements/v3.md) and the version history in [requirements/](../requirements/README.md).
+**Status:** draft for review, 18 Nov 2026; updated 19 Nov. Covers requirements **v2** (Session 4: the at-risk model) and **v3**, the ASA Smart LMS brief, which adds to v2; see [requirements/v2.md](../requirements/v2.md), [requirements/v3.md](../requirements/v3.md) and the version history in [requirements/](../requirements/README.md).
 **Aim:** meet the v3 definition of done at the lowest running cost, reusing what the LMS already has. We don't have to use the tools the brief suggests, as long as the end requirements are met.
 
 ## 1. Summary
 | Need | Cheapest approach that meets it | Extra running cost |
 |---|---|---|
-| Risk labels from a trained model (Feature B) | Decision Tree + small MLP in scikit-learn, trained offline on the 400-record CSV; the saved model is loaded **inside the existing API Lambda** | About $0 (the existing Lambda and DynamoDB, within the free tier) |
+| Risk labels from a trained model (v2, and v3 Feature B) | Logistic regression (the v2 model), compared with a Decision Tree baseline and a small MLP in scikit-learn, all trained offline on the 400-record CSV; the saved model is loaded **inside the existing API Lambda** | About $0 (the existing Lambda and DynamoDB, within the free tier) |
 | Grounded student chatbot (Feature A) | Extract text from unit documents uploaded to the course; send that text with the question to a pay-per-use LLM API; return JSON with the answer, sources, conflict and "cannot confirm" fields. No vector database | Cents for the whole demo (see section 5) |
 | Demo logins without real passwords | A **demo sign-in** switch: demo accounts sign in from a picker, only while demo mode is on | $0 |
 | Five-student MAI600 class | A seed script that creates the class, the people, the quiz marks, the activity data and the unit documents | $0 |
 
-**Dropped from v2.1, saving cost and time:**
-- Qwen fine-tuning, GPU training, the 8 GB Lambda and the 2.3 GB image.
+**Dropped from v2.1, saving cost and time** (logistic regression is kept):
+- Qwen fine-tuning, GPU training, the 8 GB Lambda and the 2.3 GB image. The at-risk prediction is ML, not a language model.
 - The lecturer chatbot over the CSV.
 - Importing 400 `test-student` users.
-- Study recommendations.
+- Study recommendations (an idea in the v2 scenario; not in v3).
 
-## 2. Feature B: lecturer at-risk prediction
+## 2. At-risk prediction (v2, and v3 Feature B)
 
 ### Data and features
 - **Training data:** `ml/dataset/students_demo.csv`, 400 fictional students, 114 at risk.
@@ -31,19 +31,19 @@
   | MLP (16, 8) | 5 | 70.0% | 52.2% |
   | MLP (16, 8) | 4 | 71.3% | 52.2% |
 
-  Dropping "days since login" costs little. Recall is low for both models, so the real training run should try class weighting or oversampling and pick the decision threshold on training data only. Whatever count of flagged demo students results is reported as it is.
+  Logistic regression's first run (v2.1 script, untuned) gave 77.5% accuracy and 39.1% recall, possibly on a different split, so it isn't directly comparable. Dropping "days since login" costs little. Recall is low for all of them, so the real training run should try class weighting or oversampling and pick the decision threshold on training data only. Whatever count of flagged demo students results is reported as it is.
 
 ### Training (offline, on any laptop CPU)
-Build it in a new folder, `ml/at-risk/`. The v2.1 logistic regression script is archived in `ml/archive/v2.1-student-risk-qwen/`. The new script or notebook:
+Build it in a new folder, `ml/at-risk/`. The first logistic regression script, archived in `ml/archive/v2.1-student-risk-qwen/`, is the starting point. The new script or notebook:
 1. Loads and describes the dataset (the dataset description the brief asks for).
 2. Makes a stratified train/test split with a fixed seed.
-3. Trains a **Decision Tree baseline** and a **small MLP** (`MLPClassifier` with a scaler). Tries class weights or oversampling to raise at-risk recall.
-4. Reports **accuracy, at-risk recall, precision and a confusion matrix** for both, on the test set only.
+3. Trains **logistic regression** (the v2 model), a **Decision Tree baseline** and a **small MLP** (`MLPClassifier` with a scaler), all on the same split. Tries class weights or oversampling to raise at-risk recall, and uses cross-validation because the test set is small.
+4. Reports **accuracy, at-risk recall, precision and a confusion matrix** for all three, on the test set only.
 5. Picks the chosen model with a written reason (recall matters most: a missed student is worse than a false alarm).
 6. **Saves** it (`at_risk_model.joblib` plus a `model_card.json` with the features, metrics, threshold, date and dataset hash), then **reloads** it and scores one new fictional student (the inference example).
-7. Answers the Session 4 questions for the chosen model.
+7. Answers the Session 4 (v2) Task 1 and Task 2 questions for the chosen model.
 
-Logistic regression can stay in the comparison as an extra, but the brief requires the Decision Tree and the MLP.
+Logistic regression is the v2 model (the Decision Tree named in the Session 4 task was a suggestion, confirmed with the lecturer). v3 requires the Decision Tree baseline and the MLP in the comparison. The model that goes live is the one with the best at-risk recall; if they tie, logistic regression, because it's stable and easy to explain.
 
 ### Serving (inside the existing API)
 - Add `scikit-learn` to the backend image. The API **loads the saved `.joblib`** at start-up, which proves the label comes from the saved model.
@@ -77,6 +77,7 @@ The demo has a handful of short unit documents (the MAI600 knowledge document an
 If the documents later grow too big for one prompt, add simple keyword search to pick the most relevant sections before sending.
 
 ### Which LLM (cost first)
+The lecturer allows a third-party chatbot. Whether to use our own local model instead is still to be decided.
 | Option | Cost | Pros | Cons |
 |---|---|---|---|
 | **Amazon Bedrock** (a small model such as Amazon Nova Lite or Claude Haiku) | Pay per token: a fraction of a cent per question at demo size | Stays in AWS; the Lambda uses IAM, so there's **no API key to manage**; no idle cost | Model access must be enabled; **check which models are offered in Sydney** (`ap-southeast-2`) |
@@ -127,7 +128,7 @@ The brief needs live logins as `emma.park@example.com` (and the other four stude
 **Owner:** Amora owns all of it (decided 18 Nov).
 
 **Timeline**
-- **Wed 25 Nov, progress checkpoint:** steps 2 and 3 done (models trained, compared, saved; risk API working with tests), plus the demo seed data and a chosen chatbot provider. Ideally deployed.
+- **Wed 25 Nov, progress checkpoint:** steps 2 and 3 done (logistic regression, Decision Tree and MLP trained, compared, saved; risk API working with tests), plus the demo seed data and a chosen chatbot provider. Ideally deployed.
 - **Thu 3 Dec, final demo and presentation:** everything else, including the chatbot (step 4) once the knowledge documents arrive, demo sign-in, the website and the evidence.
 
 ## 7. Decisions and open questions
@@ -142,4 +143,4 @@ The brief needs live logins as `emma.park@example.com` (and the other four stude
 **Still open**
 1. **Sign-in:** demo sign-in (A) or team Google accounts (B)?
 2. **LLM provider:** under review. Compare the options in section 3 before choosing.
-3. **Qwen:** any further role in v3?
+3. **Chatbot model:** a third-party chatbot (allowed by the lecturer) or our own local model? Qwen isn't needed for the at-risk prediction, which is ML.
