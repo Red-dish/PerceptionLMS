@@ -7,6 +7,7 @@ import { useAuth } from '../../lib/auth';
 import { formatDateTime } from '../../lib/format';
 import { useLoad } from '../../lib/useLoad';
 import AssignmentForm from './AssignmentForm';
+import QuizDetail from './QuizDetail';
 import { gradingStatus, LateBadge, markText, StatusBadge } from './grading';
 
 function StudentSubmission({ assignment, path, onSubmitted }) {
@@ -224,7 +225,11 @@ export default function AssignmentDetail() {
     );
   }
 
-  return (
+  const submissions = myRole === 'student'
+    ? <StudentSubmission assignment={assignment} path={path} onSubmitted={reload} />
+    : <Submissions assignment={assignment} path={path} />;
+
+  const assignmentView = (
     <div className="space-y-6">
       <div>
         <Link to={list} className="link text-sm">Back to assignments</Link>
@@ -244,9 +249,7 @@ export default function AssignmentDetail() {
         {assignment.instructions && <p className="text-sm text-slate-700 whitespace-pre-wrap">{assignment.instructions}</p>}
       </div>
 
-      {myRole === 'student'
-        ? <StudentSubmission assignment={assignment} path={path} onSubmitted={reload} />
-        : <Submissions assignment={assignment} path={path} />}
+      {submissions}
 
       {editing && (
         <AssignmentForm
@@ -260,5 +263,18 @@ export default function AssignmentDetail() {
         />
       )}
     </div>
+  );
+  if (assignment.kind !== 'quiz') return assignmentView;
+
+  const quizPath = `/courses/${course.id}/quizzes/${assignmentId}`;
+  return (
+    <QuizDetail
+      key={quizPath}
+      assignmentsPath={list}
+      quizPath={quizPath}
+      canEdit={canEdit}
+      legacy={assignment.submission_type !== 'none' ? assignmentView : null}
+      legacySubmissions={submissions}
+    />
   );
 }

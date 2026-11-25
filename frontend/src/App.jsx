@@ -9,6 +9,7 @@ import CourseLayout from './pages/course/CourseLayout';
 import GradeSubmission from './pages/course/GradeSubmission';
 import Modules from './pages/course/Modules';
 import People from './pages/course/People';
+import { NewQuiz } from './pages/course/QuizDetail';
 import Courses from './pages/Courses';
 import Dashboard from './pages/Dashboard';
 import Grades from './pages/Grades';
@@ -40,6 +41,7 @@ export default function App() {
             <Route index element={<CourseHome />} />
             <Route path="modules" element={<Modules />} />
             <Route path="assignments" element={<Assignments />} />
+            <Route path="assignments/new-quiz" element={<NewQuiz />} />
             <Route path="assignments/:assignmentId" element={<AssignmentDetail />} />
             <Route path="assignments/:assignmentId/submissions/:studentId" element={<GradeSubmission />} />
             <Route element={<RequireRole role="admin" />}>

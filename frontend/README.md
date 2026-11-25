@@ -89,7 +89,13 @@ These need backend work first, so they aren't in the app:
 - A course's member list for lecturers (only admins can read it)
 - Marking materials as complete, and course progress
 
-Attendance and online quizzes were in the earlier draft, but are on the [Later list](../docs/Product%20Build/tasks.md). The draft is still in git at commit `ee7c2f8`, under `UI-UX-Design/Frontend/`, if you want to reuse its code or design.
+Attendance is on the [Later list](../docs/Product%20Build/tasks.md). The earlier design draft is in git at commit `ee7c2f8`, under `UI-UX-Design/Frontend/`.
+
+## Online quizzes
+
+Lecturers and admins can use **Assignments → Quiz** to create a draft, add questions, and publish it from Quiz settings. Enrolled students open a published quiz from Assignments. Timed attempts keep running after a refresh, and saved answers are submitted when the timer expires.
+
+For local testing, point `VITE_API_URL` at a backend with the quiz routes. See the [quiz API handover](handover.md#new-in-the-api-quizzes-16-nov) for the endpoint contract and local setup.
 
 ## Publishing
 

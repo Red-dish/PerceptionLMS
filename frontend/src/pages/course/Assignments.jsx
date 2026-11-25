@@ -28,10 +28,13 @@ export default function Assignments() {
     <div>
       <PageHeader title="Assignments">
         {canEdit && (
-          <button type="button" className="btn-primary" onClick={() => setCreating(true)}>
-            <Plus size={16} aria-hidden="true" />
-            Assignment
-          </button>
+          <>
+            <button type="button" className="btn-primary" onClick={() => setCreating(true)}>
+              <Plus size={16} aria-hidden="true" />
+              Assignment
+            </button>
+            <Link className="btn-ghost" to={`${path}/new-quiz`}><Plus size={16} aria-hidden="true" /> Quiz</Link>
+          </>
         )}
       </PageHeader>
 
@@ -50,7 +53,7 @@ export default function Assignments() {
                     <ClipboardList size={18} aria-hidden="true" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium">{assignment.title}</div>
+                    <div className="font-medium">{assignment.title}{assignment.kind === 'quiz' && <span className="ml-2 badge bg-blue-50 text-blue-700">Quiz</span>}</div>
                     <div className="text-xs text-slate-500">
                       Due {formatDateTime(assignment.due_at)} · {assignment.max_mark} marks · worth {assignment.weight}%
                     </div>
