@@ -6,6 +6,7 @@ import Assignments from './pages/course/Assignments';
 import AssignmentDetail from './pages/course/AssignmentDetail';
 import CourseHome from './pages/course/CourseHome';
 import CourseLayout from './pages/course/CourseLayout';
+import Gradebook from './pages/course/Gradebook';
 import GradeSubmission from './pages/course/GradeSubmission';
 import Modules from './pages/course/Modules';
 import People from './pages/course/People';
@@ -39,6 +40,7 @@ export default function App() {
           <Route path="courses" element={<Courses />} />
           <Route path="courses/:courseId" element={<CourseLayout />}>
             <Route index element={<CourseHome />} />
+            <Route path="gradebook" element={<Gradebook />} />
             <Route path="modules" element={<Modules />} />
             <Route path="assignments" element={<Assignments />} />
             <Route path="assignments/new-quiz" element={<NewQuiz />} />
