@@ -4,6 +4,10 @@ Lecturers write pages in a rich-text editor; the HTML is sanitised before it is
 saved (see app/rich_text.py). A page can sit in a module, next to its files, or on
 its own. Students only see a page when it is published and, if it's in a module,
 the module is published too.
+
+A page can also link course files (file_ids). Linking doesn't change who can see a
+file: students only get linked files whose module is published, the same rule as
+everywhere else.
 """
 
 from fastapi import APIRouter, HTTPException, Response, status
@@ -37,6 +41,65 @@ def _module_must_exist(course_id: str, module_id: str | None) -> None:
 
 def _next_position(course_id: str, module_id: str | None) -> int:
     return sum(1 for page in db.query(f"COURSE#{course_id}", "PAGE#") if page.get("module_id") == module_id)
+
+
+def _course_files(course_id: str) -> dict[str, dict]:
+    return {material["id"]: material for material in db.query(f"COURSE#{course_id}", "MATERIAL#")}
+
+
+def _check_files(course_id: str, file_ids: list[str]) -> list[str]:
+    """The IDs once each, in order. Every one must be a file in this course."""
+    unique = list(dict.fromkeys(file_ids))
+    files = _course_files(course_id)
+    missing = [file_id for file_id in unique if file_id not in files]
+    if missing:
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_CONTENT, f"These files aren't in this course: {', '.join(missing)}"
+        )
+    return unique
+
+
+def with_files(page: dict, role: str) -> dict:
+    """The page with its linked files. Files deleted since, and (for students) files in
+    unpublished modules, are left out."""
+    course_id = page["course_id"]
+    file_ids = page.get("file_ids") or []
+    if not file_ids:
+        return {**page, "files": []}
+    files = _course_files(course_id)
+    published = published_module_ids(course_id)
+    linked = []
+    for file_id in file_ids:
+        material = files.get(file_id)
+        if material is None:
+            continue
+        visible = material["module_id"] in published
+        if role == "student" and not visible:
+            continue
+        linked.append(
+            {
+                "id": material["id"],
+                "module_id": material["module_id"],
+                "title": material["title"],
+                "file_name": material["file_name"],
+                "content_type": material["content_type"],
+                "folder": material.get("folder", ""),
+                "download_path": (
+                    f"/courses/{course_id}/modules/{material['module_id']}/materials/{material['id']}/download"
+                ),
+                "visible_to_students": visible,
+            }
+        )
+    return {**page, "files": linked}
+
+
+def unlink_files(course_id: str, file_ids: set[str]) -> None:
+    """Take deleted files off every page that linked them."""
+    for page in db.query(f"COURSE#{course_id}", "PAGE#"):
+        current = page.get("file_ids") or []
+        if any(file_id in file_ids for file_id in current):
+            kept = [file_id for file_id in current if file_id not in file_ids]
+            db.put(db.page_key(course_id, page["id"]), {**db.strip_keys(page), "file_ids": kept})
 
 
 def _page_or_404(course_id: str, page_id: str, role: str) -> dict:
@@ -73,17 +136,19 @@ def create_page(course_id: str, body: PageCreate, user: CurrentUser):
         "module_id": body.module_id,
         "published": body.published,
         "position": _next_position(course_id, body.module_id),
+        "file_ids": _check_files(course_id, body.file_ids or []),
         "author_id": user["id"],
         "author_name": user["name"],
         "created_at": db.now_iso(),
         "updated_at": None,
     }
-    return db.put(db.page_key(course_id, page_id), page)
+    return with_files(db.put(db.page_key(course_id, page_id), page), "lecturer")
 
 
 @router.get("/{page_id}", response_model=Page)
 def get_page(course_id: str, page_id: str, user: CurrentUser):
-    return _page_or_404(course_id, page_id, course_role(course_id, user))
+    role = course_role(course_id, user)
+    return with_files(_page_or_404(course_id, page_id, role), role)
 
 
 @router.patch("/{page_id}", response_model=Page)
@@ -98,8 +163,10 @@ def update_page(course_id: str, page_id: str, body: PageUpdate, user: CurrentUse
         changes.setdefault("position", _next_position(course_id, changes["module_id"]))
     if "body" in changes:
         changes["body"] = sanitise(changes["body"])
+    if "file_ids" in changes:
+        changes["file_ids"] = _check_files(course_id, changes["file_ids"])
     page.update(changes, updated_at=db.now_iso())
-    return db.put(db.page_key(course_id, page_id), page)
+    return with_files(db.put(db.page_key(course_id, page_id), page), "lecturer")
 
 
 @router.delete("/{page_id}", status_code=status.HTTP_204_NO_CONTENT)

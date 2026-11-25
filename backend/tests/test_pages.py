@@ -170,3 +170,81 @@ def test_page_input_is_validated(client, school):
     assert client.post(pages, json={"title": "Big", "body": "x" * 200_001}, headers=school.lecturer).status_code == 422
     _, page = create(client, school, title="Empty", body="")
     assert page["body"] == ""
+
+
+# Linking files from pages (#37)
+def add_file(client, school, module_id, title, file_name="notes.pdf"):
+    response = client.post(
+        f"/courses/{school.course_id}/modules/{module_id}/materials",
+        json={"title": title, "file_name": file_name, "content_type": "application/pdf", "folder": "Week 1"},
+        headers=school.lecturer,
+    )
+    assert response.status_code == 201, response.text
+    return response.json()["material"]["id"]
+
+
+def test_pages_link_course_files(client, school):
+    week1 = make_module(client, school, "Week 1")
+    slides = add_file(client, school, week1, "Slides", "slides.pdf")
+    reading = add_file(client, school, week1, "Reading", "reading.pdf")
+
+    url, page = create(client, school, file_ids=[reading, slides, reading])
+    # Each file once, in the order given, with what the frontend needs to show and download it.
+    assert [f["title"] for f in page["files"]] == ["Reading", "Slides"]
+    linked = page["files"][1]
+    assert (linked["file_name"], linked["folder"], linked["visible_to_students"]) == ("slides.pdf", "Week 1", True)
+    assert linked["download_path"] == f"/courses/{school.course_id}/modules/{week1}/materials/{slides}/download"
+    assert client.get(linked["download_path"], headers=school.student).status_code == 200
+
+    student_view = client.get(url, headers=school.student).json()
+    assert [f["title"] for f in student_view["files"]] == ["Reading", "Slides"]
+
+    # Replacing the list, clearing it, and refusing files from elsewhere.
+    assert [f["id"] for f in client.patch(url, json={"file_ids": [slides]}, headers=school.lecturer).json()["files"]] == [
+        slides
+    ]
+    assert client.patch(url, json={"title": "Renamed"}, headers=school.lecturer).json()["files"][0]["id"] == slides
+    assert client.patch(url, json={"file_ids": []}, headers=school.lecturer).json()["files"] == []
+    assert client.patch(url, json={"file_ids": ["not-a-file"]}, headers=school.lecturer).status_code == 422
+    pages = f"/courses/{school.course_id}/pages"
+    assert client.post(pages, json={"title": "X", "file_ids": ["nope"]}, headers=school.lecturer).status_code == 422
+
+
+def test_linking_never_shows_students_hidden_files(client, school):
+    hidden = make_module(client, school, "Answers", published=False)
+    answers = add_file(client, school, hidden, "Exam answers")
+    week1 = make_module(client, school, "Week 1")
+    slides = add_file(client, school, week1, "Slides")
+    url, page = create(client, school, file_ids=[answers, slides])
+
+    # The lecturer sees both, with a warning flag on the hidden one.
+    assert [(f["title"], f["visible_to_students"]) for f in page["files"]] == [
+        ("Exam answers", False),
+        ("Slides", True),
+    ]
+    # Students only get files they could open anyway.
+    assert [f["title"] for f in client.get(url, headers=school.student).json()["files"]] == ["Slides"]
+    download = f"/courses/{school.course_id}/modules/{hidden}/materials/{answers}/download"
+    assert client.get(download, headers=school.student).status_code == 404
+
+
+def test_deleted_files_are_unlinked_from_pages(client, school):
+    week1 = make_module(client, school, "Week 1")
+    week2 = make_module(client, school, "Week 2")
+    slides = add_file(client, school, week1, "Slides")
+    reading = add_file(client, school, week2, "Reading")
+    url, _ = create(client, school, file_ids=[slides, reading])
+
+    base = f"/courses/{school.course_id}/modules"
+    assert client.delete(f"{base}/{week1}/materials/{slides}", headers=school.lecturer).status_code == 204
+    assert [f["title"] for f in client.get(url, headers=school.lecturer).json()["files"]] == ["Reading"]
+    assert client.delete(f"{base}/{week2}", headers=school.lecturer).status_code == 204
+    assert client.get(url, headers=school.lecturer).json()["files"] == []
+
+    # A moved file stays linked, with its new download path.
+    week3 = make_module(client, school, "Week 3")
+    week4 = make_module(client, school, "Week 4")
+    notes = add_file(client, school, week3, "Notes")
+    url, _ = create(client, school, title="Another", file_ids=[notes])
+    client.patch(f"{base}/{week3}/materials/{notes}", json={"module_id": week4}, headers=school.lecturer)
+    assert client.get(url, headers=school.lecturer).json()["files"][0]["module_id"] == week4
