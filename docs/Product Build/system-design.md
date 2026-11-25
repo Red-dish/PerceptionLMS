@@ -55,6 +55,7 @@ There is one table with keys `PK` and `SK`, plus one index, `GSI1`, with keys `G
 | Enrolment | `COURSE#<courseId>` | `MEMBER#<userId>` | `USER#<userId>` | `COURSE#<courseId>` |
 | Module | `COURSE#<courseId>` | `MODULE#<moduleId>` | | |
 | Material | `COURSE#<courseId>` | `MATERIAL#<moduleId>#<materialId>` | | |
+| Content page | `COURSE#<courseId>` | `PAGE#<pageId>` | | |
 | Assignment | `COURSE#<courseId>` | `ASSIGNMENT#<assignmentId>` | | |
 | Submission | `ASSIGNMENT#<assignmentId>` | `SUBMISSION#<studentId>` | `USER#<studentId>` | `SUBMISSION#<assignmentId>` |
 | Resubmission or extension | `ASSIGNMENT#<assignmentId>` | `GRANT#<studentId>` | | |
