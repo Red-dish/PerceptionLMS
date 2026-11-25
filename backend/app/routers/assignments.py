@@ -4,6 +4,7 @@ from app import coursework as cw
 from app import db, quizzes, storage
 from app.access import course_role, require_student, require_teacher
 from app.auth import CurrentUser
+from app.routers.rubrics import rubric_must_exist, rubric_or_404, with_usage
 from app.models import (
     Assignment,
     AssignmentCreate,
@@ -15,6 +16,7 @@ from app.models import (
     GradeSet,
     ReleaseResult,
     ReleaseSet,
+    RubricGradeSet,
     Submission,
     SubmissionCreate,
     SubmissionCreated,
@@ -62,7 +64,7 @@ def _student_view(assignment: dict, submission: dict | None) -> dict | None:
         return None
     if submission.get("released"):
         return _with_final_mark(assignment, submission)
-    return {**submission, "mark": None, "final_mark": None, "feedback": None}
+    return {**submission, "mark": None, "final_mark": None, "feedback": None, "rubric_assessment": None}
 
 
 def _module_must_exist(course_id: str, module_id: str | None) -> None:
@@ -99,6 +101,7 @@ def list_assignments(course_id: str, user: CurrentUser):
 def create_assignment(course_id: str, body: AssignmentCreate, user: CurrentUser):
     require_teacher(course_id, user)
     _module_must_exist(course_id, body.module_id)
+    rubric_must_exist(course_id, body.rubric_id)
     assignment_id = db.new_id()
     assignment = {
         **body.model_dump(),
@@ -115,7 +118,12 @@ def create_assignment(course_id: str, body: AssignmentCreate, user: CurrentUser)
 @router.get("/{assignment_id}", response_model=AssignmentView)
 def get_assignment(course_id: str, assignment_id: str, user: CurrentUser):
     role = course_role(course_id, user)
-    return _with_my_submission(_assignment_or_404(course_id, assignment_id, role), role, user)
+    view = _with_my_submission(_assignment_or_404(course_id, assignment_id, role), role, user)
+    if view.get("rubric_id") and db.get(db.rubric_key(course_id, view["rubric_id"])):
+        rubric = rubric_or_404(course_id, view["rubric_id"])
+        # Students don't need (and shouldn't see) which other assignments use it.
+        view["rubric"] = rubric if role == "student" else with_usage(rubric)
+    return view
 
 
 @router.patch("/{assignment_id}", response_model=Assignment)
@@ -123,8 +131,9 @@ def update_assignment(course_id: str, assignment_id: str, body: AssignmentUpdate
     require_teacher(course_id, user)
     assignment = _assignment_or_404(course_id, assignment_id)
     changes = body.model_dump(exclude_unset=True)
-    nullable = {"available_from", "available_until", "module_id", "max_attempts", "time_limit_minutes"}
+    nullable = {"available_from", "available_until", "module_id", "max_attempts", "time_limit_minutes", "rubric_id"}
     _module_must_exist(course_id, changes.get("module_id"))
+    rubric_must_exist(course_id, changes.get("rubric_id"))
     # null only means "remove" for the window; for other fields it means "leave as it is".
     changes = {name: value for name, value in changes.items() if value is not None or name in nullable}
     for name in ("due_at", "available_from", "available_until"):
@@ -232,6 +241,7 @@ def submit(course_id: str, assignment_id: str, body: SubmissionCreate, user: Cur
             "feedback": None,
             "released": False,
             "graded_at": None,
+            "rubric_assessment": None,
             "history": history,
         }
     )
@@ -279,24 +289,14 @@ def download_attempt(course_id: str, assignment_id: str, student_id: str, attemp
     return {"url": storage.download_url(earlier["s3_key"], earlier["file_name"])}
 
 
-@router.put("/{assignment_id}/submissions/{student_id}/grade", response_model=Submission)
-def grade(course_id: str, assignment_id: str, student_id: str, body: GradeSet, user: CurrentUser):
-    """Save a mark and feedback. Set release to true when the student should see them.
-
-    Works for students who haven't submitted too, so the gradebook can record marks for
-    work done offline, such as a quiz sat in class.
-    """
-    require_teacher(course_id, user)
-    assignment = _assignment_or_404(course_id, assignment_id)
-    if body.mark > assignment["max_mark"]:
-        raise HTTPException(
-            status.HTTP_422_UNPROCESSABLE_CONTENT, f"The mark cannot be more than {assignment['max_mark']}"
-        )
-    submission = db.get(db.submission_key(assignment_id, student_id))
+def _save_mark(
+    course_id: str, assignment: dict, student_id: str, mark: int, feedback: str, release: bool, assessment=None
+) -> dict:
+    submission = db.get(db.submission_key(assignment["id"], student_id))
     if submission is None:
         student = cw.enrolled_student_or_404(course_id, student_id)
         submission = {
-            "assignment_id": assignment_id,
+            "assignment_id": assignment["id"],
             "course_id": course_id,
             "student_id": student_id,
             "student_name": student["name"],
@@ -305,8 +305,86 @@ def grade(course_id: str, assignment_id: str, student_id: str, body: GradeSet, u
             "attempt": 0,
         }
     submission = db.strip_keys(submission)
-    submission.update(mark=body.mark, feedback=body.feedback, released=body.release, graded_at=db.now_iso())
+    submission.update(
+        mark=body.mark, feedback=body.feedback, released=body.release, graded_at=graded_at, rubric_assessment=assessment
+        released_at=graded_at if body.release else None,
+    )
     return _with_final_mark(assignment, _save_submission(submission))
+
+
+@router.put("/{assignment_id}/submissions/{student_id}/grade", response_model=Submission)
+def grade(course_id: str, assignment_id: str, student_id: str, body: GradeSet, user: CurrentUser):
+    """Save a mark and feedback. Set release to true when the student should see them.
+
+    Works for students who haven't submitted too, so the gradebook can record marks for
+    work done offline, such as a quiz sat in class. A plain mark replaces any completed rubric.
+    """
+    require_teacher(course_id, user)
+    assignment = _assignment_or_404(course_id, assignment_id)
+    if body.mark > assignment["max_mark"]:
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_CONTENT, f"The mark cannot be more than {assignment['max_mark']}"
+        )
+    return _save_mark(course_id, assignment, student_id, body.mark, body.feedback, body.release)
+
+
+@router.put("/{assignment_id}/submissions/{student_id}/rubric-grade", response_model=Submission)
+def grade_with_rubric(
+    course_id: str, assignment_id: str, student_id: str, body: RubricGradeSet, user: CurrentUser
+):
+    """Grade by choosing one rating for every criterion of the assignment's rubric.
+
+    The score is the total of the chosen ratings' points, scaled to the assignment's
+    max_mark (rounded to the nearest whole mark). The completed rubric is saved with the
+    grade, and the student sees it with their grade once it's released.
+    """
+    require_teacher(course_id, user)
+    assignment = _assignment_or_404(course_id, assignment_id)
+    if not assignment.get("rubric_id"):
+        raise HTTPException(status.HTTP_409_CONFLICT, "This assignment has no rubric. Attach one first")
+    if assignment.get("kind") == "quiz" and quizzes.questions(assignment_id):
+        raise HTTPException(status.HTTP_409_CONFLICT, "This quiz is marked from its questions")
+    rubric = rubric_or_404(course_id, assignment["rubric_id"])
+    criteria = {criterion["id"]: criterion for criterion in rubric["criteria"]}
+    unknown = set(body.ratings) - set(criteria) or set(body.comments) - set(criteria)
+    if unknown:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, f"Not in this rubric: {', '.join(sorted(unknown))}")
+    missing = [criterion["title"] for criterion in rubric["criteria"] if criterion["id"] not in body.ratings]
+    if missing:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, f"Choose a rating for: {', '.join(missing)}")
+
+    scores = []
+    for criterion in rubric["criteria"]:
+        rating = next((r for r in criterion["ratings"] if r["id"] == body.ratings[criterion["id"]]), None)
+        if rating is None:
+            raise HTTPException(
+                status.HTTP_422_UNPROCESSABLE_CONTENT, f"That rating isn't one of the options for {criterion['title']}"
+            )
+        scores.append(
+            {
+                "criterion_id": criterion["id"],
+                "title": criterion["title"],
+                "rating_id": rating["id"],
+                "rating_title": rating["title"],
+                "points": int(rating["points"]),
+                "max_points": int(criterion["max_points"]),
+                "comment": body.comments.get(criterion["id"], ""),
+            }
+        )
+    score = sum(item["points"] for item in scores)
+    possible = int(rubric["points_possible"])
+    max_mark = int(assignment["max_mark"])
+    # Round half up, in whole numbers, so 7.5 becomes 8.
+    mark = (2 * score * max_mark + possible) // (2 * possible)
+    assessment = {
+        "rubric_id": rubric["id"],
+        "rubric_title": rubric["title"],
+        "criteria": scores,
+        "score": score,
+        "points_possible": possible,
+        "mark": mark,
+    }
+    return _save_mark(course_id, assignment, student_id, mark, body.feedback, body.release, assessment)
 
 
 @router.delete("/{assignment_id}/submissions/{student_id}/grade", status_code=status.HTTP_204_NO_CONTENT)
@@ -318,7 +396,7 @@ def clear_grade(course_id: str, assignment_id: str, student_id: str, user: Curre
     if not submission.get("submitted_at"):
         db.delete(db.submission_key(assignment_id, student_id))
     else:
-        submission.update(mark=None, feedback=None, released=False, graded_at=None)
+        submission.update(mark=None, feedback=None, released=False, graded_at=None, rubric_assessment=None)
         _save_submission(submission)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -331,7 +409,10 @@ def release_all(course_id: str, assignment_id: str, body: ReleaseSet, user: Curr
     updated = 0
     for item in db.query(f"ASSIGNMENT#{assignment_id}", "SUBMISSION#"):
         if item.get("mark") is not None and bool(item.get("released")) != body.release:
-            _save_submission({**db.strip_keys(item), "released": body.release})
+            _save_submission({
+                **db.strip_keys(item), "released": body.release,
+                "released_at": db.now_iso() if body.release else None,
+            })
             updated += 1
     return {"updated": updated}
 

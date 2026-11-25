@@ -115,8 +115,10 @@ In Cloudflare, add a proxied CNAME from `perceptionlms.com` to the `frontend_web
 | Users | `GET/POST /admin/users`, `PATCH /admin/users/{id}` | Admin |
 | Courses and enrolments | `GET/POST /admin/courses`, `GET /admin/courses/{id}/members`, `PUT/DELETE /admin/courses/{id}/members/{userId}` | Admin |
 | Course content and files | `GET /courses`, `GET /courses/{id}`, `GET /courses/{id}/files?folder=`, `POST/PATCH/DELETE …/modules`, `PUT …/modules/order`, `POST/PATCH/DELETE …/materials`, `POST …/materials/{id}/file` (replace), `GET …/materials/{id}/download` | Enrolled (changes: lecturer) |
+| Pages | `GET/POST /courses/{id}/pages` (`?module_id=` for one module), `GET/PATCH/DELETE …/pages/{pageId}` | Enrolled (changes: lecturer) |
 | Assignments and quizzes | `GET/POST /courses/{id}/assignments`, `GET/PATCH/DELETE …/{assignmentId}`, `POST …/{assignmentId}/release` | Enrolled (changes: lecturer) |
 | Submissions | `POST …/{assignmentId}/submission` (student), `GET …/submissions`, `PUT/DELETE …/submissions/{studentId}/grade` (lecturer), `GET …/submissions/{studentId}/download`, `GET …/submissions/{studentId}/attempts/{n}/download` | As shown |
+| Rubrics | `GET/POST /courses/{id}/rubrics`, `GET/PATCH/DELETE …/rubrics/{rubricId}`, `PUT …/assignments/{assignmentId}/submissions/{studentId}/rubric-grade` | Lecturer |
 | Resubmissions and extensions | `GET …/{assignmentId}/resubmissions`, `PUT/DELETE …/submissions/{studentId}/resubmission` | Lecturer |
 | Quiz builder | `GET /courses/{id}/quizzes/{quizId}`, `GET/POST …/questions`, `PATCH/DELETE …/questions/{questionId}`, `PUT …/questions/order` | Enrolled (questions: lecturer) |
 | Taking a quiz | `POST …/quizzes/{quizId}/attempts` (start or resume), `PUT …/attempts/{attemptId}/answers`, `POST …/attempts/{attemptId}/submit` (student), `GET …/attempts?student_id=&needs_marking=`, `GET …/attempts/{attemptId}`, `PUT …/attempts/{attemptId}/marks` (lecturer) | As shown |
@@ -124,9 +126,23 @@ In Cloudflare, add a proxied CNAME from `perceptionlms.com` to the `frontend_web
 | Late and missing work | `GET /courses/{id}/late-missing?status=` (lecturer), `GET /admin/late-missing?status=` (admin, every course) | As shown |
 | Announcements | `GET/POST /courses/{id}/announcements`, `PATCH/DELETE …/{announcementId}` | Enrolled (changes: lecturer) |
 
+**Rubrics** are criteria with rating levels, each rating worth some points. A rubric belongs to a course and any of its assignments can use it (`rubric_id`). Grading with `…/rubric-grade` takes one rating per criterion (plus optional comments), adds up the points and scales them to the assignment's `max_mark`, rounding to the nearest whole mark. The completed rubric is saved with the grade as `rubric_assessment`, a snapshot that later edits to the rubric don't change, and students see it with their grade once it's released (on the assignment and in `GET /me/grades`). A plain `…/grade` replaces it. A rubric in use can't be deleted.
+**Pages** are rich-text content written in the frontend's editor and sent as HTML. The API sanitises it on every save (`app/rich_text.py`, using nh3): headings, paragraphs, lists, quotes, code, tables, links (http, https, mailto), https images and videos, and YouTube or Vimeo embeds are kept; scripts, styles, event handlers such as `onclick`, `javascript:` and `data:` links, forms and other iframes are removed. A page can belong to a module (`module_id`), and `GET /courses/{id}` lists each module's pages. Students only see a page when it is published and its module (if any) is published. Deleting a module keeps its pages, moved out of the module and unpublished. A page can link course files with `file_ids`; reading the page returns them as `files`, each with a `download_path`. Students only get linked files in published modules, and deleting a file unlinks it from every page.
+
 **Quizzes** are assignments with `kind: "quiz"`. Create one with `POST /courses/{id}/assignments`, which also takes the quiz settings: `time_limit_minutes`, `max_attempts`, `due_at`, `shuffle_answers`, `show_score` and `show_correct_answers`. Then add questions: `multiple_choice` (2 to 10 `options`, each with `correct`), `true_false` (`answer`) or `short_answer` (optional `accepted_answers`). A quiz's `max_mark` is always the total of its questions' points. Once a student has started the quiz, only a question's wording can change.
 
 **Taking a quiz:** the student starts an attempt and gets the questions (in a shuffled order of options if the quiz says so) with a `deadline` and `seconds_left`. The server enforces the time limit: answers saved with `PUT …/answers` count until the deadline plus 30 seconds' grace, and an attempt left open after that is submitted with the answers saved in time. Multiple choice and true/false are marked straight away; short answers that match an accepted answer are too, and the rest wait for the lecturer (`needs_marking`). The student's best fully marked attempt is saved as their submission, so it appears in the gradebook, the CSV, the late and missing report and `GET /me/grades`. A new attempt replaces any mark the lecturer typed into the gradebook for that quiz.
+
+## Communication API
+
+Sign in as an enrolled lecturer or student, then authorize your session in the local Swagger UI at `/docs`. Use `GET /courses` to find a course ID.
+
+| Feature | Local test |
+| --- | --- |
+| Discussions | `POST /courses/{course_id}/discussions` with a title and body, then add a reply at `/{topic_id}/replies`. Pass a reply ID as `parent_id` to nest a reply. Lecturers can lock the topic with `PATCH /{topic_id}` or delete topics and replies. |
+| Inbox | `GET /inbox/courses/{course_id}/recipients` lists active members you can message. `POST /inbox/courses/{course_id}/conversations` accepts `recipient_ids` and `body`. Use `GET /inbox/conversations` to see unread counts. Inside a conversation, `PUT /read` accepts the last displayed `message_id`. |
+| Calendar | As a lecturer, create an event at `POST /courses/{course_id}/events` with a title and timezone-aware `starts_at` and `ends_at`. As a student, check `GET /me/calendar` for both course events and visible coursework. Supply optional `start` and `end` timestamps to filter. |
+| Notifications | Publish an announcement or send the student a message, then check their `GET /me/notifications`. Released grades and visible unsubmitted work due in the next 24 hours also appear. Use `PUT /me/notifications/{notification_id}/read` to mark an item read and `PUT /me/notification-preferences` to set the four category switches. |
 
 ## Folder layout
 

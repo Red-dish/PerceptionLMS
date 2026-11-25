@@ -1,0 +1,59 @@
+{
+  "algorithm": "logistic_regression",
+  "features": [
+    "attendance_pct",
+    "quiz_average",
+    "missed_assignments",
+    "weekly_logins",
+    "days_since_login"
+  ],
+  "mean": {
+    "attendance_pct": 76.33125,
+    "quiz_average": 68.471875,
+    "missed_assignments": 1.1625,
+    "weekly_logins": 5.30625,
+    "days_since_login": 4.928125
+  },
+  "scale": {
+    "attendance_pct": 13.929833934311636,
+    "quiz_average": 17.184999534023127,
+    "missed_assignments": 1.054084318259218,
+    "weekly_logins": 2.4109045890495127,
+    "days_since_login": 2.562559069441132
+  },
+  "coefficients": {
+    "attendance_pct": -0.4667047466473057,
+    "quiz_average": -0.7286616341541691,
+    "missed_assignments": 0.5389807017797527,
+    "weekly_logins": -0.4564004030110795,
+    "days_since_login": 0.36105605167232147
+  },
+  "intercept": -1.205543198713354,
+  "threshold": 0.5,
+  "reason_text": {
+    "attendance_pct": "attendance",
+    "quiz_average": "quiz average",
+    "missed_assignments": "missed assignments",
+    "weekly_logins": "weekly logins",
+    "days_since_login": "days since last login"
+  },
+  "trained_on": {
+    "dataset": "students_demo.csv",
+    "students": 400,
+    "train": 320,
+    "test": 80,
+    "seed": 42
+  },
+  "test_metrics": {
+    "accuracy": 0.775,
+    "precision": 0.6923076923076923,
+    "recall": 0.391304347826087,
+    "confusion": {
+      "tn": 53,
+      "fp": 4,
+      "fn": 14,
+      "tp": 9
+    },
+    "cross_validation_accuracy": 0.79
+  }
+}
