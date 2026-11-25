@@ -115,6 +115,7 @@ In Cloudflare, add a proxied CNAME from `perceptionlms.com` to the `frontend_web
 | Users | `GET/POST /admin/users`, `PATCH /admin/users/{id}` | Admin |
 | Courses and enrolments | `GET/POST /admin/courses`, `GET /admin/courses/{id}/members`, `PUT/DELETE /admin/courses/{id}/members/{userId}` | Admin |
 | Course content and files | `GET /courses`, `GET /courses/{id}`, `GET /courses/{id}/files?folder=`, `POST/PATCH/DELETE …/modules`, `PUT …/modules/order`, `POST/PATCH/DELETE …/materials`, `POST …/materials/{id}/file` (replace), `GET …/materials/{id}/download` | Enrolled (changes: lecturer) |
+| Pages | `GET/POST /courses/{id}/pages` (`?module_id=` for one module), `GET/PATCH/DELETE …/pages/{pageId}` | Enrolled (changes: lecturer) |
 | Assignments and quizzes | `GET/POST /courses/{id}/assignments`, `GET/PATCH/DELETE …/{assignmentId}`, `POST …/{assignmentId}/release` | Enrolled (changes: lecturer) |
 | Submissions | `POST …/{assignmentId}/submission` (student), `GET …/submissions`, `PUT/DELETE …/submissions/{studentId}/grade` (lecturer), `GET …/submissions/{studentId}/download`, `GET …/submissions/{studentId}/attempts/{n}/download` | As shown |
 | Resubmissions and extensions | `GET …/{assignmentId}/resubmissions`, `PUT/DELETE …/submissions/{studentId}/resubmission` | Lecturer |
@@ -123,6 +124,8 @@ In Cloudflare, add a proxied CNAME from `perceptionlms.com` to the `frontend_web
 | Gradebook | `GET /courses/{id}/gradebook`, `GET /courses/{id}/gradebook.csv` | Lecturer |
 | Late and missing work | `GET /courses/{id}/late-missing?status=` (lecturer), `GET /admin/late-missing?status=` (admin, every course) | As shown |
 | Announcements | `GET/POST /courses/{id}/announcements`, `PATCH/DELETE …/{announcementId}` | Enrolled (changes: lecturer) |
+
+**Pages** are rich-text content written in the frontend's editor and sent as HTML. The API sanitises it on every save (`app/rich_text.py`, using nh3): headings, paragraphs, lists, quotes, code, tables, links (http, https, mailto), https images and videos, and YouTube or Vimeo embeds are kept; scripts, styles, event handlers such as `onclick`, `javascript:` and `data:` links, forms and other iframes are removed. A page can belong to a module (`module_id`), and `GET /courses/{id}` lists each module's pages. Students only see a page when it is published and its module (if any) is published. Deleting a module keeps its pages, moved out of the module and unpublished. A page can link course files with `file_ids`; reading the page returns them as `files`, each with a `download_path`. Students only get linked files in published modules, and deleting a file unlinks it from every page.
 
 **Quizzes** are assignments with `kind: "quiz"`. Create one with `POST /courses/{id}/assignments`, which also takes the quiz settings: `time_limit_minutes`, `max_attempts`, `due_at`, `shuffle_answers`, `show_score` and `show_correct_answers`. Then add questions: `multiple_choice` (2 to 10 `options`, each with `correct`), `true_false` (`answer`) or `short_answer` (optional `accepted_answers`). A quiz's `max_mark` is always the total of its questions' points. Once a student has started the quiz, only a question's wording can change.
 
