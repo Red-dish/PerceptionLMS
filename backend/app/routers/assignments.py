@@ -305,9 +305,10 @@ def _save_mark(
             "attempt": 0,
         }
     submission = db.strip_keys(submission)
+    graded_at = db.now_iso()
     submission.update(
-        mark=body.mark, feedback=body.feedback, released=body.release, graded_at=graded_at, rubric_assessment=assessment
-        released_at=graded_at if body.release else None,
+        mark=mark, feedback=feedback, released=release, graded_at=graded_at, rubric_assessment=assessment,
+        released_at=graded_at if release else None,
     )
     return _with_final_mark(assignment, _save_submission(submission))
 
