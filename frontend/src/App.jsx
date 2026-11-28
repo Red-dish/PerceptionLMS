@@ -6,12 +6,17 @@ import Assignments from './pages/course/Assignments';
 import AssignmentDetail from './pages/course/AssignmentDetail';
 import CourseHome from './pages/course/CourseHome';
 import CourseLayout from './pages/course/CourseLayout';
+import Gradebook from './pages/course/Gradebook';
 import GradeSubmission from './pages/course/GradeSubmission';
 import Modules from './pages/course/Modules';
 import People from './pages/course/People';
 import { NewQuiz } from './pages/course/QuizDetail';
 import Courses from './pages/Courses';
+import AssignmentsOverview from './pages/AssignmentsOverview';
+import AnnouncementsHub from './pages/AnnouncementsHub';
+import GradingHub from './pages/GradingHub';
 import Dashboard from './pages/Dashboard';
+import Calendar from './pages/Calendar';
 import Grades from './pages/Grades';
 import Login from './pages/Login';
 import Users from './pages/Users';
@@ -36,9 +41,14 @@ export default function App() {
       <Route element={<RequireSignIn />}>
         <Route element={<Layout />}>
           <Route index element={<Dashboard />} />
+          <Route path="grading" element={<GradingHub />} />
+          <Route path="announcements" element={<AnnouncementsHub />} />
+          <Route path="assignments" element={<AssignmentsOverview />} />
+          <Route path="calendar" element={<Calendar />} />
           <Route path="courses" element={<Courses />} />
           <Route path="courses/:courseId" element={<CourseLayout />}>
             <Route index element={<CourseHome />} />
+            <Route path="gradebook" element={<Gradebook />} />
             <Route path="modules" element={<Modules />} />
             <Route path="assignments" element={<Assignments />} />
             <Route path="assignments/new-quiz" element={<NewQuiz />} />
