@@ -6,6 +6,13 @@ The to-do list for the whole technical team: Amora, Roshan, Dipesh and Bishu. Ti
 
 Deliverables are due **every Wednesday**. Progress reports are due from everyone every other Thursday: **19 Nov**, 3 Dec, 17 Dec.
 
+**Status 28 Nov 2026 (final demo Thu 3 Dec):**
+- [x] **Backend for Epics 2–5 merged on `dev`:** pages #36, files from pages #37, rubrics #45 (Roshan); discussions, inbox, calendar and notifications #55–#58 (Dipesh). Works locally; 85 tests pass once the `assignments.py` merge fix lands (PR #165, Amora; Roshan to review).
+- [x] **Screens merged:** quizzes #47/#48, the redesign (KAN-65), attempt history #42, gradebook #49 and CSV export #51.
+- [ ] **Frontend quality check (Bishu):** the redesign, quizzes, gradebook, CSV and attempt history, against the local API. Then tick the GitHub checklists and move the KAN tickets from In Review to Done.
+- [ ] **Deploy (Amora) · KAN-72:** `dev` → `main`, the API, then the website. The live API is from 3 Nov and the website from 9 Nov, so none of the above is live yet.
+- [ ] **AI for the demo (Amora):** risk models, API and lecturer view #120; demo sign-in and MAI600 seed #143; student chatbot #123.
+
 **Week 3, due Wed 18 Nov 2026 (GitHub milestone "Deliverable 18 Nov"):**
 
 - [x] AI Task 1 (v2): explore `students_demo.csv`; closed on 19 Nov. The dataset is committed in `ml/dataset/`; the answers go in the ML evidence (Amora) · #119 · KAN-82
@@ -26,7 +33,7 @@ Week 1 (sign-in, roles and dashboard, KAN-54) is done; its items are below.
 
 | Piece | Status (10 Nov 2026) |
 | --- | --- |
-| Backend API | Live at `https://p4r5x8qd32.execute-api.ap-southeast-2.amazonaws.com/`. Roshan's coursework API (PR #85) and quiz API (PRs #129, #130) aren't deployed yet (checked 17 Nov) |
+| Backend API | Live at `https://p4r5x8qd32.execute-api.ap-southeast-2.amazonaws.com/`, but still the 3 Nov image: none of the coursework, quiz, rubric, page or communication APIs are deployed yet (checked 28 Nov, KAN-72) |
 | Website S3 bucket | Created |
 | Domain | `https://perceptionlms.com` is live; `www` redirects to it |
 | React app | Published to `https://perceptionlms.com` from `main`, and works with a real Google account against the live API |
