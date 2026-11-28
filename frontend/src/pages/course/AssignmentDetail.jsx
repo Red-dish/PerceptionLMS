@@ -13,6 +13,7 @@ import { gradingStatus, LateBadge, markText, StatusBadge } from './grading';
 function StudentSubmission({ assignment, path, onSubmitted }) {
   const { user } = useAuth();
   const submission = assignment.my_submission;
+  const earlierAttempts = [...(submission?.history ?? [])].sort((a, b) => b.attempt - a.attempt);
   const [text, setText] = useState(submission?.text ?? '');
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
@@ -47,7 +48,9 @@ function StudentSubmission({ assignment, path, onSubmitted }) {
   const download = async () => {
     setDownloadError(null);
     try {
-      await openDownload(`${path}/submissions/${user.id}/download`);
+      const submissionPath = `${path}/submissions/${user.id}`;
+      const attemptPath = attempt == null ? submissionPath : `${submissionPath}/attempts/${attempt}`;
+      await openDownload(`${attemptPath}/download`);
     } catch (problem) {
       setDownloadError(problem);
     }
@@ -64,12 +67,11 @@ function StudentSubmission({ assignment, path, onSubmitted }) {
           </p>
           {submission.text && <p className="text-sm whitespace-pre-wrap">{submission.text}</p>}
           {submission.file_name && (
-            <button type="button" className="text-sm link inline-flex items-center gap-1 mt-2" onClick={download}>
+            <button type="button" className="text-sm link inline-flex items-center gap-1 mt-2" onClick={() => download()}>
               <Download size={14} aria-hidden="true" />
               {submission.file_name}
             </button>
           )}
-          <div className="mt-2"><ErrorNote error={downloadError} /></div>
           {submission.released && (
             <div className="mt-3 pt-3 border-t border-slate-100">
               <div className="font-semibold">Mark: {submission.mark}/{assignment.max_mark}</div>
@@ -78,6 +80,31 @@ function StudentSubmission({ assignment, path, onSubmitted }) {
           )}
         </div>
       )}
+
+      {earlierAttempts.length > 0 && (
+        <section className="card p-5">
+          <h2 className="font-semibold">Earlier attempts</h2>
+          <ul className="divide-y divide-slate-200">
+            {earlierAttempts.map((attempt) => (
+              <li key={attempt.attempt} className="space-y-1 py-3 text-sm">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-medium">Attempt {attempt.attempt}</span>
+                  {attempt.submitted_at && <span className="text-slate-500">{formatDateTime(attempt.submitted_at)}</span>}
+                  {attempt.late && <span className="badge bg-amber-100 text-amber-700">Late</span>}
+                </div>
+                {attempt.text && <p className="whitespace-pre-wrap break-words">{attempt.text}</p>}
+                {attempt.file_name && (
+                  <button type="button" className="link inline-flex items-center gap-1 break-all text-left" onClick={() => download(attempt.attempt)}>
+                    <Download size={14} className="shrink-0" aria-hidden="true" />
+                    {attempt.file_name}
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {downloadError && <ErrorNote error={downloadError} />}
 
       {/* The API refuses a resubmission once the mark is released. */}
       {!submission?.released && (
