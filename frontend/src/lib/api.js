@@ -38,7 +38,7 @@ function errorMessage(body) {
   return 'Something went wrong. Please try again.';
 }
 
-async function request(method, path, body) {
+async function request(method, path, body, responseType) {
   if (!API_URL) throw new ApiError('VITE_API_URL is not set. See frontend/README.md.', 0);
 
   const token = getToken();
@@ -64,6 +64,7 @@ async function request(method, path, body) {
   }
 
   if (response.status === 204) return null;
+  if (response.ok && responseType === 'blob') return response.blob();
   const data = await response.json().catch(() => null);
   if (!response.ok) throw new ApiError(errorMessage(data), response.status);
   return data;
@@ -71,6 +72,7 @@ async function request(method, path, body) {
 
 export const api = {
   get: (path) => request('GET', path),
+  getBlob: (path) => request('GET', path, undefined, 'blob'),
   post: (path, body) => request('POST', path, body),
   put: (path, body) => request('PUT', path, body),
   patch: (path, body) => request('PATCH', path, body),

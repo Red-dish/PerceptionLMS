@@ -9,6 +9,7 @@ function tabs(myRole) {
     ['', 'Home'],
     ['modules', 'Modules'],
     ['assignments', 'Assignments'],
+    ...(myRole !== 'student' ? [['gradebook', 'Gradebook']] : []),
     // The API only lets admins read a course's member list.
     ...(myRole === 'admin' ? [['people', 'People']] : []),
   ];
